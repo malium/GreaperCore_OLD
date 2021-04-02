@@ -124,6 +124,21 @@
   <ItemGroup>
     <ClCompile Include="src\test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Public\Core\Base\BasicTypeInfo.h" />
+    <ClInclude Include="Public\Core\Base\BasicTypes.h" />
+    <ClInclude Include="Public\Core\Base\Config.h" />
+    <ClInclude Include="Public\Core\Memory.h" />
+    <ClInclude Include="Public\Core\PHAL.h" />
+    <ClInclude Include="Public\Core\Base\Utils.h" />
+    <ClInclude Include="Public\Core\StringUtils.h" />
+    <ClInclude Include="Public\Core\Uuid.h" />
+    <ClInclude Include="Public\Core\Win\MinWinHeader.h" />
+    <ClInclude Include="Public\Core\Win\Prerequisites.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Public\Core\Base\Uuid.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
