@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos S�nchez Torrent.                                         *
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -209,13 +209,13 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 		INLINE void construct(pointer p, Args&&... args)noexcept { new(p)T(std::forward<Args>(args)...); }
 	};
 
-	template<typename T>
-	using BasicString = std::basic_string<T, std::char_traits<T>, StdAlloc<T>>;
+	template<typename T, typename A = StdAlloc<T>>
+	using BasicString = std::basic_string<T, std::char_traits<T>, A>;
 	template<typename T>
 	using BasicStringView = std::basic_string_view<T, std::char_traits<T>>;
 
-	template<typename T>
-	using BasicStringStream = std::basic_stringstream<T, std::char_traits<T>, StdAlloc<T>>;
+	template<typename T, typename A = StdAlloc<T>>
+	using BasicStringStream = std::basic_stringstream<T, std::char_traits<T>, A>;
 
 #if GREAPER_USE_BASIC_TYPEINFO
 	using String = BasicString<achar::Type>;

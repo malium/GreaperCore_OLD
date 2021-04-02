@@ -1,3 +1,9 @@
+/***********************************************************************************
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   All Rights Reserved.                                                           *
+***********************************************************************************/
 
-#include <string>
+
+#include "Public\Core\PHAL.h"
+#include <chrono>
 

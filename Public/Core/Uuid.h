@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos S�nchez Torrent.                                         *
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -9,6 +9,7 @@
 #define GREAPER_CORE_UUID_H 1
 
 #include "PHAL.h"
+#include "Utils.h"
 #include "Memory.h"
 
 namespace greaper

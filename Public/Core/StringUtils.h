@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos SÃ¡nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -17,7 +17,7 @@ namespace greaper::StringUtils
 	namespace Impl
 	{
 		template<typename T>
-		T UTF8To32(T begin, T end, char32& output, char32 invalidChar = 0)
+		T UTF8To32(T begin, T end, u32char& output, u32char invalidChar = 0)
 		{
 			if (begin >= end)
 				return begin;
@@ -62,7 +62,7 @@ namespace greaper::StringUtils
 		}
 
 		template<typename T>
-		T UTF32To8(char32 input, T output, uint32 maxElems, achar invalidChar = 0)
+		T UTF32To8(u32char input, T output, uint32 maxElems, achar invalidChar = 0)
 		{
 			if (maxElems == 0)
 				return output;
@@ -108,7 +108,7 @@ namespace greaper::StringUtils
 		}
 
 		template<typename T>
-		T UTF16To32(T begin, T end, char32& output, char32 invalidChar = 0)
+		T UTF16To32(T begin, T end, u32char& output, u32char invalidChar = 0)
 		{
 			if (begin >= end)
 				return begin;
@@ -141,7 +141,7 @@ namespace greaper::StringUtils
 		}
 
 		template<typename T>
-		T WIDEToUTF32(T begin, T end, char32& output, char32 invalidChar = 0)
+		T WIDEToUTF32(T begin, T end, u32char& output, u32char invalidChar = 0)
 		{
 #if PLT_LINUX
 			output = (char32)*begin;
@@ -153,7 +153,7 @@ namespace greaper::StringUtils
 		}
 
 		template<typename T>
-		T UTF32ToWIDE(char32 input, T output, uint32 maxElems, wchar invalidChar = 0)
+		T UTF32ToWIDE(u32char input, T output, uint32 maxElems, wchar invalidChar = 0)
 		{
 #if PLT_LINUX
 			* output = (wchar)input;
@@ -187,8 +187,8 @@ namespace greaper::StringUtils
 		};
 	}
 
-	template<class _Alloca_ = std::allocator<achar>, class _Allocw_ = std::allocator<wchar>>
-	std::basic_string<achar, std::char_traits<achar>, _Alloca_> FromWIDE(const std::basic_string<wchar, std::char_traits<wchar>, _Allocw_>& str)
+	template<class _Alloca_ = StdAlloc<achar>, class _Allocw_ = StdAlloc<wchar>>
+	BasicString<achar, _Alloca_> FromWIDE(const BasicString<wchar, _Allocw_>& str)
 	{
 		std::basic_string<achar, std::char_traits<achar>, _Alloca_> output;
 		output.reserve(str.size());
@@ -203,8 +203,8 @@ namespace greaper::StringUtils
 		}
 	}
 
-	template<class _Allocw_ = std::allocator<wchar>, class _Alloca_ = std::allocator<achar>>
-	std::basic_string<wchar, std::char_traits<wchar>, _Allocw_> ToWIDE(const std::basic_string<achar, std::char_traits<achar>, _Alloca_>& str)
+	template<class _Allocw_ = StdAlloc<wchar>, class _Alloca_ = StdAlloc<achar>>
+	BasicString<wchar, _Allocw_> ToWIDE(const BasicString<achar, _Alloca_>& str)
 	{
 		std::basic_string<wchar, std::char_traits<wchar>, _Allocw_> output;
 		output.reserve(str.size());
@@ -222,8 +222,8 @@ namespace greaper::StringUtils
 		return output;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	sizet Contains(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str, T token)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	sizet Contains(const BasicString<T, _Alloca_>& str, T token)
 	{
 		sizet count = 0;
 		for (const T c : str)
@@ -234,8 +234,8 @@ namespace greaper::StringUtils
 		return count;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	sizet Contains(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str, const std::basic_string<T, std::char_traits<T>, _Alloca_>& token)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	sizet Contains(const BasicString<T, _Alloca_>& str, const BasicString<T, _Alloca_>& token)
 	{
 		sizet count = 0;
 		for (auto it = str.begin(); it != str.end(); ++it)
@@ -257,10 +257,10 @@ namespace greaper::StringUtils
 		return count;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>, class _VAlloca_ = std::allocator<std::basic_string<T, std::char_traits<T>, _Alloca_>>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_> ComposeString(const std::vector<std::basic_string<T, std::char_traits<T>, _Alloca_>, _VAlloca_>& vec, T separator)
+	template<typename T, class _Alloca_ = StdAlloc<T>, class _VAlloca_ = StdAlloc<BasicString<T, _Alloca_>>>
+	BasicString<T, _Alloca_> ComposeString(const std::vector<BasicString<T, _Alloca_>, _VAlloca_>& vec, T separator)
 	{
-		std::basic_string<T, std::char_traits<T>, _Alloca_> rtn;
+		BasicString<T, _Alloca_> rtn;
 		for (sizet i = 0; i < vec.size(); ++i)
 		{
 			rtn += vec[i];
@@ -271,11 +271,11 @@ namespace greaper::StringUtils
 		return rtn;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>, class _VAlloca_ = std::allocator<std::basic_string<T, std::char_traits<T>, _Alloca_>>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_> ComposeString(const std::vector<std::basic_string<T, std::char_traits<T>, _Alloca_>, _VAlloca_>& vec,
-		const std::basic_string<T, std::char_traits<T>, _Alloca_>& separator)
+	template<typename T, class _Alloca_ = StdAlloc<T>, class _VAlloca_ = StdAlloc<BasicString<T, _Alloca_>>>
+	BasicString<T, _Alloca_> ComposeString(const std::vector<BasicString<T, _Alloca_>, _VAlloca_>& vec,
+		const BasicString<T, _Alloca_>& separator)
 	{
-		std::basic_string<T, std::char_traits<T>, _Alloca_> rtn;
+		BasicString<T, _Alloca_> rtn;
 		for (sizet i = 0; i < vec.size(); ++i)
 		{
 			rtn += vec[i];
@@ -285,10 +285,10 @@ namespace greaper::StringUtils
 		return rtn;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>, class _VAlloca_ = std::allocator<std::basic_string<T, std::char_traits<T>, _Alloca_>>>
-	std::vector<std::basic_string<T, std::char_traits<T>, _Alloca_>, _VAlloca_> Tokenize(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str, T token)
+	template<typename T, class _Alloca_ = StdAlloc<T>, class _VAlloca_ = StdAlloc<BasicString<T, _Alloca_>>>
+	std::vector<BasicString<T, _Alloca_>, _VAlloca_> Tokenize(const BasicString<T, _Alloca_>& str, T token)
 	{
-		std::vector<std::basic_string<T, std::char_traits<T>, _Alloca_>, _VAlloca_> rtn;
+		std::vector<BasicString<T, _Alloca_>, _VAlloca_> rtn;
 		if (str.empty())
 			return rtn;
 		auto lastToken = str.begin();
@@ -301,15 +301,15 @@ namespace greaper::StringUtils
 				++lastToken;
 			}
 		}
-		rtn.push_back(std::basic_string<T, std::char_traits<T>, _Alloca_>(lastToken, str.end()));
+		rtn.push_back(BasicString<T, _Alloca_>(lastToken, str.end()));
 		return rtn;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>, class _VAlloca_ = std::allocator<std::basic_string<T, std::char_traits<T>, _Alloca_>>>
-	std::vector<std::basic_string<T, std::char_traits<T>, _Alloca_>, _VAlloca_> Tokenize(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str,
-		const std::basic_string<T, std::char_traits<T>, _Alloca_>& token)
+	template<typename T, class _Alloca_ = StdAlloc<T>, class _VAlloca_ = StdAlloc<BasicString<T, _Alloca_>>>
+	std::vector<BasicString<T, _Alloca_>, _VAlloca_> Tokenize(const BasicString<T, _Alloca_>& str,
+		const BasicString<T, _Alloca_>& token)
 	{
-		std::vector<std::basic_string<T, std::char_traits<T>, _Alloca_>, _VAlloca_> rtn;
+		std::vector<BasicString<T, _Alloca_>, _VAlloca_> rtn;
 		if (str.empty())
 			return rtn;
 		auto lastToken = str.begin();
@@ -338,18 +338,18 @@ namespace greaper::StringUtils
 				it += tokenSize;
 			}
 		}
-		rtn.push_back(std::basic_string<T, std::char_traits<T>, _Alloca_>(lastToken, str.end()));
+		rtn.push_back(BasicString<T, _Alloca_>(lastToken, str.end()));
 		return rtn;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>, class _VAlloca_ = std::allocator<std::basic_string<T, std::char_traits<T>, _Alloca_>>>
-	std::vector<std::basic_string<T, std::char_traits<T>, _Alloca_>, _VAlloca_> SeparateBySpace(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str)
+	template<typename T, class _Alloca_ = StdAlloc<T>, class _VAlloca_ = StdAlloc<BasicString<T, _Alloca_>>>
+	std::vector<BasicString<T, _Alloca_>, _VAlloca_> SeparateBySpace(const BasicString<T, _Alloca_>& str)
 	{
 		return Tokenize(str, T(' '));
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_>& Trim(std::basic_string<T, std::char_traits<T>, _Alloca_>& str, const std::basic_string<T,
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_>& Trim(BasicString<T, _Alloca_>& str, const std::basic_string<T,
 		std::char_traits<T>, _Alloca_>& delims, bool left = true, bool right = true)
 	{
 		if (right)
@@ -359,28 +359,28 @@ namespace greaper::StringUtils
 		return str;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_>& Trim(std::basic_string<T, std::char_traits<T>, _Alloca_>& str, bool left = true, bool right = true)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_>& Trim(BasicString<T, _Alloca_>& str, bool left = true, bool right = true)
 	{
 		static const T delims[] = { T(' '), T('\t'), T('\r'), T('\000') };
-		return Trim(str, std::basic_string<T, std::char_traits<T>, _Alloca_>(&delims[0]), left, right);
+		return Trim(str, BasicString<T, _Alloca_>(&delims[0]), left, right);
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_> Replace(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str, T toReplace, T replacement)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_> Replace(const BasicString<T, _Alloca_>& str, T toReplace, T replacement)
 	{
 		return ComposeString(Tokenize(str, toReplace), replacement);
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_> Replace(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str,
-		const std::basic_string<T, std::char_traits<T>, _Alloca_>& toReplace, const std::basic_string<T, std::char_traits<T>, _Alloca_>& replacement)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_> Replace(const BasicString<T, _Alloca_>& str,
+		const BasicString<T, _Alloca_>& toReplace, const BasicString<T, _Alloca_>& replacement)
 	{
 		return ComposeString(Tokenize(str, toReplace), replacement);
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_>& ToLower(std::basic_string<T, std::char_traits<T>, _Alloca_>& str)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_>& ToLower(BasicString<T, _Alloca_>& str)
 	{
 		Impl::CaseImpl<T> caseTransform;
 		for (T& c : str)
@@ -388,8 +388,8 @@ namespace greaper::StringUtils
 		return str;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	std::basic_string<T, std::char_traits<T>, _Alloca_>& ToUpper(std::basic_string<T, std::char_traits<T>, _Alloca_>& str)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_>& ToUpper(BasicString<T, _Alloca_>& str)
 	{
 		Impl::CaseImpl<T> caseTransform;
 		for (T& c : str)
@@ -397,8 +397,8 @@ namespace greaper::StringUtils
 		return str;
 	}
 
-	template<typename T, class _Alloca_ = std::allocator<T>>
-	bool StringNumber(const std::basic_string<T, std::char_traits<T>, _Alloca_>& str)
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	bool StringNumber(const BasicString<T, _Alloca_>& str)
 	{
 		for (auto& chr : str)
 		{
