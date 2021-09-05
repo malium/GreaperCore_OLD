@@ -603,12 +603,12 @@ namespace greaper::StringUtils
 	}
 
 	/**
-	 * @brief 
+	 * @brief Lowers the given string
 	 * 
-	 * @tparam T 
-	 * @tparam _Alloca_ 
-	 * @param str 
-	 * @return BasicString<T, _Alloca_>& 
+	 * @tparam T The type of the characters
+	 * @tparam _Alloca_ The allocator of the string
+	 * @param str The string to lower
+	 * @return BasicString<T, _Alloca_>& The string lowered
 	 */
 	template<typename T, class _Alloca_ = StdAlloc<T>>
 	BasicString<T, _Alloca_>& ToLowerSelf(BasicString<T, _Alloca_>& str)
@@ -621,6 +621,14 @@ namespace greaper::StringUtils
 		return str;
 	}
 	
+	/**
+	 * @brief Lowers the given string
+	 * 
+	 * @tparam T The type of the characters
+	 * @tparam _Alloca_ The allocator of the string
+	 * @param str The string to lower
+	 * @return BasicString<T, _Alloca_> The string lowered
+	 */
 	template<typename T, class _Alloca_ = StdAlloc<T>>
 	BasicString<T, _Alloca_> ToLower(const BasicString<T, _Alloca_>& str)
 	{
@@ -630,6 +638,14 @@ namespace greaper::StringUtils
 		return ToLowerSelf(temp);
 	}
 
+	/**
+	 * @brief Uppers the given string
+	 * 
+	 * @tparam T The type of the characters
+	 * @tparam _Alloca_ The allocator of the string
+	 * @param str The string to upper
+	 * @return BasicString<T, _Alloca_>& The string uppered
+	 */
 	template<typename T, class _Alloca_ = StdAlloc<T>>
 	BasicString<T, _Alloca_>& ToUpperSelf(BasicString<T, _Alloca_>& str)
 	{
@@ -641,6 +657,14 @@ namespace greaper::StringUtils
 		return str;
 	}
 
+	/**
+	 * @brief Uppers the given string
+	 * 
+	 * @tparam T The type of the characters
+	 * @tparam _Alloca_ The allocator of the string
+	 * @param str The string to upper
+	 * @return BasicString<T, _Alloca_> The string uppered
+	 */
 	template<typename T, class _Alloca_ = StdAlloc<T>>
 	BasicString<T, _Alloca_> ToUpper(const BasicString<T, _Alloca_>& str)
 	{
@@ -650,6 +674,15 @@ namespace greaper::StringUtils
 		return ToUpperSelf(temp);
 	}
 
+	/**
+	 * @brief Returns whether if the given string is only numbers or contains other information
+	 * 
+	 * @tparam T The type of the characters
+	 * @tparam _Alloca_ The allocator of the string
+	 * @param str The string to check
+	 * @return true The string only contains numbers
+	 * @return false The string contains other characters
+	 */
 	template<typename T, class _Alloca_ = StdAlloc<T>>
 	bool StringNumber(const BasicString<T, _Alloca_>& str)
 	{
@@ -657,7 +690,7 @@ namespace greaper::StringUtils
 		
 		for (auto& chr : str)
 		{
-			if (!IsWithinInclusive(chr, T('0'), T('9'))/* && chr != T('.') && chr != T('+') && chr != T('-') && chr != T('e') && chr != T('E')*/)
+			if (!IsWithinInclusive(chr, T('0'), T('9')) && chr != T(',') && chr != T('.') && chr != T('+') && chr != T('-') && chr != T('e') && chr != T('E'))
 				return false;
 		}
 		return true;
