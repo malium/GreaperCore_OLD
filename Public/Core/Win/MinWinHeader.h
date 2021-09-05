@@ -54,8 +54,6 @@ typedef WCHAR *NWPSTR, *LPWSTR, *PWSTR;
 typedef CONST WCHAR *LPCWSTR, *PCWSTR;
 typedef CONST WCHAR *LPCWCHAR, *PCWCHAR;
 
-
-
 typedef int                 BOOL;
 typedef char                CHAR;
 typedef wchar_t WCHAR;    // wc,   16-bit UNICODE character
@@ -193,7 +191,6 @@ UuidCreate(
     UUID __RPC_FAR* Uuid
 );
 
-
 WINUSERAPI
 int
 WINAPI
@@ -224,7 +221,6 @@ WINAPI
 FreeLibrary(
     HMODULE hLibModule
     );
-
 
 #else
 #include <Windows.h>

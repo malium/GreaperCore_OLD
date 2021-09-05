@@ -47,7 +47,7 @@ namespace greaper
 		bool m_Constant;	// Cannot be modified
 
 		TProperty(String propertyName, T initialValue, String propertyInfo = String{}, bool isConstant = false,
-			bool isStatic = false, TPropertyValidator<T>* validator = nullptr)
+			bool isStatic = false, TPropertyValidator<T>* validator = nullptr) noexcept
 			:m_Value(initialValue)
 			, m_PropertyName(std::move(propertyName))
 			, m_PropertInfo(std::move(propertyInfo))
@@ -89,7 +89,7 @@ namespace greaper
 		{
 			return m_Static;
 		}
-		bool SetValue(const T& value, bool triggerEvent = true)noexcept
+		bool SetValue(const T& value, bool triggerEvent = true) noexcept
 		{
 			if (m_Constant)
 			{
@@ -115,7 +115,7 @@ namespace greaper
 				m_OnModificationEvent.Trigger(this);
 			return true;
 		}
-		bool SetValueFromString(const String& value)
+		bool SetValueFromString(const String& value) noexcept
 		{
 			return SetValue(FromString(value));
 		}
@@ -127,7 +127,7 @@ namespace greaper
 		{
 			return m_StringValue;
 		}
-		[[nodiscard]] OnModificationEvt_t& GetOnModificationEvent()noexcept
+		[[nodiscard]] OnModificationEvt_t& GetOnModificationEvent() noexcept
 		{
 			return m_OnModificationEvent;
 		}

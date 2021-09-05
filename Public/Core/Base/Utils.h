@@ -179,6 +179,10 @@ INLINE sizet ComputeHash(const ArgsType&... args)
 	return seed;
 }
 
+/***********************************************************************************
+*                             MEMORY HELPER FUNCITONS                              *
+***********************************************************************************/
+
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 #endif
@@ -188,10 +192,10 @@ template<class T, sizet::Type N>
 #else
 template<class T, sizet N>
 #endif
-INLINE constexpr sizet ArraySize(T(&)[N])noexcept { return N; }
+INLINE constexpr sizet ArraySize(T(&)[N]) noexcept { return N; }
 
 template<class T>
-INLINE void ClearMemory(T& obj, sizet count = 1)noexcept
+INLINE void ClearMemory(T& obj, sizet count = 1) noexcept
 {
 	memset(&obj, 0, sizeof(T) * count);
 }

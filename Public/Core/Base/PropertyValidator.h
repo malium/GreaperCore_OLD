@@ -23,6 +23,7 @@ namespace greaper
 			Selected
 		};
 	}
+	
 	/** 
 	 * @brief Generic Property Validator, you can extend this class in order
 	 * to provide your own value validation methods.
@@ -39,6 +40,7 @@ namespace greaper
 	public:
 		inline static constexpr int32 ValidatorType = EPropertyValidatorType::Invalid;
 		virtual bool Validate(const T& value, T* validated)const noexcept = 0;
+		virtual ~TPropertyValidator() noexcept = default;
 	};
 
 	template<class T>
@@ -60,7 +62,7 @@ namespace greaper
 
 	public:
 		inline static constexpr int32 ValidatorType = EPropertyValidatorType::Bounded;
-		PropertyValidatorBounded(T min, T max)
+		PropertyValidatorBounded(T min, T max) noexcept
 			:m_Min(std::move(min))
 			, m_Max(std::move(max))
 		{
@@ -94,7 +96,7 @@ namespace greaper
 
 	public:
 		inline static constexpr int32 ValidatorType = EPropertyValidatorType::Selected;
-		PropertyValidatorSelected(Vector<T> validValues)
+		PropertyValidatorSelected(Vector<T> validValues) noexcept
 			:m_ValidValues(std::move(validValues))
 		{
 

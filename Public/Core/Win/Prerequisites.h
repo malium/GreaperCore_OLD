@@ -22,7 +22,6 @@ typedef WinTypes PlatformTypes;
 #define FUNCTION_FULL __FUNCTION__
 #define GREAPER_DLLEXT ".dll"
 
-
 /* Supported Windows version */
 #ifndef GREAPER_MIN_WINDOWS_SUPPORTED
 #define GREAPER_MIN_WINDOWS_SUPPORTED 0x0601
