@@ -250,6 +250,8 @@
 *                                      OTHER                                       *
 ***********************************************************************************/
 
+#define EVALMACRO(m) m
+
 /* Interface class definition (no virtual table) */
 #ifndef NOVTABLE
 #define NOVTABLE
@@ -269,6 +271,13 @@
 #endif
 #ifndef DLLEXPORT
 #define DLLEXPORT
+#endif
+#ifdef __cplusplus
+#define BEGIN_C extern "C" {
+#define END_C }
+#else
+#define BEGIN_C
+#define END_C
 #endif
 /* Force code to be inlined */
 #ifndef INLINE
@@ -333,6 +342,8 @@
 DLLEXPORT unsigned long NvOptimusEnablement = 1;\
 DLLEXPORT int AmdPowerXpressRequestHighPerformance = 1
 #endif
+
+using FuncPtr = void(*)();
 
 #include "Base/BasicTypeInfo.h"
 #include "Base/Utils.h"

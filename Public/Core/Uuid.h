@@ -9,26 +9,25 @@
 #define GREAPER_CORE_UUID_H 1
 
 #include "CorePrerequisites.h"
-#include "Utils.h"
 #include "Memory.h"
 
 namespace greaper
 {
 	class Uuid
 	{
-		uint32 m_Data[4];
+		uint32 m_Data[4]{ 0, 0, 0, 0 };
 
 	public:
-		INLINE constexpr Uuid()noexcept;
+		INLINE constexpr Uuid()noexcept = default;
 		INLINE constexpr Uuid(const uint32 data0, const uint32 data1, const uint32 data2, const uint32 data3)noexcept;
 		INLINE constexpr explicit Uuid(const StringView& view)noexcept;
-		INLINE constexpr Uuid(const Uuid& other)noexcept;
-		INLINE constexpr Uuid(Uuid&& other)noexcept;
-		INLINE constexpr Uuid& operator=(const Uuid& other)noexcept;
-		INLINE constexpr Uuid& operator=(Uuid&& other)noexcept;
+		INLINE constexpr Uuid(const Uuid& other)noexcept = default;
+		INLINE constexpr Uuid(Uuid&& other)noexcept = default;
+		INLINE Uuid& operator=(const Uuid& other)noexcept = default;
+		INLINE Uuid& operator=(Uuid&& other)noexcept = default;
 		~Uuid()noexcept = default;
 
-		INLINE constexpr Uuid& operator=(const StringView& view);
+		INLINE Uuid& operator=(const StringView& view);
 		INLINE Uuid& operator=(const String& str);
 
 		[[nodiscard]] INLINE String ToString()const;

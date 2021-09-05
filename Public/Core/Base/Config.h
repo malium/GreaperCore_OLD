@@ -6,16 +6,22 @@
 #pragma once
 
 /**
-*	Enables the use of Assertions in the project, even though
-*	the Assert(msg) function will still trigger assertions.
-*	Assertions done by Assert(msg), will still trigger, use them
-*	if you need them even if Assertions are disabled
+*	Enables/Diasbles the use of VERIFY macro in the project, even though
+*	the Break(msg) function will still trigger.
 */
-#ifndef GREAPER_ENABLE_ASSERTIONS
+#ifndef GREAPER_ENABLE_BREAK
 #if GREAPER_FRELEASE
-#define GREAPER_ENABLE_ASSERTIONS 0
+#define GREAPER_ENABLE_BREAK 0
 #else
-#define GREAPER_ENABLE_ASSERTIONS 1
+#define GREAPER_ENABLE_BREAK 1
+#endif
+#endif
+
+#ifndef GREAPER_DEBUG_BREAK
+#if GREAPER_FRELEASE || !GREAPER_DEBUG
+#define GREAPER_DEBUG_BREAK 0
+#else
+#define GREAPER_DEBUG_BREAK 1
 #endif
 #endif
 

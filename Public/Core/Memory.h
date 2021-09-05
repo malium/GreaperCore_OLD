@@ -8,18 +8,22 @@
 #ifndef GREAPER_CORE_MEMORY_H
 #define GREAPER_CORE_MEMORY_H 1
 
-#include "PHAL.h"
+#include "CorePrerequisites.h"
+#include "DebugBreak.h"
 #include <type_traits>
 #include <vector>
 #include <list>
+#include <forward_list>
 #include <queue>
 #include <deque>
 #include <stack>
 #include <string>
 #include <string_view>
 #include <set>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <memory>
 
 namespace greaper
 {
@@ -33,8 +37,9 @@ namespace greaper
 				return nullptr;
 
 			void* mem = PlatformAlloc(byteSize);
-			// TODO
-			// Add null checking on debug builds
+
+			VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes.", byteSize);
+			
 			return mem;
 		}
 
@@ -46,23 +51,36 @@ namespace greaper
 				return Allocate(byteSize);
 
 			void* mem = PlatformAlignedAlloc(byteSize, aligment);
-			// TODO
-			// Add null checking on debug builds
+
+			VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes aligned %lld.", byteSize, alignment);
+
 			return mem;
 		}
 
 		static void Deallocate(void* mem)
 		{
+#if GREAPER_ENABLE_BREAK
+			VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
+#else
 			if (mem == nullptr)
-				return; // TODO: Add free after null check on debug builds
+			{
+				return;
+			}
+#endif
 
 			PlatformDealloc(mem);
 		}
 
 		static void DeallocateAligned(void* mem)
 		{
+#if GREAPER_ENABLE_BREAK
+			VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
+#else
 			if (mem == nullptr)
-				return; // TODO: Add free after null check on debug builds
+			{
+				return;
+			}
+#endif
 
 			PlatformAlignedDealloc(mem);
 		}
@@ -98,7 +116,7 @@ namespace greaper
 	}
 
 	template<class _Alloc_, class T>
-	INLINE void _Destruct(T* ptr, sizet count)
+	INLINE void _Destroy(T* ptr, sizet count)
 	{
 		for (sizet i = 0; i < count; ++i)
 			ptr[i].~T();
@@ -127,11 +145,18 @@ namespace greaper
 template<class _Alloc_, class T, class... Args> friend T* greaper::_Construct(sizet count, Args&&... args);\
 template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet count)
 
+	template<typename T>
+	using SPtr = std::shared_ptr<T>;
+	template<typename T>
+	using WeakSPtr = std::weak_ptr<T>;
+	template<typename T>
+	using UPtr = std::unique_ptr<T>;
+
 	template<class T, class _Alloc_ = GenericAllocator>
 	class Destructor
 	{
 		constexpr Destructor() noexcept = default;
-		
+
 		template<class T2, std::enable_if_t<std::is_convertible<T2*, T*>::value, int> = 0>
 		constexpr Destructor(const Destructor<T2, _Alloc_>& other)
 		{
@@ -140,7 +165,7 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		void operator()(T* ptr)const
 		{
-			_DestructATN<_Alloc_, T>(ptr, 1);
+			_Destroy<_Alloc_, T>(ptr, 1);
 		}
 	};
 
@@ -280,6 +305,9 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 	template<typename K, typename V, typename H = HashType<K>, typename C = std::equal_to<K>, typename A = StdAlloc<std::pair<const K, V>>>
 	using UnorderedMultiMap = std::unordered_multimap<K, V, H, C, A>;
+
+	template<typename T, typename H = HashType<T>, typename C = std::equal_to<T>, typename A = StdAlloc<T>>
+	using UnorderedMultiSet = std::unordered_multiset<T, H, C, A>;
 }
 
 namespace std

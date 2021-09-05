@@ -147,6 +147,19 @@ INLINE bool SetBitValue(uint8* ptr, const uint32 index, const bool set)noexcept
 		*bytePtr &= ~mask;
 }
 
+#ifndef ARRAY_SIZE
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
+#endif
+
+template<class T, sizet N>
+INLINE constexpr sizet ArraySize(T(&)[N])noexcept { return N; }
+
+template<class T>
+INLINE void ClearMemory(T& obj, sizet count = 1)noexcept
+{
+	memset(&obj, 0, sizeof(T) * count);
+}
+
 /***********************************************************************************
 *                              HASH HELPER FUNCITONS                               *
 ***********************************************************************************/
