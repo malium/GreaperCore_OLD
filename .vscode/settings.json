@@ -2,6 +2,10 @@
     "files.associations": {
         "charconv": "cpp",
         "*.rh": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "deque": "cpp",
+        "optional": "cpp",
+        "xlocale": "cpp",
+        "xstring": "cpp"
     }
 }
