@@ -8,10 +8,13 @@
 #ifndef GREAPER_CORE_DEBUG_BREAK_H
 #define GREAPER_CORE_DEBUG_BREAK_H
 
-#include "PHAL.h"
+#include "CorePrerequisites.h"
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
+#if PLT_WINDOWS
+#include "Win/MinWinHeader.h"
+#endif
 
 namespace greaper::Impl
 {

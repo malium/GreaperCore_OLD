@@ -4,7 +4,8 @@
 ***********************************************************************************/
 
 #pragma once
-#include "../PHAL.h"
+//#include "../PHAL.h"
+#include <memory>
 
 #if GREAPER_USE_BASIC_TYPEINFO
 class uint8
@@ -538,3 +539,8 @@ using ptrint = PlatformTypes::ptrint_t;
 using sizet = PlatformTypes::sizetype;
 using ssizet = PlatformTypes::ssizetype;
 #endif
+
+template<class T>
+using SPtr = std::shared_ptr<T>;
+template<class T>
+using UPtr = std::unique_ptr<T>;

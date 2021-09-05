@@ -8,7 +8,7 @@
 #ifndef GREAPER_CORE_UUID_H
 #define GREAPER_CORE_UUID_H 1
 
-#include "PHAL.h"
+#include "CorePrerequisites.h"
 #include "Utils.h"
 #include "Memory.h"
 

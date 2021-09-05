@@ -178,3 +178,16 @@ INLINE sizet ComputeHash(const ArgsType&... args)
 	HashCombine(seed, args...);
 	return seed;
 }
+
+#if GREAPER_USE_BASIC_TYPEINFO
+	template<class T, sizet::Type N>
+#else
+	template<class T, sizet N>
+#endif
+	INLINE constexpr sizet ArraySize(T(&)[N])noexcept { return N; }
+
+	template<class T>
+	INLINE void ClearMemory(T& obj, sizet count = 1)noexcept
+	{
+		memset(&obj, 0, sizeof(T) * count);
+	}

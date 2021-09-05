@@ -380,7 +380,7 @@ namespace greaper::StringUtils
 	}
 
 	template<typename T, class _Alloca_ = StdAlloc<T>>
-	BasicString<T, _Alloca_>& ToLower(BasicString<T, _Alloca_>& str)
+	BasicString<T, _Alloca_>& ToLowerSelf(BasicString<T, _Alloca_>& str)
 	{
 		Impl::CaseImpl<T> caseTransform;
 		for (T& c : str)
@@ -389,12 +389,28 @@ namespace greaper::StringUtils
 	}
 
 	template<typename T, class _Alloca_ = StdAlloc<T>>
-	BasicString<T, _Alloca_>& ToUpper(BasicString<T, _Alloca_>& str)
+	BasicString<T, _Alloca_> ToLower(const BasicString<T, _Alloca_>& str)
+	{
+		BasicString<T, _Alloca_> tmp{str};
+		ToLowerSelf(tmp);
+		return tmp;
+	}
+
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_>& ToUpperSelf(BasicString<T, _Alloca_>& str)
 	{
 		Impl::CaseImpl<T> caseTransform;
 		for (T& c : str)
 			c = (T)caseTransform.Upper(c);
 		return str;
+	}
+
+	template<typename T, class _Alloca_ = StdAlloc<T>>
+	BasicString<T, _Alloca_> ToUpper(const BasicString<T, _Alloca_>& str)
+	{
+		BasicString<T, _Alloca_> tmp{str};
+		ToUpperSelf(tmp);
+		return tmp;
 	}
 
 	template<typename T, class _Alloca_ = StdAlloc<T>>

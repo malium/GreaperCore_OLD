@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "charconv": "cpp",
+        "*.rh": "cpp",
+        "memory": "cpp"
+    }
+}

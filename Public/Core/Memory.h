@@ -123,19 +123,6 @@ namespace greaper
 #define DestroyAN(ptr, count, alloc) _Destroy<alloc>(ptr, count)
 #define DestroyN(ptr, count) _Destroy<GenericAllocator>(ptr, count)
 
-#if GREAPER_USE_BASIC_TYPEINFO
-	template<class T, sizet::Type N>
-#else
-	template<class T, sizet N>
-#endif
-	INLINE constexpr sizet ArraySize(T(&)[N])noexcept { return N; }
-
-	template<class T>
-	INLINE void ClearMemory(T& obj, sizet count = 1)noexcept
-	{
-		memset(&obj, 0, sizeof(T) * count);
-	}
-
 #define MemoryFriend()\
 template<class _Alloc_, class T, class... Args> friend T* greaper::_Construct(sizet count, Args&&... args);\
 template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet count)
