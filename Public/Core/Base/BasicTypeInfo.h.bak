@@ -20,8 +20,6 @@ public:
 	static constexpr Type MaxValue = 255;
 	static constexpr PlatformTypes::uint8_t Bytes = 1;
 	static constexpr PlatformTypes::uint8_t MaxStringLength = 3;
-	static constexpr const PlatformTypes::ansichar* TypeName = "uint8";
-	static constexpr PlatformTypes::uint32_t TypeID = 0x00000001;
 
 	constexpr uint8()noexcept = default;
 	constexpr uint8(bool val)noexcept : m(static_cast<Type>(val)) {  }

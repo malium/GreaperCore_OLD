@@ -67,7 +67,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GREAPER_CORE_LIB;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GREAPER_CORE_LIB;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -128,31 +128,13 @@
     <ClInclude Include="Public\Core\Base\BasicTypeInfo.h" />
     <ClInclude Include="Public\Core\Base\BasicTypes.h" />
     <ClInclude Include="Public\Core\Base\Config.h" />
-    <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
-    <ClInclude Include="Public\Core\Base\TProperty.h" />
-    <ClInclude Include="Public\Core\Enumeration.h" />
-    <ClInclude Include="Public\Core\Event.h" />
-    <ClInclude Include="Public\Core\CorePrerequisites.h" />
-    <ClInclude Include="Public\Core\IApplication.h" />
-    <ClInclude Include="Public\Core\IGreaperLibrary.h" />
-    <ClInclude Include="Public\Core\Interface.h" />
-    <ClInclude Include="Public\Core\Library.h" />
     <ClInclude Include="Public\Core\Memory.h" />
     <ClInclude Include="Public\Core\PHAL.h" />
     <ClInclude Include="Public\Core\Base\Utils.h" />
-    <ClInclude Include="Public\Core\Property.h" />
-    <ClInclude Include="Public\Core\Reflection\ReflectedField.h" />
-    <ClInclude Include="Public\Core\Reflection\ReflectedPlainContainer.h" />
-    <ClInclude Include="Public\Core\Reflection\ReflectedPlainField.h" />
-    <ClInclude Include="Public\Core\Reflection\ReflectedPlainType.h" />
-    <ClInclude Include="Public\Core\Reflection\ReflectedType.h" />
-    <ClInclude Include="Public\Core\Stream.h" />
     <ClInclude Include="Public\Core\StringUtils.h" />
     <ClInclude Include="Public\Core\Uuid.h" />
-    <ClInclude Include="Public\Core\DebugBreak.h" />
     <ClInclude Include="Public\Core\Win\MinWinHeader.h" />
     <ClInclude Include="Public\Core\Win\Prerequisites.h" />
-    <ClInclude Include="Public\Core\Win\WinLibrary.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Public\Core\Base\Uuid.inl" />
