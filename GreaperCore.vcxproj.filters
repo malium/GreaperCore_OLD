@@ -51,9 +51,6 @@
     <ClInclude Include="Public\Core\Interface.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Public\Core\DebugBreak.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Public\Core\Event.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Public\Core\Base\GreaperEntryPoint.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Core\ILogManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

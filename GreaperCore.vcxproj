@@ -132,6 +132,7 @@
     <ClInclude Include="Public\Core\Base\PropertyConverter.h" />
     <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
+    <ClInclude Include="Public\Core\ILogManager.h" />
     <ClInclude Include="Public\Core\Property.h" />
     <ClInclude Include="Public\Core\Enumeration.h" />
     <ClInclude Include="Public\Core\Event.h" />
@@ -152,7 +153,6 @@
     <ClInclude Include="Public\Core\Stream.h" />
     <ClInclude Include="Public\Core\StringUtils.h" />
     <ClInclude Include="Public\Core\Uuid.h" />
-    <ClInclude Include="Public\Core\DebugBreak.h" />
     <ClInclude Include="Public\Core\Win\MinWinHeader.h" />
     <ClInclude Include="Public\Core\Win\Prerequisites.h" />
     <ClInclude Include="Public\Core\Win\WinLibrary.h" />

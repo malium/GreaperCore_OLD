@@ -5,8 +5,8 @@
 
 #pragma once
 
-#ifndef CORE_APPLICATION_H
-#define CORE_APPLICATION_H 1
+#ifndef CORE_I_APPLICATION_H
+#define CORE_I_APPLICATION_H 1
 
 #include "Interface.h"
 
@@ -75,7 +75,7 @@ namespace greaper
 
 		virtual void StopApplication() = 0;
 
-		virtual OnCloseEvent_t* GetOnCloseEvent()const = 0;
+		virtual OnCloseEvent_t*const GetOnCloseEvent() = 0;
 
 		virtual const StringView& GetApplicationName()const = 0;
 
@@ -87,4 +87,4 @@ namespace greaper
 	};
 }
 
-#endif /* CORE_APPLICATION_H */
+#endif /* CORE_I_APPLICATION_H */

@@ -10,7 +10,6 @@
 
 #include "../CorePrerequisites.h"
 #include "../Enumeration.h"
-#include "../DebugBreak.h"
 
 namespace greaper
 {
