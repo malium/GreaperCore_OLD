@@ -5,8 +5,8 @@
 
 #pragma once
 
-#ifndef CORE_I_LIBRARY_H
-#define CORE_I_LIBRARY_H 1
+#ifndef CORE_LIBRARY_H
+#define CORE_LIBRARY_H 1
 
 #include "CorePrerequisites.h"
 
@@ -40,6 +40,12 @@ namespace greaper
             Open(libraryName);
         }
 
+		INLINE Library(const achar* libraryName)noexcept
+			:m_Handle(nullptr)
+		{
+			Open(libraryName);
+		}
+
 		constexpr INLINE Library(Library&& other)noexcept
 			:m_Handle(other.m_Handle)
 		{
@@ -57,25 +63,47 @@ namespace greaper
 			return *this;
 		}
 
+		INLINE void Open(const achar* libraryName)
+		{
+			if (IsOpen())
+				return;
+			m_Handle = OSLibrary::Load(libraryName);
+		}
+
         INLINE void Open(const wchar* libraryName)
         {
-            if(m_Handle != nullptr)
-                return;
+			if (IsOpen())
+				return;
             m_Handle = OSLibrary::Load(libraryName);
         }
 
 		INLINE void Close()
 		{
-			if(m_Handle == nullptr)
+			if (!IsOpen())
 				return;
 			OSLibrary::Unload(m_Handle);
 			m_Handle = nullptr;
 		}
+
+		INLINE constexpr bool IsOpen()const noexcept
+		{
+			return m_Handle != nullptr;
+		}
+
+		INLINE FuncPtr GetFunction(const achar* funcName)const noexcept
+		{
+			if (!IsOpen())
+				return nullptr;
+			return OSLibrary::FuncLoad(m_Handle, funcName);
+		}
 		
 		template<typename retType = void, class... types>
-		INLINE typename FuncType<retType, types...>::Type GetFunc(const achar* funcName)noexcept
+		INLINE typename FuncType<retType, types...>::Type GetFunctionT(const achar* funcName)const noexcept
 		{
-			return reinterpret_cast<FuncType<retType, types...>::Type>(GetFunc(funcName));
+			//if (!IsOpen())
+			//	return nullptr;
+
+			return reinterpret_cast<FuncType<retType, types...>::Type>(GetFunction(funcName));
 		}
 
 		Library(const Library&) = delete;
@@ -83,4 +111,4 @@ namespace greaper
     };
 }
 
-#endif /* CORE_I_LIBRARY_H */
+#endif /* CORE_LIBRARY_H */

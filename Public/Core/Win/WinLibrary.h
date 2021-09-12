@@ -17,6 +17,12 @@ namespace greaper
 	{
 	public:
 		using LibraryHandle = HMODULE;
+
+		static LibraryHandle Load(const achar* libraryName)
+		{
+			return LoadLibraryA(libraryName);
+		}
+
 		static LibraryHandle Load(const wchar* libraryName)
 		{
 			return LoadLibraryW(libraryName);
@@ -27,11 +33,12 @@ namespace greaper
 			FreeLibrary(handle);
 		}
 
-		static FARPROC FuncLoad(LibraryHandle handle, const achar* procName)
+		static FuncPtr FuncLoad(LibraryHandle handle, const achar* procName)
 		{
-			FARPROC proc = nullptr;
-			*(void**)(&proc) = GetProcAddress(handle, procName);
-			return proc;
+			const auto proc = GetProcAddress(handle, procName);
+			/*if (proc == nullptr)
+				return nullptr;*/
+			return reinterpret_cast<FuncPtr>(proc);
 		}
 	};
 	using OSLibrary = WinLibrary;

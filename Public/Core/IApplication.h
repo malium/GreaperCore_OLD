@@ -5,8 +5,8 @@
 
 #pragma once
 
-#ifndef ENGINE_APPLICATION_H
-#define ENGINE_APPLICATION_H 1
+#ifndef CORE_APPLICATION_H
+#define CORE_APPLICATION_H 1
 
 #include "Interface.h"
 
@@ -87,4 +87,4 @@ namespace greaper
 	};
 }
 
-#endif /* ENGINE_APPLICATION_H */
+#endif /* CORE_APPLICATION_H */

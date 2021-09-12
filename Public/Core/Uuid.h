@@ -13,6 +13,12 @@
 
 namespace greaper
 {
+	/**
+	 * @brief Is a cross-platform universally unique identifier struct
+	 * 
+	 * Instead of the typical 8-4-4-4-12 representation it uses 8-8-8-8 representation,
+	 * it is used across all interfaces, libraries and resources.
+	 */
 	class Uuid
 	{
 		uint32 m_Data[4]{ 0, 0, 0, 0 };
@@ -32,15 +38,24 @@ namespace greaper
 
 		[[nodiscard]] INLINE String ToString()const noexcept;
 
+		/**
+		 * @brief Requests to the OS a random Uuid
+		 * 
+		 * @return Uuid The new random Uuid 
+		 */
 		[[nodiscard]] INLINE static Uuid GenerateRandom() noexcept;
 
-		INLINE constexpr bool Empty()const noexcept;
+		INLINE constexpr bool IsEmpty()const noexcept;
 		INLINE constexpr const uint32* GetData()const noexcept;
+		
+		INLINE static constexpr Uuid Empty()noexcept;
 
-		friend bool operator==(const Uuid& left, const Uuid& right)noexcept;
-		friend bool operator<(const Uuid& left, const Uuid& right)noexcept;
+		friend constexpr bool operator==(const Uuid& left, const Uuid& right)noexcept;
+		friend constexpr bool operator<(const Uuid& left, const Uuid& right)noexcept;
+		
 		friend struct std::hash<greaper::Uuid>;
 	};
+
 	template<> struct ReflectedTypeToID<Uuid> { static constexpr ReflectedTypeID_t ID = RTI_UUID; };
 }
 

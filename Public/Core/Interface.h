@@ -19,12 +19,22 @@ namespace greaper
 	public:
 		virtual ~IInterface()noexcept = default;
 
-		static constexpr Uuid InterfaceUUID = Uuid{ 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
-		static constexpr StringView InterfaceName = StringView{ "IInterface" };
+		static constexpr Uuid InterfaceUUID = Uuid{  };
+		static constexpr StringView InterfaceName = StringView{ "INullInterface" };
 
 		virtual const Uuid& GetInterfaceUUID()const = 0;
 		virtual const StringView& GetInterfaceName()const = 0;
 		virtual IGreaperLibrary* GetLibrary()const = 0;
+	};
+
+	template<class T>
+	struct ValidInterface
+	{
+		static_assert(std::is_base_of_v<IInterface, T>, "Trying to validate an Interface that does not derive from IInterface");
+		static constexpr bool UUIDValid = T::InterfaceUUID != IInterface::InterfaceUUID;
+		static constexpr bool NameValid = T::InterfaceName != IInterface::InterfaceName;
+
+		static constexpr bool Valid = UUIDValid && NameValid;
 	};
 }
 

@@ -233,7 +233,7 @@ namespace greaper
 #endif
 	}
 
-	INLINE constexpr bool Uuid::Empty()const noexcept
+	INLINE constexpr bool Uuid::IsEmpty()const noexcept
 	{
 		return m_Data[0] == 0 && m_Data[1] == 0 && m_Data[2] == 0 && m_Data[3] == 0;
 	}
@@ -243,34 +243,39 @@ namespace greaper
 		return &(m_Data[0]);
 	}
 
-	INLINE bool operator!=(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr Uuid Uuid::Empty()noexcept
+	{
+		return Uuid{};
+	}
+
+	INLINE constexpr bool operator!=(const Uuid& left, const Uuid& right)noexcept
 	{
 		return !(left == right);
 	}
 
-	INLINE bool operator>(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr bool operator>(const Uuid& left, const Uuid& right)noexcept
 	{
 		return right < left;
 	}
 
-	INLINE bool operator<=(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr bool operator<=(const Uuid& left, const Uuid& right)noexcept
 	{
 		return !(left > right);
 	}
 
-	INLINE bool operator>=(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr bool operator>=(const Uuid& left, const Uuid& right)noexcept
 	{
 		return !(left < right);
 	}
 }
 
-INLINE bool greaper::operator==(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
+INLINE constexpr bool greaper::operator==(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
 {
 	return left.m_Data[0] == right.m_Data[0] && left.m_Data[1] == right.m_Data[1]
 		&& left.m_Data[2] == right.m_Data[2] && left.m_Data[3] == right.m_Data[3];
 }
 
-INLINE bool greaper::operator<(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
+INLINE constexpr bool greaper::operator<(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
 {
 	if (left.m_Data[0] < right.m_Data[0])
 		return true;
