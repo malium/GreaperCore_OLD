@@ -54,16 +54,6 @@ namespace greaper
 		virtual OnLoggedMessageEvent_t* GetOnLoggedEvent() = 0;
 
 		virtual void Log(LogLevel_t level, const String& message) = 0;
-
-		virtual void LogVerbose(const String& message) = 0;
-
-		virtual void LogInformation(const String& message) = 0;
-
-		virtual void LogWarning(const String& message) = 0;
-
-		virtual void LogError(const String& message) = 0;
-
-		virtual void LogCritical(const String& message) = 0;
 	};
 }
 

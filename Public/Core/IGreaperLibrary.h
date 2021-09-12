@@ -10,11 +10,13 @@
 
 #include "Library.h"
 #include "Uuid.h"
-#include "Property.h"
 
 namespace greaper
 {
 	class IApplication;
+	class IProperty;
+	template<class T> class TProperty;
+	template<class T> class TPropertyValidator;
 
 	class IGreaperLibrary
 	{
@@ -23,7 +25,7 @@ namespace greaper
 
 	public:
 		static constexpr Uuid LibraryUUID = Uuid{ 0x10001000, 0x10001000, 0x10001000, 0x10001000 };
-		static constexpr StringView LibraryName = StringView{ "Greaper Library" };
+		static constexpr StringView LibraryName = StringView{ "Unknown Greaper Library" };
 
 		virtual void InitLibrary(IApplication* app) = 0;
 
@@ -35,34 +37,35 @@ namespace greaper
 
 		virtual IApplication* GetApplication()const = 0;
 
-		virtual Library* GetLibrary()const = 0;
+		virtual Library* GetOSLibrary()const = 0;
 
 		virtual Vector<IProperty*> GetPropeties()const = 0;
 
 		virtual IProperty* GetProperty(const String& name)const = 0;
 
+		virtual void LogVerbose(const String& message) = 0;
+
+		virtual void LogInformation(const String& message) = 0;
+
+		virtual void LogWarning(const String& message) = 0;
+
+		virtual void LogError(const String& message) = 0;
+
+		virtual void LogCritical(const String& message) = 0;
+
 		template<class T, class _Alloc_>
 		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, String, T, String, bool, bool, TPropertyValidator<T>*);
 	};
 
-	template<class T, class _Alloc_ = greaper::GenericAllocator>
-	TProperty<T>* CreateProperty(IGreaperLibrary* library, String propertyName, T initialValue, String propertyInfo = String{},
-		bool isConstant = false, bool isStatic = false, TPropertyValidator<T>* validator = nullptr)
-	{
-		TProperty<T>* property = AllocAT(TProperty<T>, _Alloc_);
-		new ((void*)property)TProperty(std::move(propertyName), std::move(initialValue), std::move(propertyInfo), isConstant, isStatic, validator);
-		library->RegisterProperty((IProperty*)property);
-		return property;
-	}
-
 	template<class T>
-	TProperty<T>* GetProperty(IGreaperLibrary* library, const String& name)
+	struct ValidGreaperLibrary
 	{
-		IProperty* prop = library->GetProperty(name);
-		if (!prop)
-			return nullptr;
-		return reinterpret_cast<TProperty<T>>(prop);
-	}
+		static_assert(std::is_base_of_v<IInterface, T>, "Trying to validate a GreaperLibrary that does not derive from IGreaperLibrary");
+		static constexpr bool UUIDValid = T::LibraryUUID != IGreaperLibrary::LibraryUUID;
+		static constexpr bool NameValid = T::LibraryName != IGreaperLibrary::LibraryName;
+
+		static constexpr bool Valid = UUIDValid && NameValid;
+	};
 }
 
 #endif /* CORE_GREAPER_LIBRARY_H */

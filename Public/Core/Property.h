@@ -12,6 +12,7 @@
 #include "Base/PropertyValidator.h"
 #include "Base/PropertyConverter.h"
 #include "Event.h"
+#include "IGreaperLibrary.h"
 
 namespace greaper
 {
@@ -58,16 +59,18 @@ namespace greaper
 		String m_StringValue;	// When a property is changed, needs to update this value
 		OnModificationEvent_t m_OnModificationEvent;
 		TPropertyValidator<T>* m_PropertyValidator;
+		IGreaperLibrary* m_Library;
 
 		bool m_Static;		// Created at the start of the program cannot be saved
 		bool m_Constant;	// Cannot be modified
 
-		TProperty(String propertyName, T initialValue, String propertyInfo = String{}, bool isConstant = false,
+		TProperty(IGreaperLibrary* library, String propertyName, T initialValue, String propertyInfo = String{}, bool isConstant = false,
 			bool isStatic = false, TPropertyValidator<T>* validator = nullptr) noexcept
 			:m_Value(initialValue)
 			, m_PropertyName(std::move(propertyName))
 			, m_PropertyInfo(std::move(propertyInfo))
 			, m_PropertyValidator(validator)
+			, m_Library(library)
 			, m_Static(isStatic)
 			, m_Constant(isConstant)
 		{
@@ -108,7 +111,7 @@ namespace greaper
 		{
 			if (m_Constant)
 			{
-				// TODO: log warning trying to change a constant property
+				m_Library->LogWarning(Format("Trying to change a constant property, '%s'.", m_PropertyName.c_str()));
 				return false;
 			}
 
@@ -116,16 +119,23 @@ namespace greaper
 			T newValue;
 			if (!m_PropertyValidator->Validate(value, &newValue))
 			{
-				// TODO: log warning, cannot validate value
+				const String nValueStr = TPropertyConverter<T>::ToString(value);
+				m_Library->LogWarning(Format("Couldn't validate the new value of Property '%s', oldValue '%s', newValue '%s'.",
+					m_PropertyName.c_str(), m_StringValue.c_str(), nValueStr.c_str()));
 				return false;
 			}
 			m_Value = newValue;
 			if (old == m_Value)
 			{
-				// TODO: log verbose, property has not changed
+				const String nValueStr = TPropertyConverter<T>::ToString(value);
+				m_Library->LogVerbose(Format("Property '%s', has mantain the same value, current '%s', tried '%s'.",
+					m_PropertyName.c_str(), m_StringValue.c_str(), nValueStr.c_str()));
 				return false; // Property has not changed;
 			}
+			const auto oldStringValue = String{ m_StringValue };
 			m_StringValue = TPropertyConverter<T>::ToString(m_Value);
+			m_Library->LogVerbose(Format("Property '%s', has changed from '%s' to '%s'.",
+				m_PropertyName.c_str(), oldStringValue.c_str(), m_StringValue.c_str()));
 			if (triggerEvent)
 				m_OnModificationEvent.Trigger(this);
 			return true;
@@ -158,6 +168,25 @@ namespace greaper
 	// A way to retrieve the RTI_ID from the type Property
 	template<> struct ReflectedTypeToID<IProperty> { static constexpr ReflectedTypeID_t ID = RTI_Property; };
 	template<typename T> struct ReflectedTypeToID<TProperty<T>> { static constexpr ReflectedTypeID_t ID = RTI_Property; };
+
+	template<class T, class _Alloc_ = greaper::GenericAllocator>
+	TProperty<T>* CreateProperty(IGreaperLibrary* library, String propertyName, T initialValue, String propertyInfo = String{},
+		bool isConstant = false, bool isStatic = false, TPropertyValidator<T>* validator = nullptr)
+	{
+		TProperty<T>* property = AllocAT(TProperty<T>, _Alloc_);
+		new ((void*)property)TProperty(std::move(propertyName), std::move(initialValue), std::move(propertyInfo), isConstant, isStatic, validator);
+		library->RegisterProperty((IProperty*)property);
+		return property;
+	}
+
+	template<class T>
+	TProperty<T>* GetProperty(IGreaperLibrary* library, const String& name)
+	{
+		IProperty* prop = library->GetProperty(name);
+		if (!prop)
+			return nullptr;
+		return reinterpret_cast<TProperty<T>>(prop);
+	}
 }
 
 #endif /* CORE_PROPERTY_H */
