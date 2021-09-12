@@ -19,7 +19,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Utility</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -87,6 +87,9 @@
     <BuildLog>
       <Path>$(SolutionDir).obj\$(ProjectName)_$(Configuration).log</Path>
     </BuildLog>
+    <Lib>
+      <SubSystem>Windows</SubSystem>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -122,14 +125,14 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Public\Core\Base\BasicTypeInfo.h" />
     <ClInclude Include="Public\Core\Base\BasicTypes.h" />
     <ClInclude Include="Public\Core\Base\Config.h" />
+    <ClInclude Include="Public\Core\Base\GreaperEntryPoint.h" />
+    <ClInclude Include="Public\Core\Base\PropertyConverter.h" />
     <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
-    <ClInclude Include="Public\Core\Base\TProperty.h" />
+    <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
+    <ClInclude Include="Public\Core\Property.h" />
     <ClInclude Include="Public\Core\Enumeration.h" />
     <ClInclude Include="Public\Core\Event.h" />
     <ClInclude Include="Public\Core\CorePrerequisites.h" />
@@ -140,11 +143,11 @@
     <ClInclude Include="Public\Core\Memory.h" />
     <ClInclude Include="Public\Core\PHAL.h" />
     <ClInclude Include="Public\Core\Base\Utils.h" />
-    <ClInclude Include="Public\Core\Property.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedField.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainContainer.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainField.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainType.h" />
+    <ClInclude Include="Public\Core\Reflection\ReflectedProperty.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedType.h" />
     <ClInclude Include="Public\Core\Stream.h" />
     <ClInclude Include="Public\Core\StringUtils.h" />

@@ -8,8 +8,7 @@
 #ifndef CORE_I_LIBRARY_H
 #define CORE_I_LIBRARY_H 1
 
-#include "PHAL.h"
-#include <functional>
+#include "CorePrerequisites.h"
 
 #if PLT_WINDOWS
 #include "Win/WinLibrary.h"

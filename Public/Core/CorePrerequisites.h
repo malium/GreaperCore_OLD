@@ -23,7 +23,7 @@ namespace greaper
 
 
 	// types
-	using Half = int16;
+	using half = int16;
 
 	using ReflectedFieldID_t = int16;
 	using ReflectedTypeID_t = int64;
@@ -33,6 +33,8 @@ namespace greaper
 	// Reflection ID
 	enum CoreReflectedTypeID : ReflectedTypeID_t
 	{
+		RTI_Unknown = 0,
+
 		// Base types
 		RTI_Bool = 1,
 		RTI_Int8,
@@ -70,5 +72,8 @@ namespace greaper
 
 	};
 }
+
+#include "Base/ReflectedConversions.h"
+#include "Base/GreaperEntryPoint.h"
 
 #endif /* CORE_PREREQUISITES_H */
