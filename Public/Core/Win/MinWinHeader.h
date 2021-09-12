@@ -5,8 +5,8 @@
 
 #pragma once
 
-#pragma comment(lib, "Rpcrt4.lib")
-#pragma comment(lib, "uuid.lib")
+//#pragma comment(lib, "Rpcrt4.lib")
+//#pragma comment(lib, "uuid.lib")
 
 #if true
 #define DECLSPEC_IMPORT __declspec(dllimport)
@@ -17,7 +17,7 @@
 #define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
 #define CONST               const
 typedef long RPC_STATUS;
-#	define  RPC_ENTRY __stdcall
+#define  RPC_ENTRY __stdcall
 #define __RPC_FAR
 #define FAR                 
 #define NEAR                
@@ -27,10 +27,10 @@ DECLARE_HANDLE(HINSTANCE);
 typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
 
 typedef struct _GUID {
-    unsigned long  Data1;
-    unsigned short Data2;
-    unsigned short Data3;
-    unsigned char  Data4[8];
+	unsigned long  Data1;
+	unsigned short Data2;
+	unsigned short Data3;
+	unsigned char  Data4[8];
 } GUID;
 
 typedef GUID UUID;
@@ -142,85 +142,85 @@ WINUSERAPI
 int
 WINAPI
 MessageBoxA(
-    HWND hWnd,
-    LPCSTR lpText,
-    LPCSTR lpCaption,
-    UINT uType);
+	HWND hWnd,
+	LPCSTR lpText,
+	LPCSTR lpCaption,
+	UINT uType);
 WINUSERAPI
 int
 WINAPI
 MessageBoxW(
-    HWND hWnd,
-    LPCWSTR lpText,
-    LPCWSTR lpCaption,
-    UINT uType);
+	HWND hWnd,
+	LPCWSTR lpText,
+	LPCWSTR lpCaption,
+	UINT uType);
 
 WINBASEAPI
 HMODULE
 WINAPI
 LoadLibraryW(
-    LPCWSTR lpLibFileName
-    );
+	LPCWSTR lpLibFileName
+	);
 
 WINBASEAPI
 HMODULE
 WINAPI
 LoadLibraryA(
-    LPCSTR lpLibFileName
-    );
+	LPCSTR lpLibFileName
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 FreeLibrary(
-    HMODULE hLibModule
-    );
+	HMODULE hLibModule
+	);
 
 WINBASEAPI
 FARPROC
 WINAPI
 GetProcAddress(
-    HMODULE hModule,
-    LPCSTR lpProcName
-    );
+	HMODULE hModule,
+	LPCSTR lpProcName
+	);
 
 RPCRTAPI
 RPC_STATUS
 RPC_ENTRY
 UuidCreate(
-    UUID __RPC_FAR* Uuid
+	UUID __RPC_FAR* Uuid
 );
 
 WINUSERAPI
 int
 WINAPI
 MessageBoxA(
-    HWND hWnd,
-    LPCSTR lpText,
-    LPCSTR lpCaption,
-    UINT uType);
+	HWND hWnd,
+	LPCSTR lpText,
+	LPCSTR lpCaption,
+	UINT uType);
 
 WINBASEAPI
 FARPROC
 WINAPI
 GetProcAddress(
-    HMODULE hModule,
-    LPCSTR lpProcName
-    );
+	HMODULE hModule,
+	LPCSTR lpProcName
+	);
 
 WINBASEAPI
 HMODULE
 WINAPI
 LoadLibraryW(
-    LPCWSTR lpLibFileName
-    );
+	LPCWSTR lpLibFileName
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 FreeLibrary(
-    HMODULE hLibModule
-    );
+	HMODULE hLibModule
+	);
 
 #else
 #include <Windows.h>
