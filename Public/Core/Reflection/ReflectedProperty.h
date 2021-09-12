@@ -14,12 +14,12 @@
 
 namespace greaper
 {
-	template<class T>
-	struct ReflectedPlainType<TProperty<T>>
+	template<>
+	struct ReflectedPlainType<IProperty>
 	{
 		enum { ID = RTI_Property }; enum { HasDynamicSize = 1 };
 
-		static ReflectedSize_t ToStream(const TProperty<T>& data, IStream& stream)
+		static ReflectedSize_t ToStream(const IProperty& data, IStream& stream)
 		{
 			return ReflectedWriteWithSizeHeader(stream, data, [&data, &stream]()
 				{
@@ -36,7 +36,7 @@ namespace greaper
 				});
 		}
 
-		static ReflectedSize_t FromStream(TProperty<T>& data, IStream& stream)
+		static ReflectedSize_t FromStream(IProperty& data, IStream& stream)
 		{
 			ReflectedSize_t size = 0;
 
@@ -46,7 +46,7 @@ namespace greaper
 			sizet nameLength = 0, valueLength = 0;
 			stream.ReadBytes((uint8*)&nameLength, sizeof(nameLength));
 			stream.ReadBytes((uint8*)&valueLength, sizeof(valueLength));
-			
+
 			auto name = String(nameLength, (achar)0);
 			auto value = String(valueLength, (achar)0);
 
@@ -60,7 +60,7 @@ namespace greaper
 			return size;
 		}
 
-		static ReflectedSize_t GetSize(const TProperty<T>& data)
+		static ReflectedSize_t GetSize(const IProperty& data)
 		{
 			const auto& name = data.GetPropertyName();
 			const auto& value = data.GetStringValue();
@@ -70,6 +70,26 @@ namespace greaper
 			ReflectedAddHeaderSize(dataSize); // Size Header
 
 			return dataSize;
+		}
+	};
+	template<class T>
+	struct ReflectedPlainType<TProperty<T>>
+	{
+		enum { ID = RTI_Property }; enum { HasDynamicSize = 1 };
+
+		static ReflectedSize_t ToStream(const TProperty<T>& data, IStream& stream)
+		{
+			return ReflectedPlainType<IProperty>::ToStream(data, stream);
+		}
+
+		static ReflectedSize_t FromStream(TProperty<T>& data, IStream& stream)
+		{
+			return ReflectedPlainType<IProperty>::FromStream(data, stream);
+		}
+
+		static ReflectedSize_t GetSize(const TProperty<T>& data)
+		{
+			return ReflectedPlainType<IProperty>::GetSize(data);
 		}
 	};
 }

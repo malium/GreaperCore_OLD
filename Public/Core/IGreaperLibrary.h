@@ -15,11 +15,6 @@
 namespace greaper
 {
 	class IApplication;
-	template<class T>
-	class TProperty;
-	class IProperty;
-	template<class T>
-	class TPropertyValidator;
 
 	class IGreaperLibrary
 	{

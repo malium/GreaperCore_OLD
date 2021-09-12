@@ -15,6 +15,10 @@
 
 namespace greaper
 {
+	/**
+	* @brief Base property interface, provides the foundation to use properties
+	* without the templated interaction.
+	*/
 	class IProperty
 	{
 	public:
@@ -28,18 +32,20 @@ namespace greaper
 		virtual [[nodiscard]] const String& GetStringValue()const noexcept = 0;
 		virtual [[nodiscard]] OnModificationEvent_t* GetModificationEvent()noexcept = 0;
 	};
+
 	/**
 	 * @brief Stores configuration information, that information must be able to be 
 	 * serialized into a string. Works like a ConsoleVariable (ID Software like).
 	 * A breaf documentation can be attached to the Property on the PropertyInfo
-	 * variable. PropertyName must be unique, unless a conflict will ocurr.
-	 * Properties can be static, created from the sources and not serialized, can
-	 * be constant, they cannot be modified once created. Properties use a
+	 * variable. PropertyName must be unique in each library, otherwise a conflict
+	 * will ocurr. Properties can be static, created from the sources and not serialized,
+	 * can be constant, they cannot be modified once created. Properties use a
 	 * PropertyValidator, which as the name states, validates if the Property has
 	 * a valid value, there are several types of validators and you can provide yours,
 	 * extending TPropertyValidator.
-	 * You must extend TProperty and give your implementation, implementing the methods
-	 * ToString and FromString, so TProperty will be able to serialize it to String.
+	 * In order to have other types of properties you must provide an extension to 
+	 * TPropertyConverter with the given type, in order to be able to serialize them to
+	 * string and from it.
 	 * 
 	 * @tparam T - Base type of the property, must be a serializable type or a pod type 
 	 */
@@ -77,21 +83,6 @@ namespace greaper
 		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, String, T, String, bool, bool, TPropertyValidator<T>*);
 	public:
 		using value_type = T;
-
-		/*static TProperty<T>* Create(String propertyName, T initialValue, String propertyInfo = String{}, bool isConstant = false,
-			TPropertyValidator<T>* validator = nullptr)
-		{
-			TProperty<T>* p = AllocT(TProperty<T>);
-			new((void*)p)TProperty<T>(std::move(propertyName), initialValue, std::move(propertyInfo), isConstant, false, validator);
-			return p;
-		}
-		static TProperty<T>* CreateStatic(StringView propertyName, T initialValue, StringView propertyInfo = StringView{}, bool isConstant = false,
-			TPropertyValidator<T>* validator = nullptr)
-		{
-			TProperty<T>* p = AllocT(TProperty<T>);
-			new((void*)p)TProperty<T>(String{ propertyName }, initialValue, String{ propertyInfo }, isConstant, true, validator);
-			return p;
-		}*/
 
 		[[nodiscard]] const String& GetPropertyName()const noexcept override
 		{
@@ -156,12 +147,16 @@ namespace greaper
 			return &m_OnModificationEvent;
 		}
 	};
+
+	// Greaper Core specialization
 	using PropertyBool = TProperty<bool>;
 	using PropertyInt = TProperty<int32>;
 	using PropertyFloat = TProperty<float>;
 	using PropertyString = TProperty<String>;
 	using PropertyStringVec = TProperty<StringVec>;
 
+	// A way to retrieve the RTI_ID from the type Property
+	template<> struct ReflectedTypeToID<IProperty> { static constexpr ReflectedTypeID_t ID = RTI_Property; };
 	template<typename T> struct ReflectedTypeToID<TProperty<T>> { static constexpr ReflectedTypeID_t ID = RTI_Property; };
 }
 
