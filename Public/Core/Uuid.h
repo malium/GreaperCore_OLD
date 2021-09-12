@@ -41,6 +41,7 @@ namespace greaper
 		friend bool operator<(const Uuid& left, const Uuid& right)noexcept;
 		friend struct std::hash<greaper::Uuid>;
 	};
+	template<> struct ReflectedTypeToID<Uuid> { static constexpr ReflectedTypeID_t ID = RTI_UUID; };
 }
 
 #include "Base/Uuid.inl"
