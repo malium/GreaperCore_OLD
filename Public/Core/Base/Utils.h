@@ -199,3 +199,9 @@ INLINE void ClearMemory(T& obj, sizet count = 1) noexcept
 {
 	memset(&obj, 0, sizeof(T) * count);
 }
+template<class T, size_t N>
+INLINE void ClearMemory(T(&arr)[N]) noexcept
+{
+	using Type = std::remove_extent_t<T>;
+	memset(&arr[0], 0, sizeof(Type) * N);
+}
