@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -60,6 +60,21 @@ namespace greaper
 			return size;
 		}
 
+		static String ToString(const IProperty& data)
+		{
+			return data.GetPropertyName() + REFLECTION_STRING_INNER_ELEMENT_SEPARATOR + data.GetStringValue();
+		}
+
+		static void FromString(IProperty& data, const String& str)
+		{
+			const auto sep = StringUtils::Tokenize(str, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
+
+			VerifyEqual(sep.size(), 2, "Trying to deserialize a property but has more elements than needed");
+			VerifyEqual(data.GetPropertyName(), sep[0], "Trying to deserialize a property with inequal name");
+
+			data.SetValueFromString(sep[1]);
+		}
+
 		static ReflectedSize_t GetSize(const IProperty& data)
 		{
 			const auto& name = data.GetPropertyName();
@@ -85,6 +100,16 @@ namespace greaper
 		static ReflectedSize_t FromStream(TProperty<T>& data, IStream& stream)
 		{
 			return ReflectedPlainType<IProperty>::FromStream(data, stream);
+		}
+
+		static String ToString(const TProperty<T>& data)
+		{
+			return ReflectedPlainType<IProperty>::ToString(data);
+		}
+
+		static void FromString(TProperty<T>& data, const String& str)
+		{
+			ReflectedPlainType<IProperty>::FromString(data, str);
 		}
 
 		static ReflectedSize_t GetSize(const TProperty<T>& data)

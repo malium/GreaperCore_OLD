@@ -211,6 +211,11 @@ namespace greaper
 		return uuid;
 	}
 
+	INLINE void Uuid::FromString(const String& str) noexcept
+	{
+		Impl::ViewToUUID(StringView{str.data(), str.size()}, m_Data);
+	}
+
 	INLINE Uuid Uuid::GenerateRandom() noexcept
 	{
 #if PLT_WINDOWS

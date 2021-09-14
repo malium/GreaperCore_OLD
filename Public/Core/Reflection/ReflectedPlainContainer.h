@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -10,7 +10,7 @@
 
 #include "../CorePrerequisites.h"
 #include "ReflectedPlainType.h"
-#include <array>
+#include "../StringUtils.h"
 
 namespace greaper
 {
@@ -41,6 +41,16 @@ namespace greaper
 			stream.ReadBytes((uint8*)data.data(), stringSize * sizeof(String::value_type));
 
 			return size;
+		}
+
+		static String ToString(const String& data)
+		{
+			return data;
+		}
+
+		static void FromString(String& data, const String& str)
+		{
+			data = str;
 		}
 
 		static ReflectedSize_t GetSize(const String& data)
@@ -81,6 +91,16 @@ namespace greaper
 			return size;
 		}
 
+		static String ToString(const WString& data)
+		{
+			return StringUtils::FromWIDE(data);
+		}
+
+		static void FromString(WString& data, const String& str)
+		{
+			data = StringUtils::ToWIDE(str);
+		}
+
 		static ReflectedSize_t GetSize(const WString& data)
 		{
 			ReflectedSize_t dataSize = data.size() * sizeof(WString::value_type);
@@ -101,8 +121,6 @@ namespace greaper
 			return ReflectedWriteWithSizeHeader(stream, data, [&data, &stream]()
 				{
 					ReflectedSize_t size = 0;
-					//const auto elemNum = (ReflectedSize_t)data.size();
-					//size += ReflectedWrite(elemNum, stream);
 
 					for (const auto& elem : data)
 					{
@@ -118,17 +136,36 @@ namespace greaper
 
 			ReflectedReadSizeHeader(stream, size);
 
-			//ReflectedSize_t elemNum;
-			//ReflectedRead(elemNum, stream);
-			
-			//VerifyEqual(elemNum, N, "Deserializing an array with different size than it should have");
-
 			for (auto& elem : data)
 			{
 				ReflectedRead(elem, stream);
 			}
 
 			return size;
+		}
+
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			for(sizet i = 0; i < N; ++i)
+			{
+				str += ReflectedToString(data[i]);
+				if(i < (N - 1))
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			VerifyEqual(vec.size(), data.size(), "Something went wrong while deserializing an array from string.");
+
+			for(int i = 0; i < N; ++i)
+			{
+				ReflectedFromString(data[i], vec[i]);
+			}
 		}
 
 		static ReflectedSize_t GetSize(const Container_t& data)
@@ -145,7 +182,6 @@ namespace greaper
 			return dataSize;
 		}
 	};
-
 
 	template<class T, typename A>
 	struct ReflectedPlainType<std::vector<T, A>>
@@ -190,6 +226,33 @@ namespace greaper
 			}
 
 			return size;
+		}
+
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			for(sizet i = 0; i < data.size(); ++i)
+			{
+				str += ReflectedToString(data[i]);
+				if(i < (data.size() - 1))
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+			if(data.capacity() < vec.size())
+				data.reserve(vec.size());
+			for(int i = 0; i < vec.size(); ++i)
+			{
+				Container_t::value_type value;
+				ReflectedFromString(value, vec[i]);
+				data.push_back(std::move(value));
+			}
 		}
 
 		static ReflectedSize_t GetSize(const Container_t& data)
@@ -251,6 +314,36 @@ namespace greaper
 			return size;
 		}
 
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(*it);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+			if(data.capacity() < vec.size())
+				data.reserve(vec.size());
+				
+			for(const auto& elemStr : vec)
+			{
+				Container_t::value_type value;
+				ReflectedFromString(value, elemStr);
+				data.push_back(std::move(value));
+			}
+		}
+
 		static ReflectedSize_t GetSize(const Container_t& data)
 		{
 			ReflectedSize_t dataSize = sizeof(ReflectedSize_t); // ElemNum
@@ -308,6 +401,34 @@ namespace greaper
 			}
 
 			return size;
+		}
+
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(*it);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::value_type value;
+				ReflectedFromString(value, elemStr);
+				data.push_back(std::move(value));
+			}
 		}
 
 		static ReflectedSize_t GetSize(const Container_t& data)
@@ -369,6 +490,34 @@ namespace greaper
 			return size;
 		}
 
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(*it);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::value_type value;
+				ReflectedFromString(value, elemStr);
+				data.emplace(std::move(value));
+			}
+		}
+		
 		static ReflectedSize_t GetSize(const Container_t& data)
 		{
 			ReflectedSize_t dataSize = sizeof(ReflectedSize_t); // ElemNum
@@ -426,6 +575,34 @@ namespace greaper
 			}
 
 			return size;
+		}
+
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(*it);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::value_type value;
+				ReflectedFromString(value, elemStr);
+				data.emplace(std::move(value));
+			}
 		}
 
 		static ReflectedSize_t GetSize(const Container_t& data)
@@ -487,6 +664,35 @@ namespace greaper
 			return size;
 		}
 
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(*it);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::value_type value;
+				ReflectedFromString(value, elemStr);
+				data.emplace(std::move(value));
+			}
+		}
+
 		static ReflectedSize_t GetSize(const Container_t& data)
 		{
 			ReflectedSize_t dataSize = sizeof(ReflectedSize_t); // ElemNum
@@ -544,6 +750,35 @@ namespace greaper
 			}
 
 			return size;
+		}
+
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(*it);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::value_type value;
+				ReflectedFromString(value, elemStr);
+				data.emplace(std::move(value));
+			}
 		}
 
 		static ReflectedSize_t GetSize(const Container_t& data)
@@ -607,6 +842,43 @@ namespace greaper
 			}
 
 			return size;
+		}
+
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(it->first);
+				str += REFLECTION_STRING_INNER_ELEMENT_SEPARATOR;
+				str += ReflectedToString(it->second);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::key_type key;
+				Container_t::value_type value;
+				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
+				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
+
+				ReflectedFromString(key, elemStrSep[0]);
+				ReflectedFromString(value, elemStrSep[1]);
+				
+				data.insert_or_assign(key, value);
+			}
 		}
 
 		static ReflectedSize_t GetSize(const Container_t& data)
@@ -673,6 +945,42 @@ namespace greaper
 			return size;
 		}
 
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(it->first);
+				str += REFLECTION_STRING_INNER_ELEMENT_SEPARATOR;
+				str += ReflectedToString(it->second);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::key_type key;
+				Container_t::value_type value;
+				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
+				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
+
+				ReflectedFromString(key, elemStrSep[0]);
+				ReflectedFromString(value, elemStrSep[1]);
+				data.insert({key, value});
+			}
+		}
+
 		static ReflectedSize_t GetSize(const Container_t& data)
 		{
 			ReflectedSize_t dataSize = sizeof(ReflectedSize_t); // ElemNum
@@ -737,6 +1045,42 @@ namespace greaper
 			return size;
 		}
 
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(it->first);
+				str += REFLECTION_STRING_INNER_ELEMENT_SEPARATOR;
+				str += ReflectedToString(it->second);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::key_type key;
+				Container_t::value_type value;
+				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
+				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
+
+				ReflectedFromString(key, elemStrSep[0]);
+				ReflectedFromString(value, elemStrSep[1]);
+				data.insert({key, value});
+			}
+		}
+
 		static ReflectedSize_t GetSize(const Container_t& data)
 		{
 			ReflectedSize_t dataSize = sizeof(ReflectedSize_t); // ElemNum
@@ -799,6 +1143,42 @@ namespace greaper
 			}
 
 			return size;
+		}
+
+		static String ToString(const Container_t& data)
+		{
+			String str;
+			sizet i = 0;
+
+			for(auto it = data.begin(); it != data.end(); ++it)
+			{
+				str += ReflectedToString(it->first);
+				str += REFLECTION_STRING_INNER_ELEMENT_SEPARATOR;
+				str += ReflectedToString(it->second);
+				++i;
+				if(i < data.size())
+					str += REFLECTION_STRING_ELEMENT_SEPARATOR;
+			}
+			return str;
+		}
+
+		static void FromString(Container_t& data, const String& str)
+		{
+			const auto vec = StringUtils::Tokenize(str, REFLECTION_STRING_ELEMENT_SEPARATOR);
+			
+			data.clear();
+
+			for(const auto& elemStr : vec)
+			{
+				Container_t::key_type key;
+				Container_t::value_type value;
+				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
+				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
+
+				ReflectedFromString(key, elemStrSep[0]);
+				ReflectedFromString(value, elemStrSep[1]);
+				data.insert({key, value});
+			}
 		}
 
 		static ReflectedSize_t GetSize(const Container_t& data)
