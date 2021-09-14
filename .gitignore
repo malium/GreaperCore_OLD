@@ -33,6 +33,6 @@
 *.app
 
 *.bak
-.vscode/settings.json
 *.suo
 *.VC.db
+.vscode/*.*
