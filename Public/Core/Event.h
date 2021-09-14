@@ -52,13 +52,29 @@ namespace greaper
 	class Event
 	{
 		Vector<EventHandlerID<Args...>> m_Handlers;
-		uint32 m_LastID = 0;
+		String m_Name;
+		uint32 m_LastID;
 
 	public:
 		using HandlerType = EventHandler<Args...>;
 		using HandlerFunction = typename EventHandlerID<Args...>::HandlerFunction;
+		
+		Event(String eventName = "unnamed") noexcept
+			:m_Name(std::move(eventName))
+			,m_LastID(0)
+		{
 
-		void Connect(HandlerType& handler, HandlerFunction function)
+		}
+		~Event() = default;
+		Event(const Event&) = delete;
+		Event& operator=(const Event&) = delete;
+
+		const String& GetName()const noexcept
+		{
+			return m_Name;
+		}
+
+		void Connect(HandlerType& handler, HandlerFunction function) noexcept
 		{
 			EventHandlerID<Args...> hnd;
 			hnd.Function = std::move(function);
@@ -68,7 +84,7 @@ namespace greaper
 			m_Handlers.push_back(std::move(hnd));
 		}
 
-		void Disconnect(HandlerType& handler)
+		void Disconnect(HandlerType& handler) noexcept
 		{
 			for (auto it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
 			{
@@ -82,7 +98,7 @@ namespace greaper
 			}
 		}
 
-		void Trigger(Args&&... args)
+		void Trigger(Args&&... args) noexcept
 		{
 			for (EventHandlerID<Args...>& hnd : m_Handlers)
 			{
