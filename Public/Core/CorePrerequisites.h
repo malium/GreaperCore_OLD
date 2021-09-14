@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -18,7 +18,9 @@
 
 namespace greaper
 {
-	using Timepoint_t = std::chrono::high_resolution_clock::time_point;
+	using Clock_t = std::chrono::high_resolution_clock;
+	using Timepoint_t = Clock_t::time_point;
+	using Duration_t = Clock_t::duration;
 	
 	// fwd
 	class IApplication;
