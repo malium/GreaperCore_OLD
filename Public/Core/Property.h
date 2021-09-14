@@ -29,9 +29,10 @@ namespace greaper
 		virtual [[nodiscard]] const String& GetPropertyInfo()const noexcept = 0;
 		virtual [[nodiscard]] bool IsConstant()const noexcept = 0;
 		virtual [[nodiscard]] bool IsStatic()const noexcept = 0;
-		virtual [[nodiscard]] bool SetValueFromString(const String& value)noexcept = 0;
+		virtual [[nodiscard]] bool SetValueFromString(const String& value) noexcept = 0;
 		virtual [[nodiscard]] const String& GetStringValue()const noexcept = 0;
-		virtual [[nodiscard]] OnModificationEvent_t* GetModificationEvent()noexcept = 0;
+		virtual [[nodiscard]] OnModificationEvent_t* GetModificationEvent() noexcept = 0;
+		virtual [[nodiscard]] IGreaperLibrary* GetLibrary()const noexcept = 0;
 	};
 
 	/**
@@ -84,9 +85,13 @@ namespace greaper
 		}
 
 		template<class T, class _Alloc_>
-		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, StringView, T, StringView, bool, bool, TPropertyValidator<T>*);
+		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, const StringView&, T, const StringView&,
+			bool, bool, TPropertyValidator<T>*);
 	public:
 		using value_type = T;
+
+		TProperty(const TProperty&) = delete;
+		TProperty& operator=(const TProperty&) = delete;
 
 		[[nodiscard]] const String& GetPropertyName()const noexcept override
 		{
@@ -156,6 +161,10 @@ namespace greaper
 		[[nodiscard]] OnModificationEvent_t* GetModificationEvent() noexcept override
 		{
 			return &m_OnModificationEvent;
+		}
+		[[nodiscard]] IGreaperLibrary* GetLibrary()const noexcept override
+		{
+			return m_Library;
 		}
 	};
 
