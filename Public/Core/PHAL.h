@@ -10,12 +10,16 @@
 ***********************************************************************************/
 
 /// Creates a 32 bit number from major, minor, patch and revision versions, each value has 8bit space.
-#define VERSION_SETTER(major, minor, patch, rev) (((major) << 24) | ((minor) << 16) | ((patch) << 8) | (rev))
+#define VERSION_SETTER(major, minor, patch, rev) (((major & 0xFF) << 24) | ((minor & 0xFF) << 16) | ((patch & 0xFF) << 8) | (rev & 0xFF)) & 0xFFFFFFFF
+#define VERSION_GET_MAJOR(version) ((version & 0xFF000000) >> 24) & 0xFF
+#define VERSION_GET_MINOR(version) ((version & 0x00FF0000) >> 16) & 0xFF
+#define VERSION_GET_PATCH(version) ((version & 0x0000FF00) >> 8) & 0xFF
+#define VERSION_GET_REV(version) (version & 0x000000FF) & 0xFF
 
 #ifdef GREAPER_PHAL_VERSION
 #undef GREAPER_PHAL_VERSION
 #endif
-#define GREAPER_PHAL_VERSION VERSION_SETTER(1, 5, 2, 0)
+#define GREAPER_PHAL_VERSION VERSION_SETTER(1, 6, 0, 0)
 
 // Include configuration
 #include "Base/Config.h"
@@ -115,6 +119,10 @@
 #else
 #define PLT_LINUX 0
 #endif
+#endif
+
+#if !PLT_WINDOWS && !PLT_LINUX
+#error "Unsupported Platform!"
 #endif
 
 /* DEBUG MACRO */

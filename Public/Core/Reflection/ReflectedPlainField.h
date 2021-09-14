@@ -11,8 +11,6 @@
 #include "../CorePrerequisites.h"
 #include "ReflectedField.h"
 
-namespace greaper { class IStream; }
-
 namespace greaper
 {
 	struct IReflectedPlainField : IReflectedField

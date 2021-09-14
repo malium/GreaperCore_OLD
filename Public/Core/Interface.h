@@ -12,8 +12,6 @@
 
 namespace greaper
 {
-	class IGreaperLibrary;
-
 	class IInterface
 	{
 	public:

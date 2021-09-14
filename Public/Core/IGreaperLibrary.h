@@ -13,11 +13,6 @@
 
 namespace greaper
 {
-	class IApplication;
-	class IProperty;
-	template<class T> class TProperty;
-	template<class T> class TPropertyValidator;
-
 	class IGreaperLibrary
 	{
 	protected:
@@ -26,6 +21,8 @@ namespace greaper
 	public:
 		static constexpr Uuid LibraryUUID = Uuid{ 0x10001000, 0x10001000, 0x10001000, 0x10001000 };
 		static constexpr StringView LibraryName = StringView{ "Unknown Greaper Library" };
+
+		virtual ~IGreaperLibrary() = default;
 
 		virtual void InitLibrary(IApplication* app) = 0;
 

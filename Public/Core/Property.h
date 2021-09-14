@@ -25,6 +25,8 @@ namespace greaper
 	public:
 		using OnModificationEvent_t = Event<IProperty*>;
 		
+		virtual ~IProperty() = default;
+
 		virtual [[nodiscard]] const String& GetPropertyName()const noexcept = 0;
 		virtual [[nodiscard]] const String& GetPropertyInfo()const noexcept = 0;
 		virtual [[nodiscard]] bool IsConstant()const noexcept = 0;

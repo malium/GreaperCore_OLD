@@ -10,7 +10,6 @@
 
 #include "../Memory.h"
 #include "../StringUtils.h"
-#include <string_view>
 #ifdef __cpp_lib_format
 #include <format>
 #endif
@@ -49,8 +48,6 @@ namespace greaper
 	{
 		static String ToString(const int32& value)
 		{
-			using namespace std::string_view_literals;
-
 			const auto conv =
 #ifdef _FORMAT_
 				std::format("{}"sv, value);
@@ -70,8 +67,6 @@ namespace greaper
 	{
 		static String ToString(const float& value)
 		{
-			using namespace std::string_view_literals;
-
 			const auto conv =
 #ifdef _FORMAT_
 				std::format("{}"sv, value);

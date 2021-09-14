@@ -12,9 +12,6 @@
 
 namespace greaper
 {
-	template<class... Args>
-	class Event;
-
 	namespace ELogLevel
 	{
 		enum Type

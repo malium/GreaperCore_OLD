@@ -11,6 +11,11 @@
 #include "PHAL.h"
 #include <chrono>
 
+#ifdef GREAPER_CORE_VERSION
+#undef GREAPER_CORE_VERSION
+#endif
+#define GREAPER_CORE_VERSION VERSION_SETTER(1, 5, 0, 0)
+
 namespace greaper
 {
 	using Timepoint_t = std::chrono::high_resolution_clock::time_point;
@@ -20,7 +25,12 @@ namespace greaper
 	class ILogManager;
 	class ILibrary;
 	class IGreaperLibrary;
-
+	class IProperty;
+	template<class T> class TProperty;
+	template<class T> class TPropertyValidator;
+	template<class... Args> class Event;
+	class IStream;
+	class Uuid;
 
 	// types
 	using half = int16;

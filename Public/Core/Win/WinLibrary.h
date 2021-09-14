@@ -8,8 +8,7 @@
 #ifndef CORE_WIN_LIBRARY_H
 #define CORE_WIN_LIBRARY_H 1
 
-#include "PHAL.h"
-#include "MinWinHeader.h"
+#include "../PHAL.h"
 
 namespace greaper
 {

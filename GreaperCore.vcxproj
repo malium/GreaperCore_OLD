@@ -133,6 +133,7 @@
     <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
     <ClInclude Include="Public\Core\ILogManager.h" />
+    <ClInclude Include="Public\Core\Lnx\Prerequisites.h" />
     <ClInclude Include="Public\Core\Property.h" />
     <ClInclude Include="Public\Core\Enumeration.h" />
     <ClInclude Include="Public\Core\Event.h" />
