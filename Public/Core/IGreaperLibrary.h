@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -54,7 +54,7 @@ namespace greaper
 		virtual void LogCritical(const String& message) = 0;
 
 		template<class T, class _Alloc_>
-		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, String, T, String, bool, bool, TPropertyValidator<T>*);
+		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, StringView, T, StringView, bool, bool, TPropertyValidator<T>*);
 	};
 
 	template<class T>

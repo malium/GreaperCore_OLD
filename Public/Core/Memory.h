@@ -63,6 +63,9 @@
 #define VerifyNotWithinInclusive(val, min, max, ...) { volatile bool res = (value) <= (min) && (value) >= (max); }
 #endif
 
+using namespace std::string_literals;
+using namespace std::string_view_literals;
+
 namespace greaper
 {
 	template<class T>
@@ -416,6 +419,27 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		return str;
 	}
+	template<typename T, class _Alloc_ = GenericAllocator>
+	BasicString<T, StdAlloc<T, _Alloc_>> Format(const BasicStringView<T>& fmt, ...)
+	{
+		va_list argList;
+		va_start(argList, fmt.data());
+
+		const auto size = Snprintf<T>::Fn(nullptr, 0, fmt.data(), argList);
+
+		VerifyGreaterEqual(size, 0, "Error while formatting");
+
+		va_end(argList);
+		va_start(argList, fmt.data());
+
+		auto str = BasicString<T, StdAlloc<T, _Alloc_>>(size, (achar)0);
+
+		Snprintf<T>::Fn(str.data(), str.size(), fmt.data(), argList);
+
+		va_end(argList);
+
+		return str;
+	}
 }
 
 namespace greaper::Impl
@@ -474,6 +498,24 @@ namespace std
 	struct hash<greaper::WString>
 	{
 		INLINE size_t operator()(const greaper::WString& str)const noexcept
+		{
+			return std::_Hash_array_representation(str.data(), str.size());
+		}
+	};
+
+	template<>
+	struct hash<greaper::StringView>
+	{
+		INLINE size_t operator()(const greaper::StringView& str)const noexcept
+		{
+			return std::_Hash_array_representation(str.data(), str.size());
+		}
+	};
+
+	template<>
+	struct hash<greaper::WStringView>
+	{
+		INLINE size_t operator()(const greaper::WStringView& str)const noexcept
 		{
 			return std::_Hash_array_representation(str.data(), str.size());
 		}
