@@ -19,6 +19,7 @@ typedef WinTypes PlatformTypes;
 #define INLINE __forceinline									/** Forces code to be inlined */
 #define NOINLINE __declspec(noinline)							/** Forces code to NOT be inlined */
 #define FUNCTION_NO_RETURN_START __declspec(noreturn)			/** Indicate that the function never returns. */
+#define FUNCTION_NO_RETURN_END
 #define FUNCTION_FULL __FUNCTION__
 #define GREAPER_DLLEXT ".dll"
 
@@ -63,6 +64,8 @@ extern void CDECL __debugbreak();
 #ifndef DLLEXPORT
 #define DLLEXPORT __declspec(dllexport)
 #endif
+
+#define FUNCTION_VARARGS_END(...)
 
 #define PlatformAlloc(bytes) HeapAlloc(GetProcessHeap(), 0, bytes)
 #define PlatformDealloc(mem) HeapFree(GetProcessHeap(), 0, mem)

@@ -21,6 +21,7 @@ namespace greaper
 	{
 		Event<Args...>* m_Event = nullptr;
 		uint32 m_ID = 0;
+		
 	public:
 		INLINE ~EventHandler()
 		{
@@ -29,6 +30,7 @@ namespace greaper
 				m_Event->Disconnect(this);
 			}
 		}
+
 		friend class Event<Args...>;
 	};
 
@@ -59,8 +61,8 @@ namespace greaper
 		using HandlerType = EventHandler<Args...>;
 		using HandlerFunction = typename EventHandlerID<Args...>::HandlerFunction;
 		
-		Event(String eventName = "unnamed") noexcept
-			:m_Name(std::move(eventName))
+		Event(const StringView& eventName = "unnamed"sv) noexcept
+			:m_Name(eventName)
 			,m_LastID(0)
 		{
 

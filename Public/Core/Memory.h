@@ -399,7 +399,7 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 	};
 
 	template<typename T, class _Alloc_ = GenericAllocator>
-	BasicString<T, StdAlloc<T, _Alloc_>> Format(const T* fmt, ...)
+	[[nodiscard]] BasicString<T, StdAlloc<T, _Alloc_>> Format(const T* fmt, ...)FUNCTION_VARARGS_END(1, 2)
 	{
 		va_list argList;
 		va_start(argList, fmt);
@@ -419,27 +419,6 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		return str;
 	}
-	template<typename T, class _Alloc_ = GenericAllocator>
-	BasicString<T, StdAlloc<T, _Alloc_>> Format(const BasicStringView<T>& fmt, ...)
-	{
-		va_list argList;
-		va_start(argList, fmt.data());
-
-		const auto size = Snprintf<T>::Fn(nullptr, 0, fmt.data(), argList);
-
-		VerifyGreaterEqual(size, 0, "Error while formatting");
-
-		va_end(argList);
-		va_start(argList, fmt.data());
-
-		auto str = BasicString<T, StdAlloc<T, _Alloc_>>(size, (achar)0);
-
-		Snprintf<T>::Fn(str.data(), str.size(), fmt.data(), argList);
-
-		va_end(argList);
-
-		return str;
-	}
 }
 
 namespace greaper::Impl
@@ -450,7 +429,8 @@ namespace greaper::Impl
 
 		// TODO: do error log
 	}
-	INLINE void _TriggerBreak(const String& str)
+	
+	FUNCTION_NO_RETURN_START void _TriggerBreak(const String& str) FUNCTION_NO_RETURN_END
 	{
 
 #if PLT_WINDOWS

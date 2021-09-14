@@ -117,19 +117,6 @@
 #endif
 #endif
 
-#ifndef PLT_MAC
-#if (defined(macintosh) || defined(Macintosh) || (defined(__APPLE__) && defined(__MACH__)))
-#include "TargetConditionals.h"
-#if TARGET_OS_MAC
-#define PLT_MAC 1
-#else
-#define PLT_MAC 0
-#endif
-#else
-#define PLT_MAC 0
-#endif
-#endif
-
 /* DEBUG MACRO */
 #ifndef GREAPER_DEBUG
 #if defined(_DEBUG) || defined(DEBUG)
@@ -147,7 +134,7 @@
 #define GREAPER_LIBRARY_SUFFIX_RLS "_Release"
 
 #if GREAPER_FRELEASE
-#define GREAPER_LIBSUFFIX
+#define GREAPER_LIBSUFFIX ""
 #else
 #if GREAPER_DEBUG
 #define GREAPER_LIBSUFFIX GREAPER_LIBRARY_SUFFIX_DBG
@@ -200,8 +187,6 @@
 #include "Win/Prerequisites.h"
 #elif PLT_LINUX
 #include "Lnx/Prerequisites.h"
-#elif PLT_MAC
-#include "Mac/Prerequisites.h"
 #endif
 
 //#include "Base/BasicTypeInfo.h"
@@ -279,6 +264,9 @@
 #define BEGIN_C
 #define END_C
 #endif
+#ifndef FUNCTION_VARARGS_END
+#define FUNCTION_VARARGS_END(fmtPlace, varArgsPlace) __attribute__((format(printf, fmtPlace, varArgsPlace)))
+#endif
 /* Force code to be inlined */
 #ifndef INLINE
 #define INLINE
@@ -293,7 +281,7 @@
 #endif
 /* Wrap a function signature in this to indicate that the function never returns. */
 #ifndef FUNCTION_NO_RETURN_END
-#define FUNCTION_NO_RETURN_END
+#define FUNCTION_NO_RETURN_END __attribute__((noreturn))
 #endif
 /* CPU cache line size, important to use in order to avoid cache misses */
 #ifndef CACHE_LINE_SIZE
@@ -311,25 +299,18 @@
 #define UNUSED(p) (p)
 #endif
 /* Alignment */
-#ifndef GCC_PACK
-#if (COMPILER_CLANG || COMPILER_GCC) && !COMPILER_MSVC
-#define GCC_PACK(n) __attribute__((packed,aligned(n)))
-#else
-#define GCC_PACK(n)
-#endif
-#endif
-#ifndef MS_ALIGN
+#ifndef ALIGN_BEGIN
 #if COMPILER_MSVC || (COMPILER_CLANG && PLT_WINDOWS)
-#define MS_ALIGN(n) __declspec(align(n))
+#define ALIGN_BEGIN(n) __declspec(align(n))
 #else
-#define MS_ALIGN(n)
+#define ALIGN_BEGIN(n)
 #endif
 #endif
-#ifndef GCC_ALIGN
+#ifndef ALIGN_END
 #if (COMPILER_CLANG || COMPILER_GCC) && !COMPILER_MSVC
-#define GCC_ALIGN(n) __attribute__((aligned(n)))
+#define ALIGN_END(n) __attribute__((aligned(n)))
 #else
-#define GCC_ALIGN(n)
+#define ALIGN_END(n)
 #endif
 #endif
 /* Debug breakpoint */
