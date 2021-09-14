@@ -3,7 +3,4 @@
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
-
-#include "Public\Core\PHAL.h"
-#include <chrono>
-
+#pragma once

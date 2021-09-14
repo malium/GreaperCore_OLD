@@ -4,7 +4,8 @@
 ***********************************************************************************/
 
 #pragma once
-#include "../PHAL.h"
+//#include "../PHAL.h"
+#include <memory>
 
 #if GREAPER_USE_BASIC_TYPEINFO
 class uint8
@@ -20,6 +21,8 @@ public:
 	static constexpr Type MaxValue = 255;
 	static constexpr PlatformTypes::uint8_t Bytes = 1;
 	static constexpr PlatformTypes::uint8_t MaxStringLength = 3;
+	static constexpr const PlatformTypes::ansichar* TypeName = "uint8";
+	static constexpr PlatformTypes::uint32_t TypeID = 0x00000001;
 
 	constexpr uint8()noexcept = default;
 	constexpr uint8(bool val)noexcept : m(static_cast<Type>(val)) {  }
@@ -538,3 +541,8 @@ using ptrint = PlatformTypes::ptrint_t;
 using sizet = PlatformTypes::sizetype;
 using ssizet = PlatformTypes::ssizetype;
 #endif
+
+template<class T>
+using SPtr = std::shared_ptr<T>;
+template<class T>
+using UPtr = std::unique_ptr<T>;

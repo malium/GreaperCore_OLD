@@ -36,7 +36,7 @@ namespace greaper
 			0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF
 		};
 
-		INLINE constexpr void ViewToUUID(const StringView& view, uint32 data[4])noexcept
+		INLINE constexpr void ViewToUUID(const StringView& view, uint32 data[4]) noexcept
 		{
 			if (view.size() < 36)
 				return;
@@ -95,7 +95,7 @@ namespace greaper
 			}
 		}
 
-		INLINE void UUIDToString(const uint32 data[4], String& uuid)noexcept
+		INLINE void UUIDToString(const uint32 data[4], String& uuid) noexcept
 		{
 			uint8 output[36] = {};
 			uint32 idx = 0;
@@ -147,25 +147,25 @@ namespace greaper
 		}
 	}
 
-	INLINE constexpr Uuid::Uuid() noexcept
+	/*INLINE constexpr Uuid::Uuid() noexcept
 		:m_Data{ 0, 0, 0, 0 }
 	{
 
-	}
+	}*/
 
-	INLINE constexpr Uuid::Uuid(const uint32 data0, const uint32 data1, const uint32 data2, const uint32 data3)noexcept
+	INLINE constexpr Uuid::Uuid(const uint32 data0, const uint32 data1, const uint32 data2, const uint32 data3) noexcept
 		:m_Data{ data0, data1, data2, data3 }
 	{
 
 	}
 
-	INLINE constexpr Uuid::Uuid(const StringView& view)noexcept
+	INLINE constexpr Uuid::Uuid(const StringView& view) noexcept
 		:m_Data{ 0, 0, 0, 0 }
 	{
 		Impl::ViewToUUID(view, m_Data);
 	}
 
-	INLINE constexpr Uuid::Uuid(const Uuid& other)noexcept
+	/*INLINE constexpr Uuid::Uuid(const Uuid& other)noexcept
 		:m_Data{ other.m_Data[0], other.m_Data[1], other.m_Data[2], other.m_Data[3] }
 	{
 
@@ -176,13 +176,13 @@ namespace greaper
 		for (int i = 0; i < 4; ++i)
 			other.m_Data[i] = 0;
 	}
-	INLINE constexpr Uuid& Uuid::operator=(const Uuid& other)noexcept
+	INLINE Uuid& Uuid::operator=(const Uuid& other)noexcept
 	{
 		for (int i = 0; i < 4; ++i)
 			m_Data[i] = other.m_Data[i];
 		return *this;
 	}
-	INLINE constexpr Uuid& Uuid::operator=(Uuid&& other)noexcept
+	INLINE Uuid& Uuid::operator=(Uuid&& other)noexcept
 	{
 		if (this == &other)
 			return *this;
@@ -191,27 +191,27 @@ namespace greaper
 			m_Data[i] = other.m_Data[i];
 			other.m_Data[i] = 0;
 		}
-	}
+	}*/
 
-	INLINE constexpr Uuid& Uuid::operator=(const StringView& view)
+	INLINE Uuid& Uuid::operator=(const StringView& view) noexcept
 	{
 		Impl::ViewToUUID(view, m_Data);
 		return *this;
 	}
-	INLINE Uuid& Uuid::operator=(const String& str)
+	INLINE Uuid& Uuid::operator=(const String& str) noexcept
 	{
 		Impl::ViewToUUID(str, m_Data);
 		return *this;
 	}
 
-	[[nodiscard]] INLINE String Uuid::ToString()const
+	[[nodiscard]] INLINE String Uuid::ToString()const noexcept
 	{
 		String uuid;
 		Impl::UUIDToString(m_Data, uuid);
 		return uuid;
 	}
 
-	INLINE Uuid Uuid::GenerateRandom()
+	INLINE Uuid Uuid::GenerateRandom() noexcept
 	{
 #if PLT_WINDOWS
 		UUID uuid;
@@ -233,7 +233,7 @@ namespace greaper
 #endif
 	}
 
-	INLINE constexpr bool Uuid::Empty()const noexcept
+	INLINE constexpr bool Uuid::IsEmpty()const noexcept
 	{
 		return m_Data[0] == 0 && m_Data[1] == 0 && m_Data[2] == 0 && m_Data[3] == 0;
 	}
@@ -243,34 +243,39 @@ namespace greaper
 		return &(m_Data[0]);
 	}
 
-	INLINE bool operator!=(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr Uuid Uuid::Empty()noexcept
+	{
+		return Uuid{};
+	}
+
+	INLINE constexpr bool operator!=(const Uuid& left, const Uuid& right)noexcept
 	{
 		return !(left == right);
 	}
 
-	INLINE bool operator>(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr bool operator>(const Uuid& left, const Uuid& right)noexcept
 	{
 		return right < left;
 	}
 
-	INLINE bool operator<=(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr bool operator<=(const Uuid& left, const Uuid& right)noexcept
 	{
 		return !(left > right);
 	}
 
-	INLINE bool operator>=(const Uuid& left, const Uuid& right)noexcept
+	INLINE constexpr bool operator>=(const Uuid& left, const Uuid& right)noexcept
 	{
 		return !(left < right);
 	}
 }
 
-INLINE bool greaper::operator==(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
+INLINE constexpr bool greaper::operator==(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
 {
 	return left.m_Data[0] == right.m_Data[0] && left.m_Data[1] == right.m_Data[1]
 		&& left.m_Data[2] == right.m_Data[2] && left.m_Data[3] == right.m_Data[3];
 }
 
-INLINE bool greaper::operator<(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
+INLINE constexpr bool greaper::operator<(const greaper::Uuid& left, const greaper::Uuid& right)noexcept
 {
 	if (left.m_Data[0] < right.m_Data[0])
 		return true;

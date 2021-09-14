@@ -8,18 +8,63 @@
 #ifndef GREAPER_CORE_MEMORY_H
 #define GREAPER_CORE_MEMORY_H 1
 
-#include "PHAL.h"
+#include "CorePrerequisites.h"
+//#include "DebugBreak.h"
+#if PLT_WINDOWS
+#include "Win/MinWinHeader.h"
+#endif
 #include <type_traits>
 #include <vector>
 #include <list>
+#include <forward_list>
 #include <queue>
 #include <deque>
 #include <stack>
 #include <string>
 #include <string_view>
 #include <set>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <memory>
+#include <cstdarg>
+
+#define Break(msg, ...) greaper::Impl::_TriggerBreak(greaper::Format("STOP! at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__))
+
+#if GREAPER_ENABLE_BREAK
+#define Verify(exp, msg, ...) { if(!(exp)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #exp " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyNot(exp, msg, ...) { if((exp)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: !" #exp " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyInequal(a, b, msg, ...) { if((a) == (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " != " #b " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyEqual(a, b, msg, ...) { if((a) != (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " == " #b " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyGreater(a, b, msg, ...) { if((a) <= (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " > " #b " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyGreaterEqual(a, b, msg, ...) { if((a) < (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " >= " #b " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyLess(a, b, msg, ...) { if((a) >= (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " < " #b " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyLessEqual(a, b, msg, ...) { if((a) > (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " <= " #b " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyNull(ptr, msg, ...) { if((ptr) != nullptr) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #ptr " is not nullptr, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyNotNull(ptr, msg, ...) { if((ptr) == nullptr) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #ptr " is nullptr, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyWithin(value, min, max, msg, ...) { if((value) <= (min)|| (value) >= (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not inside of (" #min ", " #max ") range , at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyWithinInclusive(value, min, max, msg, ...) { if((value) < (min) || (value) > (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not inside of [" #min ", " #max "] range , at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyNotWithin(value, min, max, msg, ...) { if((value) >= (min) && (value) <= (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not outside of (" #min ", " #max ") range , at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#define VerifyNotWithinInclusive(value, min, max, msg, ...) { if((value) > (min) && (value) < (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not outside of [" #min ", " #max "] range , at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#else
+#define Verify(exp, ...) { volatile bool res = (exp); }
+#define VerifyNot(exp, ...) { volatile bool res = !(exp); }
+#define VerifyInequal(a, b, ...) { volatile bool res = (a) != (b); }
+#define VerifyEqual(a, b, ...) { volatile bool res = (a) == (b); }
+#define VerifyGreater(a, b, ...) { volatile bool res = (a) > (b); }
+#define VerifyGreaterEqual(a, b, ...) { volatile bool res = (a) >= (b); }
+#define VerifyLess(a, b, ...) { volatile bool res = (a) < (b); }
+#define VerifyLessEqual(a, b, ...) { volatile bool res = (a) <= (b); }
+#define VerifyNull(ptr, ...) { volatile bool res = (ptr) == nullptr; }
+#define VerifyNotNull(ptr, ...) { volatile bool res = (ptr) != nullptr; }
+#define VerifyWithin(val, min, max, ...) { volatile bool res = (value) > (min) && (value) < (max); }
+#define VerifyWithinInclusive(val, min, max, ...) { volatile bool res = (value) >= (min) && (value) <= (max); }
+#define VerifyNotWithin(val, min, max, ...) { volatile bool res = (value) < (min) && (value) > (max); }
+#define VerifyNotWithinInclusive(val, min, max, ...) { volatile bool res = (value) <= (min) && (value) >= (max); }
+#endif
+
+using namespace std::string_literals;
+using namespace std::string_view_literals;
 
 namespace greaper
 {
@@ -33,8 +78,9 @@ namespace greaper
 				return nullptr;
 
 			void* mem = PlatformAlloc(byteSize);
-			// TODO
-			// Add null checking on debug builds
+
+			VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes.", byteSize);
+			
 			return mem;
 		}
 
@@ -46,23 +92,36 @@ namespace greaper
 				return Allocate(byteSize);
 
 			void* mem = PlatformAlignedAlloc(byteSize, aligment);
-			// TODO
-			// Add null checking on debug builds
+
+			VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes aligned %lld.", byteSize, alignment);
+
 			return mem;
 		}
 
 		static void Deallocate(void* mem)
 		{
+#if GREAPER_ENABLE_BREAK
+			VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
+#else
 			if (mem == nullptr)
-				return; // TODO: Add free after null check on debug builds
+			{
+				return;
+			}
+#endif
 
 			PlatformDealloc(mem);
 		}
 
 		static void DeallocateAligned(void* mem)
 		{
+#if GREAPER_ENABLE_BREAK
+			VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
+#else
 			if (mem == nullptr)
-				return; // TODO: Add free after null check on debug builds
+			{
+				return;
+			}
+#endif
 
 			PlatformAlignedDealloc(mem);
 		}
@@ -98,7 +157,7 @@ namespace greaper
 	}
 
 	template<class _Alloc_, class T>
-	INLINE void _Destruct(T* ptr, sizet count)
+	INLINE void _Destroy(T* ptr, sizet count)
 	{
 		for (sizet i = 0; i < count; ++i)
 			ptr[i].~T();
@@ -123,28 +182,22 @@ namespace greaper
 #define DestroyAN(ptr, count, alloc) _Destroy<alloc>(ptr, count)
 #define DestroyN(ptr, count) _Destroy<GenericAllocator>(ptr, count)
 
-#if GREAPER_USE_BASIC_TYPEINFO
-	template<class T, sizet::Type N>
-#else
-	template<class T, sizet N>
-#endif
-	INLINE constexpr sizet ArraySize(T(&)[N])noexcept { return N; }
-
-	template<class T>
-	INLINE void ClearMemory(T& obj, sizet count = 1)noexcept
-	{
-		memset(&obj, 0, sizeof(T) * count);
-	}
-
 #define MemoryFriend()\
 template<class _Alloc_, class T, class... Args> friend T* greaper::_Construct(sizet count, Args&&... args);\
 template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet count)
+
+	template<typename T>
+	using SPtr = std::shared_ptr<T>;
+	template<typename T>
+	using WeakSPtr = std::weak_ptr<T>;
+	template<typename T>
+	using UPtr = std::unique_ptr<T>;
 
 	template<class T, class _Alloc_ = GenericAllocator>
 	class Destructor
 	{
 		constexpr Destructor() noexcept = default;
-		
+
 		template<class T2, std::enable_if_t<std::is_convertible<T2*, T*>::value, int> = 0>
 		constexpr Destructor(const Destructor<T2, _Alloc_>& other)
 		{
@@ -153,7 +206,7 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		void operator()(T* ptr)const
 		{
-			_DestructATN<_Alloc_, T>(ptr, 1);
+			_Destroy<_Alloc_, T>(ptr, 1);
 		}
 	};
 
@@ -241,6 +294,12 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 	using U32StringStream = BasicStringStream<u32char>;
 #endif
 
+	namespace Impl
+	{
+		INLINE void _LogBreak(const String& msg);
+		INLINE void _TriggerBreak(const String& str);
+	}
+
 	template<typename T, typename A = StdAlloc<T>>
 	using Vector = std::vector<T, A>;
 
@@ -293,6 +352,115 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 	template<typename K, typename V, typename H = HashType<K>, typename C = std::equal_to<K>, typename A = StdAlloc<std::pair<const K, V>>>
 	using UnorderedMultiMap = std::unordered_multimap<K, V, H, C, A>;
+
+	template<typename T, typename H = HashType<T>, typename C = std::equal_to<T>, typename A = StdAlloc<T>>
+	using UnorderedMultiSet = std::unordered_multiset<T, H, C, A>;
+
+	template<> struct ReflectedTypeToID<String> { static constexpr ReflectedTypeID_t ID = RTI_String; };
+	template<> struct ReflectedTypeToID<WString> { static constexpr ReflectedTypeID_t ID = RTI_WString; };
+	template<typename T, sizet N> struct ReflectedTypeToID<std::array<T, N>> { static constexpr ReflectedTypeID_t ID = RTI_Array; };
+	template<typename T, typename A> struct ReflectedTypeToID<Vector<T,A>> { static constexpr ReflectedTypeID_t ID = RTI_Vector; };
+	template<typename T, typename A> struct ReflectedTypeToID<List<T, A>> { static constexpr ReflectedTypeID_t ID = RTI_List; };
+	template<typename K, typename P, typename A> struct ReflectedTypeToID<Set<K, P, A>> { static constexpr ReflectedTypeID_t ID = RTI_Set; };
+	template<typename K, typename V, typename P, typename A> struct ReflectedTypeToID<Map<K, V, P, A>> { static constexpr ReflectedTypeID_t ID = RTI_Map; };
+	template<typename K, typename P, typename A> struct ReflectedTypeToID<MultiSet<K, P, A>> { static constexpr ReflectedTypeID_t ID = RTI_MultiSet; };
+	template<typename K, typename V, typename P, typename A> struct ReflectedTypeToID<MultiMap<K, V, P, A>> { static constexpr ReflectedTypeID_t ID = RTI_MultiMap; };
+	template<typename T, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedSet<T, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedSet; };
+	template<typename K, typename V, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedMap<K, V, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedMap; };
+	template<typename K, typename V, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedMultiMap<K, V, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedMultiMap; };
+	template<typename T, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedMultiSet<T, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedMultiSet; };
+
+	template<typename T>
+	struct Snprintf
+	{
+		static int Fn(T* buffer, size_t bufferCount, const T* fmt, va_list argList)
+		{
+			static_assert(false, "Unsupported character type.");
+			return -1;
+		}
+	};
+
+	template<>
+	struct Snprintf<achar>
+	{
+		static int Fn(achar* buffer, size_t bufferCount, const achar* fmt, va_list argList)
+		{
+			return vsnprintf(buffer, bufferCount, fmt, argList);
+		}
+	};
+	
+	template<>
+	struct Snprintf<wchar>
+	{
+		static int Fn(wchar* buffer, size_t bufferCount, const wchar* fmt, va_list argList)
+		{
+			return vswprintf(buffer, bufferCount, fmt, argList);
+		}
+	};
+
+	template<typename T, class _Alloc_ = GenericAllocator>
+	[[nodiscard]] BasicString<T, StdAlloc<T, _Alloc_>> Format(const T* fmt, ...)FUNCTION_VARARGS_END(1, 2)
+	{
+		va_list argList;
+		va_start(argList, fmt);
+
+		const auto size = Snprintf<T>::Fn(nullptr, 0, fmt, argList);
+
+		VerifyGreaterEqual(size, 0, "Error while formatting");
+
+		va_end(argList);
+		va_start(argList, fmt);
+
+		auto str = BasicString<T, StdAlloc<T, _Alloc_>>(size, (achar)0);
+
+		Snprintf<T>::Fn(str.data(), str.size(), fmt, argList);
+
+		va_end(argList);
+
+		return str;
+	}
+}
+
+namespace greaper::Impl
+{
+	INLINE void _LogBreak(const String& str)
+	{
+		FILE* file = nullptr;
+
+		// TODO: do error log
+	}
+	
+	FUNCTION_NO_RETURN_START void _TriggerBreak(const String& str) FUNCTION_NO_RETURN_END
+	{
+
+#if PLT_WINDOWS
+		constexpr UINT mbType = MB_ICONERROR
+#if GREAPER_DEBUG_BREAK
+			| MB_ABORTRETRYIGNORE
+#else
+			| MB_OK
+#endif
+			| MB_TASKMODAL | MB_TOPMOST;
+
+		const auto retVal = MessageBoxA(nullptr, str.data(), "Greaper Assertion", mbType);
+
+		if (retVal == IDRETRY)
+		{
+			TRIGGER_BREAKPOINT();
+		}
+		else if (retVal == IDIGNORE)
+		{
+			return;
+		}
+#else
+		std::cerr << "Greaper Assertion: " << str;
+#if GREAPER_DEBUG_BREAK
+		TRIGGER_BREAKPOINT();
+#endif
+#endif
+		_LogBreak(str);
+		exit(EXIT_FAILURE);
+	}
 }
 
 namespace std
@@ -310,6 +478,24 @@ namespace std
 	struct hash<greaper::WString>
 	{
 		INLINE size_t operator()(const greaper::WString& str)const noexcept
+		{
+			return std::_Hash_array_representation(str.data(), str.size());
+		}
+	};
+
+	template<>
+	struct hash<greaper::StringView>
+	{
+		INLINE size_t operator()(const greaper::StringView& str)const noexcept
+		{
+			return std::_Hash_array_representation(str.data(), str.size());
+		}
+	};
+
+	template<>
+	struct hash<greaper::WStringView>
+	{
+		INLINE size_t operator()(const greaper::WStringView& str)const noexcept
 		{
 			return std::_Hash_array_representation(str.data(), str.size());
 		}

@@ -10,12 +10,16 @@
 ***********************************************************************************/
 
 /// Creates a 32 bit number from major, minor, patch and revision versions, each value has 8bit space.
-#define VERSION_SETTER(major, minor, patch, rev) (((major) << 24) | ((minor) << 16) | ((patch) << 8) | (rev))
+#define VERSION_SETTER(major, minor, patch, rev) (((major & 0xFF) << 24) | ((minor & 0xFF) << 16) | ((patch & 0xFF) << 8) | (rev & 0xFF)) & 0xFFFFFFFF
+#define VERSION_GET_MAJOR(version) ((version & 0xFF000000) >> 24) & 0xFF
+#define VERSION_GET_MINOR(version) ((version & 0x00FF0000) >> 16) & 0xFF
+#define VERSION_GET_PATCH(version) ((version & 0x0000FF00) >> 8) & 0xFF
+#define VERSION_GET_REV(version) (version & 0x000000FF) & 0xFF
 
 #ifdef GREAPER_PHAL_VERSION
 #undef GREAPER_PHAL_VERSION
 #endif
-#define GREAPER_PHAL_VERSION VERSION_SETTER(1, 5, 2, 0)
+#define GREAPER_PHAL_VERSION VERSION_SETTER(1, 6, 0, 0)
 
 // Include configuration
 #include "Base/Config.h"
@@ -117,17 +121,8 @@
 #endif
 #endif
 
-#ifndef PLT_MAC
-#if (defined(macintosh) || defined(Macintosh) || (defined(__APPLE__) && defined(__MACH__)))
-#include "TargetConditionals.h"
-#if TARGET_OS_MAC
-#define PLT_MAC 1
-#else
-#define PLT_MAC 0
-#endif
-#else
-#define PLT_MAC 0
-#endif
+#if !PLT_WINDOWS && !PLT_LINUX
+#error "Unsupported Platform!"
 #endif
 
 /* DEBUG MACRO */
@@ -147,7 +142,7 @@
 #define GREAPER_LIBRARY_SUFFIX_RLS "_Release"
 
 #if GREAPER_FRELEASE
-#define GREAPER_LIBSUFFIX
+#define GREAPER_LIBSUFFIX ""
 #else
 #if GREAPER_DEBUG
 #define GREAPER_LIBSUFFIX GREAPER_LIBRARY_SUFFIX_DBG
@@ -200,8 +195,6 @@
 #include "Win/Prerequisites.h"
 #elif PLT_LINUX
 #include "Lnx/Prerequisites.h"
-#elif PLT_MAC
-#include "Mac/Prerequisites.h"
 #endif
 
 //#include "Base/BasicTypeInfo.h"
@@ -250,6 +243,8 @@
 *                                      OTHER                                       *
 ***********************************************************************************/
 
+#define EVALMACRO(m) m
+
 /* Interface class definition (no virtual table) */
 #ifndef NOVTABLE
 #define NOVTABLE
@@ -270,6 +265,16 @@
 #ifndef DLLEXPORT
 #define DLLEXPORT
 #endif
+#ifdef __cplusplus
+#define BEGIN_C extern "C" {
+#define END_C }
+#else
+#define BEGIN_C
+#define END_C
+#endif
+#ifndef FUNCTION_VARARGS_END
+#define FUNCTION_VARARGS_END(fmtPlace, varArgsPlace) __attribute__((format(printf, fmtPlace, varArgsPlace)))
+#endif
 /* Force code to be inlined */
 #ifndef INLINE
 #define INLINE
@@ -284,7 +289,7 @@
 #endif
 /* Wrap a function signature in this to indicate that the function never returns. */
 #ifndef FUNCTION_NO_RETURN_END
-#define FUNCTION_NO_RETURN_END
+#define FUNCTION_NO_RETURN_END __attribute__((noreturn))
 #endif
 /* CPU cache line size, important to use in order to avoid cache misses */
 #ifndef CACHE_LINE_SIZE
@@ -302,25 +307,18 @@
 #define UNUSED(p) (p)
 #endif
 /* Alignment */
-#ifndef GCC_PACK
-#if (COMPILER_CLANG || COMPILER_GCC) && !COMPILER_MSVC
-#define GCC_PACK(n) __attribute__((packed,aligned(n)))
-#else
-#define GCC_PACK(n)
-#endif
-#endif
-#ifndef MS_ALIGN
+#ifndef ALIGN_BEGIN
 #if COMPILER_MSVC || (COMPILER_CLANG && PLT_WINDOWS)
-#define MS_ALIGN(n) __declspec(align(n))
+#define ALIGN_BEGIN(n) __declspec(align(n))
 #else
-#define MS_ALIGN(n)
+#define ALIGN_BEGIN(n)
 #endif
 #endif
-#ifndef GCC_ALIGN
+#ifndef ALIGN_END
 #if (COMPILER_CLANG || COMPILER_GCC) && !COMPILER_MSVC
-#define GCC_ALIGN(n) __attribute__((aligned(n)))
+#define ALIGN_END(n) __attribute__((aligned(n)))
 #else
-#define GCC_ALIGN(n)
+#define ALIGN_END(n)
 #endif
 #endif
 /* Debug breakpoint */
@@ -334,5 +332,7 @@ DLLEXPORT unsigned long NvOptimusEnablement = 1;\
 DLLEXPORT int AmdPowerXpressRequestHighPerformance = 1
 #endif
 
-//#include "Base/Utils.h"
+using FuncPtr = void(*)();
+
 #include "Base/BasicTypeInfo.h"
+#include "Base/Utils.h"
