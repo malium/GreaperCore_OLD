@@ -132,7 +132,9 @@
     <ClInclude Include="Public\Core\Base\PropertyConverter.h" />
     <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
+    <ClInclude Include="Public\Core\Base\Threading.h" />
     <ClInclude Include="Public\Core\ILogManager.h" />
+    <ClInclude Include="Public\Core\Lnx\LnxThreading.h" />
     <ClInclude Include="Public\Core\Lnx\Prerequisites.h" />
     <ClInclude Include="Public\Core\Property.h" />
     <ClInclude Include="Public\Core\Enumeration.h" />
@@ -153,8 +155,10 @@
     <ClInclude Include="Public\Core\Reflection\ReflectedType.h" />
     <ClInclude Include="Public\Core\Stream.h" />
     <ClInclude Include="Public\Core\StringUtils.h" />
+    <ClInclude Include="Public\Core\IThreadManager.h" />
     <ClInclude Include="Public\Core\Uuid.h" />
     <ClInclude Include="Public\Core\Win\MinWinHeader.h" />
+    <ClInclude Include="Public\Core\Win\WinThreading.h" />
     <ClInclude Include="Public\Core\Win\Prerequisites.h" />
     <ClInclude Include="Public\Core\Win\WinLibrary.h" />
   </ItemGroup>
