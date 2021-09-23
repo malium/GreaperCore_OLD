@@ -413,31 +413,89 @@ namespace greaper
 		bool wait_for(const UniqueLock<Mtx>& lock, const std::chrono::duration<Rep, Period>& relativeTime) noexcept
 		{
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
-			const stdext::threads::xtime time = std::_To_xtime(relativeTime);
-			const auto millis = static_cast<uint32>(time.nsec / 1000000);
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
 			return WaitFor(lock, millis);
 		}
 
 		template<class Rep, class Period>
-		bool wait_for_shared(const UniqueLock<RWMutex>& lock, const std::chrono::duration<Rep, Period>& relativeTime) noexcept;
+		bool wait_for_shared(const UniqueLock<RWMutex>& lock, const std::chrono::duration<Rep, Period>& relativeTime) noexcept
+		{
+			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
+			return WaitForShared(lock, millis);
+		}
 
 		template<class Mtx, class Rep, class Period, class Pred>
-		bool wait_for(const UniqueLock<Mtx>& lock, const std::chrono::duration<Rep, Period>& relativeTime, Pred pred) noexcept;
+		bool wait_for(const UniqueLock<Mtx>& lock, const std::chrono::duration<Rep, Period>& relativeTime, Pred pred) noexcept
+		{
+			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
+			while(!pred())
+			{
+				if(!WaitFor(lock, millis))
+				return pred();
+			}
+			return true;
+		}
 
 		template<class Rep, class Period, class Pred>
-		bool wait_for_shared(const UniqueLock<RWMutex>& lock, const std::chrono::duration<Rep, Period>& relativeTime, Pred pred) noexcept;
+		bool wait_for_shared(const UniqueLock<RWMutex>& lock, const std::chrono::duration<Rep, Period>& relativeTime, Pred pred) noexcept
+		{
+			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
+			while(!pred())
+			{
+				if(!WaitForShared(lock, millis))
+				return pred();
+			}
+			return true;
+		}
 
 		template<class Mtx, class _Clock, class _Duration>
-		bool wait_for(const UniqueLock<Mtx>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime) noexcept;
+		bool wait_for(const UniqueLock<Mtx>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime) noexcept
+		{
+			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			const auto relativeTime = absoluteTime - _Clock::now();
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
+			return WaitFor(lock, millis);
+		}
 
 		template<class _Clock, class _Duration>
-		bool wait_for_shared(const UniqueLock<RWMutex>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime) noexcept;
+		bool wait_for_shared(const UniqueLock<RWMutex>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime) noexcept
+		{
+			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			const auto relativeTime = absoluteTime - _Clock::now();
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
+			return WaitForShared(lock, millis);
+		}
 
 		template<class Mtx, class _Clock, class _Duration, class Pred>
-		bool wait_for(const UniqueLock<Mtx>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime, Pred pred) noexcept;
+		bool wait_for(const UniqueLock<Mtx>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime, Pred pred) noexcept
+		{
+			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			const auto relativeTime = absoluteTime - _Clock::now();
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
+			while(!pred())
+			{
+				if(!WaitFor(lock, millis))
+					return pred();	
+			}
+			return true;
+		}
 
 		template<class _Clock, class _Duration, class Pred>
-		bool wait_for(const UniqueLock<RWMutex>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime, Pred pred) noexcept;
+		bool wait_for(const UniqueLock<RWMutex>& lock, const std::chrono::time_point<_Clock, _Duration>& absoluteTime, Pred pred) noexcept
+		{
+			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			const auto relativeTime = absoluteTime - _Clock::now();
+			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
+			while(!pred())
+			{
+				if(!WaitForShared(lock, millis))
+					return pred();	
+			}
+			return true;
+		}
 
 		[[nodiscard]] const SignalHandle* GetHandle()const noexcept
 		{
