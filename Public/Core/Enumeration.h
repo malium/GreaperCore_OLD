@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -54,7 +54,7 @@ INLINE constexpr Type FromString(const greaper::StringView& type)noexcept \
 #define _ENUMDEF_ENUMLUT_END()\
 	};
 
-#define ENUMERATION1(name, val0)			\
+#define ENUMERATION_1(name, val0)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0,										\
@@ -67,7 +67,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION2(name, val0, val1)			\
+#define ENUMERATION_2(name, val0, val1)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1,										\
@@ -80,7 +80,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION3(name, val0, val1, val2)			\
+#define ENUMERATION_3(name, val0, val1, val2)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2,										\
@@ -93,7 +93,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION4(name, val0, val1, val2, val3)			\
+#define ENUMERATION_4(name, val0, val1, val2, val3)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,										\
@@ -106,7 +106,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION5(name, val0, val1, val2, val3, val4)			\
+#define ENUMERATION_5(name, val0, val1, val2, val3, val4)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4,									\
@@ -119,7 +119,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION6(name, val0, val1, val2, val3, val4, val5)			\
+#define ENUMERATION_6(name, val0, val1, val2, val3, val4, val5)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4, val5,									\
@@ -132,7 +132,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION7(name, val0, val1, val2, val3, val4, val5, val6)			\
+#define ENUMERATION_7(name, val0, val1, val2, val3, val4, val5, val6)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4, val5, val6,									\
@@ -145,7 +145,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION8(name, val0, val1, val2, val3, val4, val5, val6, val7)			\
+#define ENUMERATION_8(name, val0, val1, val2, val3, val4, val5, val6, val7)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4, val5, val6, val7,									\
@@ -159,7 +159,7 @@ _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
 
-#define ENUMERATION9(name, val0, val1, val2, val3, val4, val5, val6, val7, val8)			\
+#define ENUMERATION_9(name, val0, val1, val2, val3, val4, val5, val6, val7, val8)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4, val5, val6, val7, val8,									\
@@ -172,7 +172,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION10(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9)			\
+#define ENUMERATION_10(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4, val5, val6, val7, val8, val9,									\
@@ -185,7 +185,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION11(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10)			\
+#define ENUMERATION_11(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4, val5, val6, val7, val8, val9, val10,									\
@@ -198,7 +198,7 @@ _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
 
-#define ENUMERATION12(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11)			\
+#define ENUMERATION_12(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11)			\
 _ENUMDEF_BEGIN(name)						\
 _ENUMDEF_ENUM_BEGIN()						\
 val0, val1, val2, val3,	val4, val5, val6, val7, val8, val9, val10, val11,									\
@@ -210,5 +210,11 @@ _ENUMDEF_ENUMLUT_END()						\
 _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\
 _ENUMDEF_END(name)
+
+#define ENUM_CONCAT(A, B) _ENUM_CONCAT(A, B)
+#define _ENUM_CONCAT(A, B) A##_##B
+
+#define ENUMERATION(name, ...) \
+ENUM_CONCAT(ENUMERATION, MACRO_GET_ARG_COUNT(__VA_ARGS__)(name, __VA_ARGS__))
 
 #endif /* CORE_ENUMERATION_H */

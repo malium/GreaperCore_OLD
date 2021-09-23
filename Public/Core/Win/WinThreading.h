@@ -48,9 +48,9 @@ namespace greaper
 	{
 		struct WinMutexImpl
 		{
-			static constexpr bool IsValid(const MutexHandle* handle) noexcept
+			static constexpr bool IsValid(const MutexHandle& handle) noexcept
 			{
-				return handle != nullptr;
+				return handle.Ptr != reinterpret_cast<PVOID>(-1);
 			}
 
 			static void Initialize(MutexHandle& handle) noexcept
@@ -80,16 +80,16 @@ namespace greaper
 
 			static void Invalidate(MutexHandle& handle) noexcept
 			{
-				ClearMemory(handle);
+				handle.Ptr = reinterpret_cast<PVOID>(-1);
 			}
 		};
 		using MutexImpl = WinMutexImpl;
 
 		struct WinRecursiveMutexImpl
 		{
-			static constexpr bool IsValid(const RecursiveMutexHandle* handle) noexcept
+			static constexpr bool IsValid(const RecursiveMutexHandle& handle) noexcept
 			{
-				return handle != nullptr;
+				return handle.LockSemaphore != INVALID_HANDLE_VALUE;
 			}
 
 			static void Initialize(RecursiveMutexHandle& handle) noexcept
@@ -119,16 +119,16 @@ namespace greaper
 
 			static void Invalidate(RecursiveMutexHandle& handle) noexcept
 			{
-				ClearMemory(handle);
+				handle.LockSemaphore = INVALID_HANDLE_VALUE;
 			}
 		};
 		using RecursiveMutexImpl = WinRecursiveMutexImpl;
 
 		struct WinRWMutexImpl
 		{
-			static constexpr bool IsValid(const RWMutexHandle* handle) noexcept
+			static constexpr bool IsValid(const RWMutexHandle& handle) noexcept
 			{
-				return handle != nullptr;
+				return handle.Ptr != reinterpret_cast<PVOID>(-1);
 			}
 
 			static void Initialize(RWMutexHandle& handle) noexcept
@@ -173,18 +173,22 @@ namespace greaper
 
 			static void Invalidate(RWMutexHandle& handle) noexcept
 			{
-				ClearMemory(handle);
+				handle.Ptr = reinterpret_cast<PVOID>(-1);
 			}
 		};
 		using RWMutexImpl = WinRWMutexImpl;
 
 		struct WinSignalImpl
 		{
-			static void Init(SignalHandle& handle)noexcept
+			static constexpr bool IsValid(const SignalHandle& handle) noexcept
+			{
+				return handle.Ptr != reinterpret_cast<PVOID>(-1);
+			}
+			static void Initialize(SignalHandle& handle)noexcept
 			{
 				InitializeConditionVariable(&handle);
 			}
-			static void Deinit(SignalHandle& handle)noexcept
+			static void Deinitialize(SignalHandle& handle)noexcept
 			{
 				UNUSED(handle);
 			}
@@ -230,7 +234,7 @@ namespace greaper
 			}
 			static void Invalidate(SignalHandle& handle) noexcept
 			{
-				ClearMemory(handle);
+				handle.Ptr = reinterpret_cast<PVOID>(-1);
 			}
 		};
 		using SignalImpl = WinSignalImpl;

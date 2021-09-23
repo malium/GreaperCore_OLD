@@ -243,8 +243,6 @@
 *                                      OTHER                                       *
 ***********************************************************************************/
 
-#define EVALMACRO(m) m
-
 /* Interface class definition (no virtual table) */
 #ifndef NOVTABLE
 #define NOVTABLE

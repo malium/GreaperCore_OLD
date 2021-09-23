@@ -13,7 +13,7 @@
 
 namespace greaper
 {
-	ENUMERATION2(StringEncoding, UTF8, UTF16);
+	ENUMERATION(StringEncoding, UTF8, UTF16);
 	class IStream
 	{
 	public:
