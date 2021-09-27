@@ -129,10 +129,13 @@
     <ClInclude Include="Public\Core\Base\BasicTypes.h" />
     <ClInclude Include="Public\Core\Base\Config.h" />
     <ClInclude Include="Public\Core\Base\GreaperEntryPoint.h" />
+    <ClInclude Include="Public\Core\Base\IThreadPool.h" />
+    <ClInclude Include="Public\Core\Base\Task.h" />
     <ClInclude Include="Public\Core\Base\PropertyConverter.h" />
     <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
-    <ClInclude Include="Public\Core\Base\Threading.h" />
+    <ClInclude Include="Public\Core\Base\IThread.h" />
+    <ClInclude Include="Public\Core\Concurrency.h" />
     <ClInclude Include="Public\Core\ILogManager.h" />
     <ClInclude Include="Public\Core\Lnx\LnxThreading.h" />
     <ClInclude Include="Public\Core\Lnx\Prerequisites.h" />

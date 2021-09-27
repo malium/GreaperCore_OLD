@@ -5,15 +5,17 @@
 
 #pragma once
 
-#ifndef CORE_REFLECTION_REFLECTED_TYPE_H
-#define CORE_REFLECTION_REFLECTED_TYPE_H 1
+#ifndef CORE_I_THREAD_POOL_H
+#define CORE_I_THREAD_POOL_H 1
 
-#include "../CorePrerequisites.h"
-#include "../Enumeration.h"
+#include "Task.h"
 
 namespace greaper
 {
-	struct IReflectedField;
+	struct IPooledTask
+	{
+
+	};
 }
 
-#endif /* CORE_REFLECTION_REFLECTED_TYPE_H */
+#endif /* CORE_I_THREAD_POOL_H */

@@ -114,13 +114,22 @@
     <ClInclude Include="Public\Core\IThreadManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Public\Core\Base\Threading.h">
+    <ClInclude Include="Public\Core\Base\IThread.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Public\Core\Win\WinThreading.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Public\Core\Lnx\LnxThreading.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Core\Concurrency.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Core\Base\Task.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Core\Base\IThreadPool.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

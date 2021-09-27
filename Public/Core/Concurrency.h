@@ -1,22 +1,23 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos S�nchez Torrent.                                         *
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
 #pragma once
 
-#ifndef CORE_THREADING_H
-#define CORE_THREADING_H 1
+#ifndef CORE_CONCURRENCY_H
+#define CORE_CONCURRENCY_H 1
 
-#include "../Memory.h"
+#include "Memory.h"
 
 #if PLT_WINDOWS
 #include "Win/WinThreading.h"
 #elif PLT_LINUX
 #incude "Lnx/LnxThreading.h"
 #endif
-#include <mutex>
-#include <condition_variable>
+#include <semaphore>
+#include <barrier>
+#include <functional>
 
 namespace greaper
 {
@@ -38,9 +39,9 @@ namespace greaper
 		}
 		Mutex& operator=(Mutex&& other)noexcept
 		{
-			if(this != &other)
+			if (this != &other)
 			{
-				if(Impl::MutexImpl::IsValid(m_Handle))
+				if (Impl::MutexImpl::IsValid(m_Handle))
 					Impl::MutexImpl::Deinitialize(m_Handle);
 				DuplicateMemory(other.m_Handle, m_Handle);
 				Impl::MutexImpl::Invalidate(other.m_Handle);
@@ -49,7 +50,7 @@ namespace greaper
 		}
 		~Mutex()
 		{
-			if(Impl::MutexImpl::IsValid(m_Handle))
+			if (Impl::MutexImpl::IsValid(m_Handle))
 				Impl::MutexImpl::Deinitialize(m_Handle);
 		}
 
@@ -61,7 +62,7 @@ namespace greaper
 
 		bool try_lock() noexcept
 		{
-			if(!Impl::MutexImpl::IsValid(m_Handle))
+			if (!Impl::MutexImpl::IsValid(m_Handle))
 				return false;
 			return Impl::MutexImpl::TryLock(m_Handle);
 		}
@@ -100,9 +101,9 @@ namespace greaper
 		}
 		RecursiveMutex& operator=(RecursiveMutex&& other) noexcept
 		{
-			if(this != &other)
+			if (this != &other)
 			{
-				if(Impl::RecursiveMutexImpl::IsValid(m_Handle))
+				if (Impl::RecursiveMutexImpl::IsValid(m_Handle))
 					Impl::RecursiveMutexImpl::Deinitialize(m_Handle);
 				DuplicateMemory(other.m_Handle, m_Handle);
 				Impl::RecursiveMutexImpl::Invalidate(other.m_Handle);
@@ -111,7 +112,7 @@ namespace greaper
 		}
 		~RecursiveMutex()
 		{
-			if(Impl::RecursiveMutexImpl::IsValid(m_Handle))
+			if (Impl::RecursiveMutexImpl::IsValid(m_Handle))
 				Impl::RecursiveMutexImpl::Deinitialize(m_Handle);
 		}
 
@@ -123,7 +124,7 @@ namespace greaper
 
 		bool try_lock() noexcept
 		{
-			if(!Impl::RecursiveMutexImpl::IsValid(m_Handle))
+			if (!Impl::RecursiveMutexImpl::IsValid(m_Handle))
 				return false;
 			return Impl::RecursiveMutexImpl::TryLock(m_Handle);
 		}
@@ -163,9 +164,9 @@ namespace greaper
 		}
 		RWMutex& operator=(RWMutex&& other) noexcept
 		{
-			if(this != &other)
+			if (this != &other)
 			{
-				if(Impl::RWMutexImpl::IsValid(m_Handle))
+				if (Impl::RWMutexImpl::IsValid(m_Handle))
 					Impl::RWMutexImpl::Deinitialize(m_Handle);
 				DuplicateMemory(other.m_Handle, m_Handle);
 				Impl::RWMutexImpl::Invalidate(other.m_Handle);
@@ -174,7 +175,7 @@ namespace greaper
 		}
 		~RWMutex()
 		{
-			if(Impl::RWMutexImpl::IsValid(m_Handle))
+			if (Impl::RWMutexImpl::IsValid(m_Handle))
 				Impl::RWMutexImpl::Deinitialize(m_Handle);
 		}
 
@@ -204,14 +205,14 @@ namespace greaper
 
 		bool try_lock() noexcept
 		{
-			if(!Impl::RWMutexImpl::IsValid(m_Handle))
+			if (!Impl::RWMutexImpl::IsValid(m_Handle))
 				return false;
 			return Impl::RWMutexImpl::TryLock(m_Handle);
 		}
 
 		bool try_lock_shared() noexcept
 		{
-			if(!Impl::RWMutexImpl::IsValid(m_Handle))
+			if (!Impl::RWMutexImpl::IsValid(m_Handle))
 				return false;
 			return Impl::RWMutexImpl::TryLockShared(m_Handle);
 		}
@@ -240,11 +241,11 @@ namespace greaper
 
 		INLINE void lock() noexcept
 		{
-			while(true)
+			while (true)
 			{
-				for(uint32 i = 0; i < SpinCount; ++i)
+				for (uint32 i = 0; i < SpinCount; ++i)
 				{
-					if(try_lock())
+					if (try_lock())
 						return;
 				}
 				THREAD_YIELD();
@@ -263,8 +264,36 @@ namespace greaper
 		}
 	};
 
+	struct AdoptLock { explicit AdoptLock() = default; };
+
 	template<class Mtx>
-	using Lock = std::lock_guard<Mtx>;
+	class Lock
+	{
+		Mtx& m_Mutex;
+
+	public:
+		using mutex_type = Mtx;
+
+		explicit Lock(Mtx& mtx)
+			:m_Mutex(mtx)
+		{
+			m_Mutex.lock();
+		}
+
+		Lock(Mutex& mtx, AdoptLock)
+			:m_Mutex(mtx)
+		{
+
+		}
+
+		~Lock()
+		{
+			m_Mutex.unlock();
+		}
+
+		Lock(const Lock&) = delete;
+		Lock& operator=(const Lock&) = delete;
+	};
 
 	template<class Mtx>
 	using UniqueLock = std::unique_lock<Mtx>;
@@ -282,7 +311,7 @@ namespace greaper
 			m_Mutex.lock_shared();
 		}
 
-		SharedLock(RWMutex& mutex, std::adopt_lock_t) noexcept
+		SharedLock(RWMutex& mutex, AdoptLock) noexcept
 			:m_Mutex(mutex)
 		{
 
@@ -353,9 +382,9 @@ namespace greaper
 		}
 		Signal& operator=(Signal&& other)noexcept
 		{
-			if(this != &other)
+			if (this != &other)
 			{
-				if(Impl::SignalImpl::IsValid(m_Handle))
+				if (Impl::SignalImpl::IsValid(m_Handle))
 					Impl::SignalImpl::Deinitialize(m_Handle);
 				DuplicateMemory(other.m_Handle, m_Handle);
 				Impl::SignalImpl::Invalidate(other.m_Handle);
@@ -364,7 +393,7 @@ namespace greaper
 		}
 		~Signal()
 		{
-			if(Impl::SignalImpl::IsValid(m_Handle))
+			if (Impl::SignalImpl::IsValid(m_Handle))
 				Impl::SignalImpl::Deinitialize(m_Handle);
 		}
 
@@ -384,6 +413,7 @@ namespace greaper
 		void wait(const UniqueLock<Mtx>& lock) noexcept
 		{
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
+			Impl::SignalImpl::Wait(m_Handle, *lock.mutex()->GetHandle());
 			Wait(lock);
 		}
 
@@ -397,7 +427,7 @@ namespace greaper
 		void wait(const UniqueLock<Mtx>& lock, Pred pred) noexcept
 		{
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
-			while(!pred())
+			while (!pred())
 				Wait(lock);
 		}
 
@@ -405,7 +435,7 @@ namespace greaper
 		void wait_shared(const UniqueLock<RWMutex>& lock, Pred pred) noexcept
 		{
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
-			while(!pred())
+			while (!pred())
 				WaitShared(lock);
 		}
 
@@ -430,10 +460,10 @@ namespace greaper
 		{
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
 			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
-			while(!pred())
+			while (!pred())
 			{
-				if(!WaitFor(lock, millis))
-				return pred();
+				if (!WaitFor(lock, millis))
+					return pred();
 			}
 			return true;
 		}
@@ -443,10 +473,10 @@ namespace greaper
 		{
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
 			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
-			while(!pred())
+			while (!pred())
 			{
-				if(!WaitForShared(lock, millis))
-				return pred();
+				if (!WaitForShared(lock, millis))
+					return pred();
 			}
 			return true;
 		}
@@ -475,10 +505,10 @@ namespace greaper
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
 			const auto relativeTime = absoluteTime - _Clock::now();
 			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
-			while(!pred())
+			while (!pred())
 			{
-				if(!WaitFor(lock, millis))
-					return pred();	
+				if (!WaitFor(lock, millis))
+					return pred();
 			}
 			return true;
 		}
@@ -489,10 +519,10 @@ namespace greaper
 			Verify(Impl::SignalImpl::IsValid(m_Handle), "Trying to use an invalid SignalHandle.");
 			const auto relativeTime = absoluteTime - _Clock::now();
 			const auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(relativeTime).count();
-			while(!pred())
+			while (!pred())
 			{
-				if(!WaitForShared(lock, millis))
-					return pred();	
+				if (!WaitForShared(lock, millis))
+					return pred();
 			}
 			return true;
 		}
@@ -507,6 +537,12 @@ namespace greaper
 			return &m_Handle;
 		}
 	};
+
+	template <ptrdiff_t _Least_max_value = std::_Semaphore_max>
+	using Semaphore = std::counting_semaphore<_Least_max_value>;
+
+	template<class _Completion_function = std::_No_completion_function>
+	using Barrier = std::barrier<_Completion_function>;
 }
 
-#endif /* CORE_THREADING_H */
+#endif /* CORE_CONCURRENCY_H */

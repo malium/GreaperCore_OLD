@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos S�nchez Torrent.                                         *
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -206,6 +206,58 @@ COUNT,										\
 _ENUMDEF_ENUMLUT_END()							\
 _ENUMDEF_LUT_BEGIN()						\
 #val0, #val1, #val2, #val3, #val4, #val5, #val6, #val7, #val8, #val9, #val10, #val11,										\
+_ENUMDEF_ENUMLUT_END()						\
+_ENUMDEF_TOSTRING()							\
+_ENUMDEF_FROMSTRING()						\
+_ENUMDEF_END(name)
+
+#define ENUMERATION_13(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12)			\
+_ENUMDEF_BEGIN(name)						\
+_ENUMDEF_ENUM_BEGIN()						\
+val0, val1, val2, val3,	val4, val5, val6, val7, val8, val9, val10, val11, val12									\
+COUNT,										\
+_ENUMDEF_ENUMLUT_END()							\
+_ENUMDEF_LUT_BEGIN()						\
+#val0, #val1, #val2, #val3, #val4, #val5, #val6, #val7, #val8, #val9, #val10, #val11, #val12										\
+_ENUMDEF_ENUMLUT_END()						\
+_ENUMDEF_TOSTRING()							\
+_ENUMDEF_FROMSTRING()						\
+_ENUMDEF_END(name)
+
+#define ENUMERATION_14(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13)			\
+_ENUMDEF_BEGIN(name)						\
+_ENUMDEF_ENUM_BEGIN()						\
+val0, val1, val2, val3,	val4, val5, val6, val7, val8, val9, val10, val11, val12, val13									\
+COUNT,										\
+_ENUMDEF_ENUMLUT_END()							\
+_ENUMDEF_LUT_BEGIN()						\
+#val0, #val1, #val2, #val3, #val4, #val5, #val6, #val7, #val8, #val9, #val10, #val11, #val12, #val13										\
+_ENUMDEF_ENUMLUT_END()						\
+_ENUMDEF_TOSTRING()							\
+_ENUMDEF_FROMSTRING()						\
+_ENUMDEF_END(name)
+
+#define ENUMERATION_15(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14)			\
+_ENUMDEF_BEGIN(name)						\
+_ENUMDEF_ENUM_BEGIN()						\
+val0, val1, val2, val3,	val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14									\
+COUNT,										\
+_ENUMDEF_ENUMLUT_END()							\
+_ENUMDEF_LUT_BEGIN()						\
+#val0, #val1, #val2, #val3, #val4, #val5, #val6, #val7, #val8, #val9, #val10, #val11, #val12, #val13, #val14										\
+_ENUMDEF_ENUMLUT_END()						\
+_ENUMDEF_TOSTRING()							\
+_ENUMDEF_FROMSTRING()						\
+_ENUMDEF_END(name)
+
+#define ENUMERATION_16(name, val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15)			\
+_ENUMDEF_BEGIN(name)						\
+_ENUMDEF_ENUM_BEGIN()						\
+val0, val1, val2, val3,	val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15									\
+COUNT,										\
+_ENUMDEF_ENUMLUT_END()							\
+_ENUMDEF_LUT_BEGIN()						\
+#val0, #val1, #val2, #val3, #val4, #val5, #val6, #val7, #val8, #val9, #val10, #val11, #val12, #val13, #val14, #val15										\
 _ENUMDEF_ENUMLUT_END()						\
 _ENUMDEF_TOSTRING()							\
 _ENUMDEF_FROMSTRING()						\

@@ -8,12 +8,18 @@
 //#pragma comment(lib, "Rpcrt4.lib")
 //#pragma comment(lib, "uuid.lib")
 
-#if false
+#if true
 #define DECLSPEC_IMPORT __declspec(dllimport)
 #define RPCRTAPI DECLSPEC_IMPORT
 #define WINUSERAPI DECLSPEC_IMPORT
 #define WINBASEAPI DECLSPEC_IMPORT
 #define WINAPI      __stdcall
+#define RESTRICTED_POINTER
+#define FALSE 0
+#define TRUE 1
+#define INFINITE            0xFFFFFFFF  // Infinite timeout
+#define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1     
+#define CONDITION_VARIABLE_LOCKMODE_SHARED RTL_CONDITION_VARIABLE_LOCKMODE_SHARED
 
 #define CONST               const
 typedef long RPC_STATUS;
@@ -37,6 +43,7 @@ typedef __int64 INT_PTR, *PINT_PTR;
 typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
 #define VOID void
+typedef void* PVOID;
 
 typedef char CHAR;
 typedef CHAR *PCHAR, *LPCH, *PCH;
@@ -108,6 +115,23 @@ typedef struct _RTL_SRWLOCK {
 typedef struct _RTL_CONDITION_VARIABLE {
 	PVOID Ptr;
 } RTL_CONDITION_VARIABLE, * PRTL_CONDITION_VARIABLE;
+
+typedef struct _LIST_ENTRY {
+    struct _LIST_ENTRY* Flink;
+    struct _LIST_ENTRY* Blink;
+} LIST_ENTRY, * PLIST_ENTRY, * RESTRICTED_POINTER PRLIST_ENTRY;
+
+typedef struct _RTL_CRITICAL_SECTION_DEBUG {
+    WORD   Type;
+    WORD   CreatorBackTraceIndex;
+    struct _RTL_CRITICAL_SECTION* CriticalSection;
+    LIST_ENTRY ProcessLocksList;
+    DWORD EntryCount;
+    DWORD ContentionCount;
+    DWORD Flags;
+    WORD   CreatorBackTraceIndexHigh;
+    WORD   SpareWORD;
+} RTL_CRITICAL_SECTION_DEBUG, * PRTL_CRITICAL_SECTION_DEBUG, RTL_RESOURCE_DEBUG, * PRTL_RESOURCE_DEBUG;
 
 typedef struct _RTL_CRITICAL_SECTION {
 	PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
@@ -396,6 +420,27 @@ SleepConditionVariableSRW(
     DWORD dwMilliseconds,
     ULONG Flags
     );
+
+WINBASEAPI
+VOID
+WINAPI
+OutputDebugStringA(
+    LPCSTR lpOutputString
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+OutputDebugStringW(
+    LPCWSTR lpOutputString
+    );
+
+WINBASEAPI
+BOOL
+WINAPI
+SwitchToThread(
+    VOID
+);
 
 #else
 #include <Windows.h>

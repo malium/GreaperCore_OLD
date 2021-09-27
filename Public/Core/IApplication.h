@@ -16,7 +16,7 @@ namespace greaper
 	{
 	public:
 		static constexpr Uuid InterfaceUUID = Uuid{ 0xF79C882D, 0x506B4307, 0xBE036194, 0x9F58B3BC };
-		static constexpr StringView InterfaceName = StringView{ "Application" };
+		static constexpr StringView InterfaceName = "Application"sv;
 		
 		using OnCloseEvent_t = Event<void>;
 
