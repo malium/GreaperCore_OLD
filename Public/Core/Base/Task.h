@@ -15,44 +15,52 @@ namespace greaper
 {
 	class Task
 	{
-		Duration_t Duration;
+		Duration_t m_Duration;
+		std::function<void()> m_Function;
+		StringView m_Name;
 
 	public:
-		std::function<void()> Function;
-		StringView Name;
+		explicit Task(std::function<void()> function = nullptr, const StringView& name = "unnamed"sv);
 
-		explicit Task(const std::function<void()>& function = nullptr, const StringView& name = "unnamed"sv)
-			:Function(function)
-			, Name(name)
-			, Duration(0)
+		void operator()() noexcept;
+
+		Duration_t GetTaskDuration()const noexcept { return m_Duration; }
+
+		const StringView& GetName()const noexcept { return m_Name; }
+	};
+
+	Task::Task(std::function<void()> function, const StringView& name)
+		:m_Function(std::move(function))
+		,m_Name(name)
+		,m_Duration(0)
+	{
+
+	}
+
+	void Task::operator()() noexcept
 		{
-
-		}
-
-		void operator()()
-		{
-			VerifyNotNull(Function, "Trying to execute a nullptr task");
+			VerifyNotNull(m_Function, "Trying to execute a nullptr task");
 			const auto before = Clock_t::now();
-			Function();
+			m_Function();
 			const auto after = Clock_t::now();
-			Duration = after - before;
-			const auto dur = static_cast<double>(Duration.count());
+			m_Duration = after - before;
+			const auto dur = static_cast<double>(m_Duration.count());
 			String msg;
 			if (dur > 1e9)
 			{
-				msg = Format("Task '%s' took %fs.", Name.data(), dur * 1e-9);
+				msg = Format("Task '%s' took %fs.", m_Name.data(), dur * 1e-9);
 			}
 			else if (dur > 1e6)
 			{
-				msg = Format("Task '%s' took %fms.", Name.data(), dur * 1e-6);
+				msg = Format("Task '%s' took %fms.", m_Name.data(), dur * 1e-6);
 			}
 			else if (dur > 1e3)
 			{
-				msg = Format("Task '%s' took %fµs.", Name.data(), dur * 1e-3);
+				msg = Format("Task '%s' took %fµs.", m_Name.data(), dur * 1e-3);
 			}
 			else
 			{
-				msg = Format("Task '%s' took %fns.", Name.data(), dur);
+				msg = Format("Task '%s' took %fns.", m_Name.data(), dur);
 			}
 #if PLT_WINDOWS
 			OutputDebugStringA(msg.c_str());
@@ -60,12 +68,6 @@ namespace greaper
 			printf(msg.c_str());
 #endif
 		}
-
-		Duration_t GetTaskDuration()const noexcept
-		{
-			return Duration;
-		}
-	};
 }
 
 #endif /* CORE_TASK_H */

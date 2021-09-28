@@ -91,7 +91,7 @@ namespace greaper
 		}
 
 		template<class T, class _Alloc_>
-		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, const StringView&, T, const StringView&,
+		friend Result<TProperty<T>*> CreateProperty(greaper::IGreaperLibrary*, const StringView&, T, const StringView&,
 			bool, bool, TPropertyValidator<T>*);
 	public:
 		using value_type = T;
@@ -188,22 +188,28 @@ namespace greaper
 	template<typename T> struct ReflectedTypeToID<TProperty<T>> { static constexpr ReflectedTypeID_t ID = RTI_Property; };
 
 	template<class T, class _Alloc_ = greaper::GenericAllocator>
-	TProperty<T>* CreateProperty(IGreaperLibrary* library, const StringView& propertyName, T initialValue, const StringView& propertyInfo = StringView{},
+	Result<TProperty<T>*> CreateProperty(IGreaperLibrary* library, const StringView& propertyName, T initialValue, const StringView& propertyInfo = StringView{},
 		bool isConstant = false, bool isStatic = false, TPropertyValidator<T>* validator = nullptr)
 	{
 		TProperty<T>* property = AllocAT(TProperty<T>, _Alloc_);
 		new ((void*)property)TProperty(propertyName, std::move(initialValue), propertyInfo, isConstant, isStatic, validator);
-		library->RegisterProperty((IProperty*)property);
-		return property;
+		const auto res = library->RegisterProperty((IProperty*)property);
+		if (!res)
+		{
+			property->~TProperty<T>();
+			DeallocA(property, _Alloc_);
+			return CreateFailure<TProperty<T>*>("Couldn't register the property"sv);
+		}
+		return CreateResult(property);
 	}
 
 	template<class T>
-	TProperty<T>* GetProperty(IGreaperLibrary* library, const String& name)
+	Result<TProperty<T>*> GetProperty(IGreaperLibrary* library, const String& name)
 	{
-		IProperty* prop = library->GetProperty(name);
-		if (!prop)
-			return nullptr;
-		return reinterpret_cast<TProperty<T>>(prop);
+		auto res = library->GetProperty(name);
+		if (res.HasFailed())
+			return CopyFailure<TProperty<T>*>(res);
+		return CreateResult(reinterpret_cast<TProperty<T>*>(res.GetValue()));
 	}
 }
 

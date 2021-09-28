@@ -9,6 +9,7 @@
 #define CORE_I_APPLICATION_H 1
 
 #include "Interface.h"
+#include "Result.h"
 
 namespace greaper
 {
@@ -28,31 +29,31 @@ namespace greaper
 
 		virtual IGreaperLibrary* GetLibrary()const = 0;
 
-		virtual bool RegisterGreaperLibrary(const WString& libName) = 0;
+		virtual Result<IGreaperLibrary*> RegisterGreaperLibrary(const WString& libName) = 0;
 
-		virtual bool GetGreaperLibrary(const WStringView& libraryName, IGreaperLibrary** library) = 0;
+		virtual Result<IGreaperLibrary*> GetGreaperLibrary(const WStringView& libraryName) = 0;
 
-		virtual bool GetGreaperLibrary(const Uuid& libraryUUID, IGreaperLibrary** library) = 0;
+		virtual Result<IGreaperLibrary*> GetGreaperLibrary(const Uuid& libraryUUID) = 0;
 
-		virtual bool UnregisterGreaperLibrary(IGreaperLibrary* library) = 0;
+		virtual EmptyResult UnregisterGreaperLibrary(IGreaperLibrary* library) = 0;
 
-		virtual bool RegisterInterface(IInterface* interface) = 0;
+		virtual EmptyResult RegisterInterface(IInterface* interface) = 0;
 
-		virtual bool UnregisterInterface(IInterface* interface) = 0;
+		virtual EmptyResult UnregisterInterface(IInterface* interface) = 0;
 
 		virtual void MakeInterfaceDefault(IInterface* interface) = 0;
 
-		virtual bool GetInterface(const Uuid& interfaceUUID, IInterface** interface)const = 0;
+		virtual Result<IInterface*> GetInterface(const Uuid& interfaceUUID)const = 0;
 
-		virtual bool GetInterface(const StringView& interfaceName, IInterface** interface)const = 0;
+		virtual Result<IInterface*> GetInterface(const StringView& interfaceName)const = 0;
 
-		virtual bool GetInterface(const Uuid& interfaceUUID, const Uuid& libraryUUID, IInterface** interface)const = 0;
+		virtual Result<IInterface*> GetInterface(const Uuid& interfaceUUID, const Uuid& libraryUUID)const = 0;
 
-		virtual bool GetInterface(const StringView& interfaceName, const StringView& libraryName, IInterface** interface)const = 0;
+		virtual Result<IInterface*> GetInterface(const StringView& interfaceName, const StringView& libraryName)const = 0;
 
-		virtual bool GetInterface(const Uuid& interfaceUUID, const StringView& libraryName, IInterface** interface)const = 0;
+		virtual Result<IInterface*> GetInterface(const Uuid& interfaceUUID, const StringView& libraryName)const = 0;
 
-		virtual bool GetInterface(const StringView& interfaceName, const Uuid& libraryUUID, IInterface** interface)const = 0;
+		virtual Result<IInterface*> GetInterface(const StringView& interfaceName, const Uuid& libraryUUID)const = 0;
 
 		virtual ILogManager* GetLog()const = 0;
 

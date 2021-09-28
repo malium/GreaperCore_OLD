@@ -156,6 +156,7 @@
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainType.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedProperty.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedType.h" />
+    <ClInclude Include="Public\Core\Result.h" />
     <ClInclude Include="Public\Core\Stream.h" />
     <ClInclude Include="Public\Core\StringUtils.h" />
     <ClInclude Include="Public\Core\IThreadManager.h" />
