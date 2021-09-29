@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos S�nchez Torrent.                                         *
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -14,7 +14,7 @@
 #ifdef GREAPER_CORE_VERSION
 #undef GREAPER_CORE_VERSION
 #endif
-#define GREAPER_CORE_VERSION VERSION_SETTER(0, 2, 2, 0)
+#define GREAPER_CORE_VERSION VERSION_SETTER(0, 2, 3, 0)
 
 namespace greaper
 {
@@ -60,6 +60,7 @@ namespace greaper
 		RTI_Float,
 		RTI_Double,
 		RTI_Half,
+		RTI_Enum,
 
 		// Base Containers
 		RTI_String = 25,

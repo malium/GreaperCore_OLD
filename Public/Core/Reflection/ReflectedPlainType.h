@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos SÃ¡nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -12,6 +12,13 @@
 #include "../Stream.h"
 #include "../Uuid.h"
 #include <functional>
+
+#ifndef REFLECTION_STRING_ELEMENT_SEPARATOR
+#define REFLECTION_STRING_ELEMENT_SEPARATOR '|'
+#endif
+#ifndef REFLECTION_STRING_INNER_ELEMENT_SEPARATOR
+#define REFLECTION_STRING_INNER_ELEMENT_SEPARATOR '~'
+#endif
 
 namespace greaper
 {
@@ -28,6 +35,10 @@ namespace greaper
 
 		static ReflectedSize_t FromStream(T& data, IStream& stream);
 
+		static String ToString(const T& data);
+
+		static void FromString(T& data, const String& str);
+
 		static ReflectedSize_t GetSize(const T& data);
 	};
 
@@ -39,6 +50,12 @@ namespace greaper
 
 	template<typename T>
 	ReflectedSize_t ReflectedRead(T& data, IStream& stream);
+
+	template<typename T>
+	String ReflectedToString(const T& data);
+
+	template<typename T>
+	void ReflectedFromString(T& data, const String& str);
 
 	template<class T>
 	ReflectedSize_t ReflectedWriteWithSizeHeader(IStream& stream, const T& data, std::function<ReflectedSize_t()> fn);
@@ -58,6 +75,20 @@ template<class T>
 inline greaper::ReflectedSize_t greaper::ReflectedPlainType<T>::FromStream(T& data, IStream& stream)
 {
 	return stream.ReadBytes((uint8*)&data, GetSize(data));
+}
+
+template<class T>
+inline greaper::String greaper::ReflectedPlainType<T>::ToString(const T& data) 
+{
+	static_assert(false, "ReflectedPlainType with no ToString specialization for type T");
+	return greaper::String{};
+}
+
+
+template<class T>
+inline void greaper::ReflectedPlainType<T>::FromString(T& data, const String& str) 
+{
+	static_assert(false, "ReflectedPlainType with no FromString specialization for type T");
 }
 
 template<class T>
@@ -82,6 +113,18 @@ template<typename T>
 greaper::ReflectedSize_t greaper::ReflectedRead(T& data, IStream& stream)
 {
 	return ReflectedPlainType<T>::FromStream(data, stream);
+}
+
+template<typename T>
+greaper::String greaper::ReflectedToString(const T& data)
+{
+	return ReflectedPlainType<T>::ToString(data);
+}
+
+template<typename T>
+void greaper::ReflectedFromString(T& data, const String& str)
+{
+	ReflectedPlainType<T>::FromString(data, str);
 }
 
 template<class T>
@@ -109,8 +152,8 @@ void greaper::ReflectedAddHeaderSize(ReflectedSize_t& size)
 	size += sizeof(size);
 }
 
-#define ALLOW_MEMCPY_SERIALIZATION(type, id)											    \
-namespace greaper{																    \
+#define ALLOW_MEMCPY_SERIALIZATION(type, id, toString, fromString)							\
+namespace greaper{																    		\
 	static_assert(std::is_trivially_copyable_v<type>, #type " is not trivially copyable");	\
 	template<>																				\
 	struct ReflectedPlainType<type>															\
@@ -127,6 +170,16 @@ namespace greaper{																    \
 			return stream.ReadBytes((uint8*)&data, sizeof(data));                           \
 		}																					\
 																							\
+		static String ToString(const type& data)											\
+		{																					\
+			return toString ;																\
+		}																					\
+																							\
+		static void FromString(type& data, const String& str)								\
+		{																					\
+			fromString ;																	\
+		}																					\
+																							\
 		static ReflectedSize_t GetSize(const type& data)									\
 		{																					\
 			return sizeof(data);															\
@@ -134,18 +187,18 @@ namespace greaper{																    \
 	};																						\
 }
 
-ALLOW_MEMCPY_SERIALIZATION(bool,	greaper::RTI_Bool);
-ALLOW_MEMCPY_SERIALIZATION(int8,	greaper::RTI_Int8);
-ALLOW_MEMCPY_SERIALIZATION(uint8,	greaper::RTI_Uint8);
-ALLOW_MEMCPY_SERIALIZATION(int16,	greaper::RTI_Int16);
-ALLOW_MEMCPY_SERIALIZATION(uint16,	greaper::RTI_Uint16);
-ALLOW_MEMCPY_SERIALIZATION(int32,	greaper::RTI_Int32);
-ALLOW_MEMCPY_SERIALIZATION(uint32,	greaper::RTI_Uint32);
-ALLOW_MEMCPY_SERIALIZATION(int64,	greaper::RTI_Int64);
-ALLOW_MEMCPY_SERIALIZATION(uint64,	greaper::RTI_Uint64);
-ALLOW_MEMCPY_SERIALIZATION(float,	greaper::RTI_Float);
-ALLOW_MEMCPY_SERIALIZATION(double,	greaper::RTI_Double);
-ALLOW_MEMCPY_SERIALIZATION(greaper::Uuid, greaper::RTI_UUID);
-ALLOW_MEMCPY_SERIALIZATION(greaper::half, greaper::RTI_Half);
+ALLOW_MEMCPY_SERIALIZATION(bool,			greaper::RTI_Bool, data ? "true" : "false", data = str == "true");
+ALLOW_MEMCPY_SERIALIZATION(int8,			greaper::RTI_Int8, String{ std::to_string(data).data() }, data = std::strtol(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint8,			greaper::RTI_Uint8, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(int16,			greaper::RTI_Int16, String{ std::to_string(data).data() }, data = std::strtol(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint16,			greaper::RTI_Uint16, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(int32,			greaper::RTI_Int32, String{ std::to_string(data).data() }, data = std::strtol(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint32,			greaper::RTI_Uint32, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(int64,			greaper::RTI_Int64, String{ std::to_string(data).data() }, data = std::strtoll(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint64,			greaper::RTI_Uint64, String{ std::to_string(data).data() }, data = std::strtoull(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(float,			greaper::RTI_Float, String{ std::to_string(data).data() }, data = std::strtof(str.data(), nullptr));
+ALLOW_MEMCPY_SERIALIZATION(double,			greaper::RTI_Double, String{ std::to_string(data).data() }, data = std::strtod(str.data(), nullptr));
+ALLOW_MEMCPY_SERIALIZATION(greaper::Uuid, 	greaper::RTI_UUID, data.ToString(), data.FromString(str));
+ALLOW_MEMCPY_SERIALIZATION(greaper::half, greaper::RTI_Half, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
 
 #endif /* CORE_REFLECTION_REFLECTED_PLAIN_TYPE_H */

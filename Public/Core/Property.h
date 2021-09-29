@@ -13,6 +13,7 @@
 #include "Base/PropertyConverter.h"
 #include "Event.h"
 #include "IGreaperLibrary.h"
+#include "Concurrency.h"
 
 namespace greaper
 {
@@ -24,6 +25,8 @@ namespace greaper
 	{
 	public:
 		using OnModificationEvent_t = Event<IProperty*>;
+		using OnModificationHandler_t = OnModificationEvent_t::HandlerType;
+		using OnModificationFunction_t = OnModificationEvent_t::HandlerFunction;
 		
 		virtual ~IProperty() = default;
 
@@ -33,7 +36,7 @@ namespace greaper
 		virtual [[nodiscard]] bool IsStatic()const noexcept = 0;
 		virtual [[nodiscard]] bool SetValueFromString(const String& value) noexcept = 0;
 		virtual [[nodiscard]] const String& GetStringValue()const noexcept = 0;
-		virtual [[nodiscard]] OnModificationEvent_t* GetModificationEvent() noexcept = 0;
+		virtual [[nodiscard]] OnModificationEvent_t*const GetOnModificationEvent() noexcept = 0;
 		virtual [[nodiscard]] IGreaperLibrary* GetLibrary()const noexcept = 0;
 	};
 
@@ -63,6 +66,7 @@ namespace greaper
 		OnModificationEvent_t m_OnModificationEvent;
 		TPropertyValidator<T>* m_PropertyValidator;
 		IGreaperLibrary* m_Library;
+		mutable RWMutex m_Mutex;
 
 		bool m_Static;		// Created at the start of the program cannot be saved
 		bool m_Constant;	// Cannot be modified
@@ -87,7 +91,7 @@ namespace greaper
 		}
 
 		template<class T, class _Alloc_>
-		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, const StringView&, T, const StringView&,
+		friend Result<TProperty<T>*> CreateProperty(greaper::IGreaperLibrary*, const StringView&, T, const StringView&,
 			bool, bool, TPropertyValidator<T>*);
 	public:
 		using value_type = T;
@@ -122,7 +126,7 @@ namespace greaper
 				m_Library->LogWarning(Format("Trying to change a constant property, '%s'.", m_PropertyName.c_str()));
 				return false;
 			}
-
+			auto lock = Lock<RWMutex>(m_Mutex);
 			T old = m_Value;
 			T newValue;
 			if (!m_PropertyValidator->Validate(value, &newValue))
@@ -154,13 +158,15 @@ namespace greaper
 		}
 		[[nodiscard]] const T& GetValue()const noexcept
 		{
+			auto lock = SharedLock(m_Mutex);
 			return m_Value;
 		}
 		[[nodiscard]] const String& GetStringValue()const noexcept override
 		{
+			auto lock = SharedLock(m_Mutex);
 			return m_StringValue;
 		}
-		[[nodiscard]] OnModificationEvent_t* GetModificationEvent() noexcept override
+		[[nodiscard]] OnModificationEvent_t*const GetOnModificationEvent() noexcept override
 		{
 			return &m_OnModificationEvent;
 		}
@@ -182,22 +188,28 @@ namespace greaper
 	template<typename T> struct ReflectedTypeToID<TProperty<T>> { static constexpr ReflectedTypeID_t ID = RTI_Property; };
 
 	template<class T, class _Alloc_ = greaper::GenericAllocator>
-	TProperty<T>* CreateProperty(IGreaperLibrary* library, const StringView& propertyName, T initialValue, const StringView& propertyInfo = StringView{},
+	Result<TProperty<T>*> CreateProperty(IGreaperLibrary* library, const StringView& propertyName, T initialValue, const StringView& propertyInfo = StringView{},
 		bool isConstant = false, bool isStatic = false, TPropertyValidator<T>* validator = nullptr)
 	{
 		TProperty<T>* property = AllocAT(TProperty<T>, _Alloc_);
 		new ((void*)property)TProperty(propertyName, std::move(initialValue), propertyInfo, isConstant, isStatic, validator);
-		library->RegisterProperty((IProperty*)property);
-		return property;
+		const auto res = library->RegisterProperty((IProperty*)property);
+		if (!res)
+		{
+			property->~TProperty<T>();
+			DeallocA(property, _Alloc_);
+			return CreateFailure<TProperty<T>*>("Couldn't register the property"sv);
+		}
+		return CreateResult(property);
 	}
 
 	template<class T>
-	TProperty<T>* GetProperty(IGreaperLibrary* library, const String& name)
+	Result<TProperty<T>*> GetProperty(IGreaperLibrary* library, const String& name)
 	{
-		IProperty* prop = library->GetProperty(name);
-		if (!prop)
-			return nullptr;
-		return reinterpret_cast<TProperty<T>>(prop);
+		auto res = library->GetProperty(name);
+		if (res.HasFailed())
+			return CopyFailure<TProperty<T>*>(res);
+		return CreateResult(reinterpret_cast<TProperty<T>*>(res.GetValue()));
 	}
 }
 

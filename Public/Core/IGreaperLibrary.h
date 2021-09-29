@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos S�nchez Torrent.                                         *
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -10,16 +10,17 @@
 
 #include "Library.h"
 #include "Uuid.h"
+#include "Result.h"
 
 namespace greaper
 {
 	class IGreaperLibrary
 	{
 	protected:
-		virtual void RegisterProperty(IProperty* property) = 0;
+		virtual bool RegisterProperty(IProperty* property) = 0;
 
 	public:
-		static constexpr Uuid LibraryUUID = Uuid{ 0x10001000, 0x10001000, 0x10001000, 0x10001000 };
+		static constexpr Uuid LibraryUUID = Uuid{  };
 		static constexpr StringView LibraryName = StringView{ "Unknown Greaper Library" };
 
 		virtual ~IGreaperLibrary() = default;
@@ -38,7 +39,7 @@ namespace greaper
 
 		virtual Vector<IProperty*> GetPropeties()const = 0;
 
-		virtual IProperty* GetProperty(const String& name)const = 0;
+		virtual Result<IProperty*> GetProperty(const String& name)const = 0;
 
 		virtual void LogVerbose(const String& message) = 0;
 
@@ -51,7 +52,7 @@ namespace greaper
 		virtual void LogCritical(const String& message) = 0;
 
 		template<class T, class _Alloc_>
-		friend TProperty<T>* CreateProperty(greaper::IGreaperLibrary*, const StringView&, T, const StringView&,
+		friend Result<TProperty<T>*> CreateProperty(greaper::IGreaperLibrary*, const StringView&, T, const StringView&,
 			bool, bool, TPropertyValidator<T>*);
 	};
 

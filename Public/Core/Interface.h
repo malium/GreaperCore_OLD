@@ -21,8 +21,18 @@ namespace greaper
 		static constexpr StringView InterfaceName = StringView{ "INullInterface" };
 
 		virtual const Uuid& GetInterfaceUUID()const = 0;
+		
 		virtual const StringView& GetInterfaceName()const = 0;
+		
 		virtual IGreaperLibrary* GetLibrary()const = 0;
+
+		virtual void PreUpdate() = 0;
+
+		virtual void Update() = 0;
+
+		virtual void PostUpdate() = 0;
+
+		virtual void FixedUpdate() = 0;
 	};
 
 	template<class T>

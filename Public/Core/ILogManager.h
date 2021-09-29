@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos SÃ¡nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -9,6 +9,7 @@
 #define CORE_I_LOG_MANAGER_H 1
 
 #include "Interface.h"
+#include "Event.h"
 
 namespace greaper
 {
@@ -38,7 +39,9 @@ namespace greaper
 		static constexpr Uuid InterfaceUUID = Uuid{ 0xB05DBD1D, 0x83FE42E1, 0x90CFF1EE, 0x2434CD0D };
 		static constexpr StringView InterfaceName = StringView{ "LogManager" };
 
-		using OnLoggedMessageEvent_t = Event<LogData>;
+		using OnLoggedMessageEvent_t = Event<const LogData&>;
+		using OnLoggedMessageHandler_t = OnLoggedMessageEvent_t::HandlerType;
+		using OnLoggedMessageFunction_t = OnLoggedMessageEvent_t::HandlerFunction;
 
 		virtual ~ILogManager()noexcept = default;
 
@@ -48,7 +51,15 @@ namespace greaper
 
 		virtual IGreaperLibrary* GetLibrary()const = 0;
 
-		virtual OnLoggedMessageEvent_t* GetOnLoggedEvent() = 0;
+		virtual void PreUpdate() = 0;
+
+		virtual void Update() = 0;
+
+		virtual void PostUpdate() = 0;
+
+		virtual void FixedUpdate() = 0;
+
+		virtual OnLoggedMessageEvent_t*const GetOnLoggedEvent() = 0;
 
 		virtual void Log(LogLevel_t level, const String& message) = 0;
 	};

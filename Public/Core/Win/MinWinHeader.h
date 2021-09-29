@@ -14,17 +14,19 @@
 #define WINUSERAPI DECLSPEC_IMPORT
 #define WINBASEAPI DECLSPEC_IMPORT
 #define WINAPI      __stdcall
-#define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
+#define RESTRICTED_POINTER
+#define FALSE 0
+#define TRUE 1
+#define INFINITE            0xFFFFFFFF  // Infinite timeout
+#define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1     
+#define CONDITION_VARIABLE_LOCKMODE_SHARED RTL_CONDITION_VARIABLE_LOCKMODE_SHARED
+
 #define CONST               const
 typedef long RPC_STATUS;
 #define  RPC_ENTRY __stdcall
 #define __RPC_FAR
 #define FAR                 
 #define NEAR                
-
-DECLARE_HANDLE            (HWND);
-DECLARE_HANDLE(HINSTANCE);
-typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
 
 typedef struct _GUID {
 	unsigned long  Data1;
@@ -40,6 +42,8 @@ typedef int                 BOOL;
 typedef __int64 INT_PTR, *PINT_PTR;
 typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
+#define VOID void
+typedef void* PVOID;
 
 typedef char CHAR;
 typedef CHAR *PCHAR, *LPCH, *PCH;
@@ -89,7 +93,60 @@ typedef unsigned __int64 ULONG_PTR, *PULONG_PTR;
 
 typedef CONST CHAR *LPCSTR, *PCSTR;
 typedef CONST WCHAR *LPCWSTR, *PCWSTR;
+
+typedef BYTE  BOOLEAN;           
+typedef BOOLEAN *PBOOLEAN;
+
 typedef INT_PTR (FAR WINAPI *FARPROC)();
+
+//#define DECLARE_HANDLE(name) struct name##__{int unused;}; typedef struct name##__ *name
+typedef PVOID HANDLE;
+#define DECLARE_HANDLE(name) typedef HANDLE name
+#define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
+
+DECLARE_HANDLE(HWND);
+DECLARE_HANDLE(HINSTANCE);
+typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
+
+typedef struct _RTL_SRWLOCK {
+	PVOID Ptr;
+} RTL_SRWLOCK, * PRTL_SRWLOCK;
+
+typedef struct _RTL_CONDITION_VARIABLE {
+	PVOID Ptr;
+} RTL_CONDITION_VARIABLE, * PRTL_CONDITION_VARIABLE;
+
+typedef struct _LIST_ENTRY {
+    struct _LIST_ENTRY* Flink;
+    struct _LIST_ENTRY* Blink;
+} LIST_ENTRY, * PLIST_ENTRY, * RESTRICTED_POINTER PRLIST_ENTRY;
+
+typedef struct _RTL_CRITICAL_SECTION_DEBUG {
+    WORD   Type;
+    WORD   CreatorBackTraceIndex;
+    struct _RTL_CRITICAL_SECTION* CriticalSection;
+    LIST_ENTRY ProcessLocksList;
+    DWORD EntryCount;
+    DWORD ContentionCount;
+    DWORD Flags;
+    WORD   CreatorBackTraceIndexHigh;
+    WORD   SpareWORD;
+} RTL_CRITICAL_SECTION_DEBUG, * PRTL_CRITICAL_SECTION_DEBUG, RTL_RESOURCE_DEBUG, * PRTL_RESOURCE_DEBUG;
+
+typedef struct _RTL_CRITICAL_SECTION {
+	PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
+
+	//
+	//  The following three fields control entering and exiting the critical
+	//  section for the resource
+	//
+
+	LONG LockCount;
+	LONG RecursionCount;
+	HANDLE OwningThread;        // from the thread's ClientId->UniqueThread
+	HANDLE LockSemaphore;
+	ULONG_PTR SpinCount;        // force size on 64-bit systems when packed
+} RTL_CRITICAL_SECTION, * PRTL_CRITICAL_SECTION;
 
 #define MB_OK                       0x00000000L
 #define MB_OKCANCEL                 0x00000001L
@@ -129,6 +186,12 @@ typedef INT_PTR (FAR WINAPI *FARPROC)();
 #define MB_TOPMOST                  0x00040000L
 #define MB_RIGHT                    0x00080000L
 #define MB_RTLREADING               0x00100000L
+
+typedef RTL_SRWLOCK SRWLOCK, * PSRWLOCK;
+typedef RTL_CONDITION_VARIABLE CONDITION_VARIABLE, * PCONDITION_VARIABLE;
+typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
+typedef PRTL_CRITICAL_SECTION PCRITICAL_SECTION;
+typedef PRTL_CRITICAL_SECTION LPCRITICAL_SECTION;		
 
 #define IDOK                1
 #define IDCANCEL            2
@@ -221,6 +284,163 @@ WINAPI
 FreeLibrary(
 	HMODULE hLibModule
 	);
+
+WINBASEAPI
+DWORD
+WINAPI
+GetCurrentThreadId(
+    );
+
+WINBASEAPI
+HANDLE
+WINAPI
+GetCurrentThread(
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+InitializeSRWLock(
+    PSRWLOCK SRWLock
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+ReleaseSRWLockExclusive(
+    PSRWLOCK SRWLock
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+ReleaseSRWLockShared(
+    PSRWLOCK SRWLock
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+AcquireSRWLockExclusive(
+    PSRWLOCK SRWLock
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+AcquireSRWLockShared(
+    PSRWLOCK SRWLock
+    );
+
+WINBASEAPI
+BOOLEAN
+WINAPI
+TryAcquireSRWLockExclusive(
+    PSRWLOCK SRWLock
+    );
+
+WINBASEAPI
+BOOLEAN
+WINAPI
+TryAcquireSRWLockShared(
+    PSRWLOCK SRWLock
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+InitializeCriticalSection(
+    LPCRITICAL_SECTION lpCriticalSection
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+EnterCriticalSection(
+    LPCRITICAL_SECTION lpCriticalSection
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+LeaveCriticalSection(
+    LPCRITICAL_SECTION lpCriticalSection
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+DeleteCriticalSection(
+    LPCRITICAL_SECTION lpCriticalSection
+    );
+
+WINBASEAPI
+BOOL
+WINAPI
+TryEnterCriticalSection(
+    LPCRITICAL_SECTION lpCriticalSection
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+InitializeConditionVariable(
+    PCONDITION_VARIABLE ConditionVariable
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+WakeConditionVariable(
+    PCONDITION_VARIABLE ConditionVariable
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+WakeAllConditionVariable(
+    PCONDITION_VARIABLE ConditionVariable
+    );
+
+WINBASEAPI
+BOOL
+WINAPI
+SleepConditionVariableCS(
+    PCONDITION_VARIABLE ConditionVariable,
+    PCRITICAL_SECTION CriticalSection,
+    DWORD dwMilliseconds
+    );
+
+WINBASEAPI
+BOOL
+WINAPI
+SleepConditionVariableSRW(
+    PCONDITION_VARIABLE ConditionVariable,
+    PSRWLOCK SRWLock,
+    DWORD dwMilliseconds,
+    ULONG Flags
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+OutputDebugStringA(
+    LPCSTR lpOutputString
+    );
+
+WINBASEAPI
+VOID
+WINAPI
+OutputDebugStringW(
+    LPCWSTR lpOutputString
+    );
+
+WINBASEAPI
+BOOL
+WINAPI
+SwitchToThread(
+    VOID
+);
 
 #else
 #include <Windows.h>

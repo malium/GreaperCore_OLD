@@ -37,6 +37,7 @@ namespace greaper
 		INLINE Uuid& operator=(const String& str) noexcept;
 
 		[[nodiscard]] INLINE String ToString()const noexcept;
+		INLINE void FromString(const String& str) noexcept;
 
 		/**
 		 * @brief Requests to the OS a random Uuid

@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos S�nchez Torrent.                                         *
+*   Copyright 2021 Marcos Sánchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -15,7 +15,7 @@ namespace greaper
 {
 	struct IReflectedType;
 
-	ENUMERATION4(ReflectedFieldType, Plain, DataChunk, Reference, ReferencePtr);
+	ENUMERATION(ReflectedFieldType, Plain, DataChunk, Reference, ReferencePtr);
 
 	struct ReflectedFieldInfo
 	{
@@ -26,7 +26,7 @@ namespace greaper
 		ReflectedSize_t StaticSize;
 		ReflectedSize_t DynamicSize;
 
-		constexpr ReflectedFieldInfo()noexcept;
+		constexpr ReflectedFieldInfo() noexcept;
 	};
 
 	struct IReflectedField
@@ -42,14 +42,14 @@ namespace greaper
 
 		virtual void InitFieldInfo();
 
-		void VerifyIsArray(bool isArray)noexcept;		
+		void VerifyIsArray(bool isArray) noexcept;		
 
 	protected:
-		void Init(String name, const ReflectedFieldInfo& info)noexcept;
+		void Init(String name, const ReflectedFieldInfo& info) noexcept;
 	};
 }
 
-constexpr greaper::ReflectedFieldInfo::ReflectedFieldInfo()noexcept
+constexpr greaper::ReflectedFieldInfo::ReflectedFieldInfo() noexcept
 	:ReflectFieldType(ReflectedFieldType_t::Plain)
 	, TypeID(0)
 	, IsArray(false)
@@ -65,7 +65,7 @@ void greaper::IReflectedField::InitFieldInfo()
 	/* NO-OP */
 }
 
-void greaper::IReflectedField::VerifyIsArray(bool isArray)noexcept
+void greaper::IReflectedField::VerifyIsArray(bool isArray) noexcept
 {
 #if !GREAPER_FRELEASE
 	constexpr const char* gArrayText = "an array type";
@@ -77,7 +77,7 @@ void greaper::IReflectedField::VerifyIsArray(bool isArray)noexcept
 #endif
 }
 
-void greaper::IReflectedField::Init(greaper::String name, const greaper::ReflectedFieldInfo& info)noexcept
+void greaper::IReflectedField::Init(greaper::String name, const greaper::ReflectedFieldInfo& info) noexcept
 {
 	Name = std::move(name);
 	Info = info;

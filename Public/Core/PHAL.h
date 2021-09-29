@@ -19,7 +19,7 @@
 #ifdef GREAPER_PHAL_VERSION
 #undef GREAPER_PHAL_VERSION
 #endif
-#define GREAPER_PHAL_VERSION VERSION_SETTER(1, 6, 0, 0)
+#define GREAPER_PHAL_VERSION VERSION_SETTER(1, 6, 1, 0)
 
 // Include configuration
 #include "Base/Config.h"
@@ -208,27 +208,6 @@
 #define PlatformAlignedDealloc(mem) ::free(mem)
 #endif
 
-//typedef PlatformTypes::uint8			uint8;
-//typedef PlatformTypes::uint16			uint16;
-//typedef PlatformTypes::uint32			uint32;
-//typedef PlatformTypes::uint64			uint64;
-//typedef PlatformTypes::int8				int8;
-//typedef PlatformTypes::int16			int16;
-//typedef PlatformTypes::int32			int32;
-//typedef PlatformTypes::int64			int64;
-//
-//typedef PlatformTypes::achar			achar;
-//typedef PlatformTypes::wchar			wchar;
-//typedef PlatformTypes::char8			char8;
-//typedef PlatformTypes::char16			char16;
-//typedef PlatformTypes::char32			char32;
-//
-//typedef PlatformTypes::ptruint			ptruint;
-//typedef PlatformTypes::ptrint			ptrint;
-//
-//typedef PlatformTypes::sizet			sizet;
-//typedef PlatformTypes::ssizet			ssizet;
-
 /***********************************************************************************
 *                                    ENDIANESS                                     *
 ***********************************************************************************/
@@ -242,8 +221,6 @@
 /***********************************************************************************
 *                                      OTHER                                       *
 ***********************************************************************************/
-
-#define EVALMACRO(m) m
 
 /* Interface class definition (no virtual table) */
 #ifndef NOVTABLE
