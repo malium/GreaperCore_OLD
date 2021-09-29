@@ -9,10 +9,6 @@
 #define GREAPER_CORE_MEMORY_H 1
 
 #include "CorePrerequisites.h"
-//#include "DebugBreak.h"
-#if PLT_WINDOWS
-#include "Win/MinWinHeader.h"
-#endif
 #include <type_traits>
 #include <vector>
 #include <list>
@@ -219,13 +215,8 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 		using const_pointer = const value_type*;
 		using reference = value_type&;
 		using const_reference = const value_type&;
-#if GREAPER_USE_BASIC_TYPEINFO
-		using size_type = sizet::Type;
-		using difference_type = ptrint::Type;
-#else
 		using size_type = sizet;
 		using difference_type = ptrint;
-#endif
 
 		StdAlloc()noexcept = default;
 		StdAlloc(StdAlloc&&)noexcept = default;
@@ -270,18 +261,6 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 	template<typename T, typename A = StdAlloc<T>>
 	using BasicStringStream = std::basic_stringstream<T, std::char_traits<T>, A>;
 
-#if GREAPER_USE_BASIC_TYPEINFO
-	using String = BasicString<achar::Type>;
-	using StringView = BasicStringView<achar::Type>;
-	using StringStream = BasicStringStream<achar::Type>;
-	using WString = BasicString<wchar::Type>;
-	using WStringView = BasicString<wchar::Type>;
-	using WStringStream = BasicStringStream<wchar::Type>;
-	using U16String = BasicString<u16char::Type>;
-	using U16StringStream = BasicStringStream<u16char::Type>;
-	using U32String = BasicString<u32char::Type>;
-	using U32StringStream = BasicStringStream<u32char::Type>;
-#else
 	using String = BasicString<achar>;
 	using StringView = BasicStringView<achar>;
 	using StringStream = BasicStringStream<achar>;
@@ -292,7 +271,6 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 	using U16StringStream = BasicStringStream<u16char>;
 	using U32String = BasicString<u32char>;
 	using U32StringStream = BasicStringStream<u32char>;
-#endif
 
 	namespace Impl
 	{
@@ -452,11 +430,12 @@ namespace greaper::Impl
 		{
 			return;
 		}
-#else
+#else // ^^^ PLT_WINDOWS // PLT_OTHER vvv
 		std::cerr << "Greaper Assertion: " << str;
+#endif
+
 #if GREAPER_DEBUG_BREAK
 		TRIGGER_BREAKPOINT();
-#endif
 #endif
 		_LogBreak(str);
 		exit(EXIT_FAILURE);
