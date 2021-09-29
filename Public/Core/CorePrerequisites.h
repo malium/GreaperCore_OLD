@@ -44,7 +44,7 @@ namespace greaper
 	using ReflectedFieldID_t = int16;
 	using ReflectedTypeID_t = int64;
 	using ReflectedSize_t = int64;
-
+	template<class T> struct ReflectedPlainType;
 
 	// Reflection ID
 	enum CoreReflectedTypeID : ReflectedTypeID_t
