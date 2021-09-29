@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -36,11 +36,19 @@ namespace greaper
 
 		virtual Timepoint_t GetTimeSinceStart()const = 0;
 
+		virtual Timepoint_t GetTimeSinceLastUpdate()const = 0;
+
+		virtual Timepoint_t GetTimeSinceLastFixedUpdate()const = 0;
+
 		virtual uint64 GetCurrentFrame()const = 0;
 
-		virtual Duration_t GetLastFrameDelta()const = 0;
+		virtual Duration_t GetUpdateDeltaTime()const = 0;
 
-		virtual Duration_t GetLastFixedFrameDelta()const = 0;
+		virtual Duration_t GetFixedUpdateDeltaTime()const = 0;
+
+		virtual void SetMaxUpdateRate(int32 updatesPerSecond) = 0;
+
+		virtual int32 GetMaxUpdateRate()const = 0;
 	};
 }
 

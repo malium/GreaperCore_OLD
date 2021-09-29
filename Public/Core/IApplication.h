@@ -55,20 +55,6 @@ namespace greaper
 
 		virtual Result<IInterface*> GetInterface(const StringView& interfaceName, const Uuid& libraryUUID)const = 0;
 
-		virtual ILogManager* GetLog()const = 0;
-
-		virtual Timepoint_t GetStartTime()const = 0;
-
-		virtual Timepoint_t GetCurrentTime()const = 0;
-
-		virtual Timepoint_t GetLastUpdateTime()const = 0;
-
-		virtual void SetMaxUpdtesPerSecond(int maxUPS) = 0;
-
-		virtual int GetMaxUpdatesPerSeconds()const = 0;
-
-		virtual double GetUpdateDeltaTime()const = 0;
-
 		virtual void PreUpdate() = 0;
 
 		virtual void Update() = 0;
@@ -76,6 +62,12 @@ namespace greaper
 		virtual void PostUpdate() = 0;
 
 		virtual void FixedUpdate() = 0;
+
+		virtual void StartApplication() = 0;
+
+		virtual bool AppHasToStop()const = 0;
+
+		virtual void AppMarkToStop() = 0;
 
 		virtual void StopApplication() = 0;
 
