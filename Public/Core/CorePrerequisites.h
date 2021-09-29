@@ -25,14 +25,18 @@ namespace greaper
 	// fwd
 	class IApplication;
 	class ILogManager;
+	class IThreadManager;
+	class ITimeManager;
 	class ILibrary;
 	class IGreaperLibrary;
 	class IProperty;
 	template<class T> class TProperty;
 	template<class T> class TPropertyValidator;
 	template<class... Args> class Event;
+	template<class T> class TEnum;
 	class IStream;
 	class Uuid;
+	template<class T> class Result;
 
 	// types
 	using half = int16;
