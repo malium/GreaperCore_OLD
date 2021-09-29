@@ -60,6 +60,7 @@ namespace greaper
 		RTI_Float,
 		RTI_Double,
 		RTI_Half,
+		RTI_Enum,
 
 		// Base Containers
 		RTI_String = 25,

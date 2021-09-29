@@ -20,7 +20,7 @@ namespace greaper
 		virtual bool RegisterProperty(IProperty* property) = 0;
 
 	public:
-		static constexpr Uuid LibraryUUID = Uuid{ 0x10001000, 0x10001000, 0x10001000, 0x10001000 };
+		static constexpr Uuid LibraryUUID = Uuid{  };
 		static constexpr StringView LibraryName = StringView{ "Unknown Greaper Library" };
 
 		virtual ~IGreaperLibrary() = default;

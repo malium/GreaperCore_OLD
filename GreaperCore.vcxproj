@@ -137,6 +137,7 @@
     <ClInclude Include="Public\Core\Base\IThread.h" />
     <ClInclude Include="Public\Core\Concurrency.h" />
     <ClInclude Include="Public\Core\ILogManager.h" />
+    <ClInclude Include="Public\Core\ITimeManager.h" />
     <ClInclude Include="Public\Core\Lnx\LnxThreading.h" />
     <ClInclude Include="Public\Core\Lnx\Prerequisites.h" />
     <ClInclude Include="Public\Core\Property.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="Public\Core\Base\Utils.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedField.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainContainer.h" />
+    <ClInclude Include="Public\Core\Reflection\ReflectedPlainEnum.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainField.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainType.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedProperty.h" />
