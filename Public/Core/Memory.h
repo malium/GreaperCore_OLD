@@ -125,62 +125,61 @@ namespace greaper
 
 	class GenericAllocator { };
 
-	template<class _Alloc_>
-	INLINE void* _Alloc(sizet byteSize)
+	template<class _Alloc_ = GenericAllocator>
+	INLINE void* Alloc(sizet byteSize)
 	{
 		return MemoryAllocator<_Alloc_>::Allocate(byteSize);
 	}
 
-	template<class _Alloc_, class T>
-	INLINE T* _AllocN(sizet count)
+	template<class T, class _Alloc_ = GenericAllocator>
+	INLINE T* AllocT()
 	{
-		return static_cast<T*>(MemoryAllocator<_Alloc_>::Allocate(sizeof(T) * count));
+		return static_cast<T*>(MemoryAllocator<_Alloc_>::Allocate(sizeof(T)));
 	}
 
-	template<class _Alloc_, class T, class... Args>
-	INLINE T _Construct(sizet count, Args&&... args)
+	template<class T, class _Alloc_ = GenericAllocator>
+	INLINE T* AllocN(sizet N)
+	{
+		return static_cast<T*>(MemoryAllocator<_Alloc_>::Allocate(sizeof(T) * N));
+	}
+
+	template<class T, class _Alloc_ = GenericAllocator, class... Args>
+	INLINE T* Construct(Args&&... args)
+	{
+		return ConstructN<T, _Alloc_>(1, args);
+	}
+
+	template<class T, class _Alloc_ = GenericAllocator, class... Args>
+	INLINE T* ConstructN(sizet count, Args&&... args)
 	{
 		T* mem = _AllocN<_Alloc_, T>(count);
 		for (sizet i = 0; i < count; ++i)
 			new (reinterpret_cast<void*>(&mem[i]))T(std::forward<Args>(args)...);
 		return mem;
 	}
-
-	template<class _Alloc_>
-	INLINE void _Dealloc(void* mem)
+	
+	template<class _Alloc_ = GenericAllocator>
+	INLINE void Dealloc(void* mem)
 	{
 		MemoryAllocator<_Alloc_>::Deallocate(mem);
 	}
 
-	template<class _Alloc_, class T>
-	INLINE void _Destroy(T* ptr, sizet count)
+	template<class T, class _Alloc_ = GenericAllocator>
+	INLINE void Destroy(T* ptr, sizet count = 1)
 	{
 		for (sizet i = 0; i < count; ++i)
 			ptr[i].~T();
 		MemoryAllocator<_Alloc_>::Deallocate(ptr);
 	}
 
-#define AllocA(bytes, alloc) _Alloc<alloc>(bytes)
-#define Alloc(bytes) _Alloc<GenericAllocator>(bytes)
-#define AllocAT(T, alloc) _AllocN<alloc, T>(1)
-#define AllocT(T) _AllocN<GenericAllocator, T>(1)
-#define AllocATN(T, count, alloc) _AllocN<alloc, T>(count)
-#define AllocTN(T, count) _AllocN<GenericAllocator, T>(count)
-#define ConstructA(T, alloc, ...) _Construct<alloc, T>(1, __VA_ARGS__)
-#define Construct(T, ...) _Construct<GenericAllocator, T>(1, __VA_ARGS__)
-#define ConstructAN(T, count, alloc, ...) _Construct<alloc, T>(count, __VA_ARGS__)
-#define ConstructN(T, count, ...) _Construct<GenericAllocator, T>(count, __VA_ARGS__)
-
-#define DeallocA(ptr, alloc) _Dealloc<alloc>(ptr)
-#define Dealloc(ptr) _Dealloc<GenericAllocator>(ptr)
-#define DestroyA(ptr, alloc) _Destroy<alloc>(ptr, 1)
-#define Destroy(ptr) _Destroy<GenericAllocator>(ptr, 1)
-#define DestroyAN(ptr, count, alloc) _Destroy<alloc>(ptr, count)
-#define DestroyN(ptr, count) _Destroy<GenericAllocator>(ptr, count)
-
-#define MemoryFriend()\
-template<class _Alloc_, class T, class... Args> friend T* greaper::_Construct(sizet count, Args&&... args);\
-template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet count)
+/**
+ * @brief Makes a class friend of the base construction/destruction functions
+ * 
+ */
+#define MemoryFriend() \
+template<class T, class _Alloc_, class... Args> friend T* greaper::Construct(Args&&...); \
+template<class T, class _Alloc_, class... Args> friend T* greaper::ConstructN(sizet, Args&&...); \
+template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 
 	template<typename T>
 	using SPtr = std::shared_ptr<T>;
@@ -202,7 +201,7 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		void operator()(T* ptr)const
 		{
-			_Destroy<_Alloc_, T>(ptr, 1);
+			Destroy<T, _Alloc_>(ptr, 1);
 		}
 	};
 
@@ -243,7 +242,7 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		INLINE void deallocate(pointer p, size_type)
 		{
-			_Dealloc<_Alloc_>(p);
+			Dealloc<_Alloc_>(p);
 		}
 
 		INLINE constexpr size_t max_size() { return std::numeric_limits<size_type>::max() / sizeof(T); }

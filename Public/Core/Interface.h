@@ -61,9 +61,14 @@ namespace greaper
 	};
 
 	template<class T>
+	struct IsInterface
+	{
+		static constexpr bool value = std::is_base_of_v<IInterface, T>;
+	};
+	template<class T>
 	struct ValidInterface
 	{
-		static_assert(std::is_base_of_v<IInterface, T>, "Trying to validate an Interface that does not derive from IInterface");
+		static_assert(IsInterface<T>::value, "Trying to validate an Interface that does not derive from IInterface.");
 		static constexpr bool UUIDValid = T::InterfaceUUID != IInterface::InterfaceUUID;
 		static constexpr bool NameValid = T::InterfaceName != IInterface::InterfaceName;
 
