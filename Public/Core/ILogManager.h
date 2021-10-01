@@ -44,21 +44,7 @@ namespace greaper
 		using OnLoggedMessageFunction_t = OnLoggedMessageEvent_t::HandlerFunction;
 
 		virtual ~ILogManager()noexcept = default;
-
-		virtual const Uuid& GetInterfaceUUID()const = 0;
-
-		virtual const StringView& GetInterfaceName()const = 0;
-
-		virtual IGreaperLibrary* GetLibrary()const = 0;
-
-		virtual void PreUpdate() = 0;
-
-		virtual void Update() = 0;
-
-		virtual void PostUpdate() = 0;
-
-		virtual void FixedUpdate() = 0;
-
+		
 		virtual OnLoggedMessageEvent_t*const GetOnLoggedEvent() = 0;
 
 		virtual void Log(LogLevel_t level, const String& message) = 0;

@@ -24,20 +24,6 @@ namespace greaper
 
 		virtual ~IThreadManager()noexcept = default;
 
-		virtual const Uuid& GetInterfaceUUID()const = 0;
-
-		virtual const StringView& GetInterfaceName()const = 0;
-
-		virtual IGreaperLibrary* GetLibrary()const = 0;
-
-		virtual void PreUpdate() = 0;
-
-		virtual void Update() = 0;
-
-		virtual void PostUpdate() = 0;
-
-		virtual void FixedUpdate() = 0;
-
 		virtual Result<IThread*> GetThread(ThreadID_t id)const = 0;
 
 		virtual Result<IThread*> GetThread(const String& threadName)const = 0;
