@@ -45,6 +45,14 @@ namespace greaper
 
         virtual Result<IConsole*> GetConsole()const = 0;
     };
+
+    template<class T, class _Alloc_ = GenericAllocator, class... Args>
+    EmptyResult AddCommand(ICommandManager* mgr, Args&&... args)
+    {
+        static_assert(std::is_base_of_v<ICommand, T>, "Trying to create a Command which doesn't derive from ICommand");
+        auto cmd = (ICommand*)Construct<T, _Alloc_>(args);
+        return mgr->AddCommand(cmd);
+    }
 }
 
 #endif /* CORE_I_COMMAND_MANAGER_H */
