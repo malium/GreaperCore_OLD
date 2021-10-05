@@ -33,7 +33,7 @@ and only they will need to be adapted to this new ecosystem.
 - Set of preprocessor definitions in order to solve different platform challenges in a single statement.
 - Abstraction of the typical multithread classes and utilities with more debug information, for example, knowing what thread are colliding and report the collision.
 - A library protocol that will exchange information about types, properties and interfaces with the main application in order to enable full modularity.
-- (TODO) CommandSystem, that will manage a console and a way to send commands and handle them.
+- CommandSystem, that will manage a console and a way to send commands and handle them.
 - Two types of Event handling, an instant one, class contains an Event object that manages a list of listeners, and a (TODO)deferred one, theres a system that sends the triggered events to different listeners which subscribe to an EventID.
 - (TODO) DeferredCalls System that let's you make a call deferred in time (or frames on a realtime application).
 - (TODO) FileSystem abstraction that enables the addition of virtual filesystems (like a container, zip, 7z...).
