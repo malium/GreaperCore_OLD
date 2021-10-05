@@ -9,7 +9,6 @@
 #define CORE_I_COMMAND_MANAGER_H 1
 
 #include "Interface.h"
-#include "Base/IConsole.h"
 #include "Base/ICommand.h"
 #include "Result.h"
 
@@ -38,12 +37,6 @@ namespace greaper
         virtual bool HasCommand(const String& cmdName)const = 0;
 
         virtual sizet GetStackedCommandCount()const = 0;
-
-        virtual EmptyResult EnableConsole(bool enable) = 0;
-
-        virtual bool IsConsoleEnabled()const = 0;
-
-        virtual Result<IConsole*> GetConsole()const = 0;
     };
 
     template<class T, class _Alloc_ = GenericAllocator, class... Args>
