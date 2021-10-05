@@ -273,8 +273,8 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 
 	namespace Impl
 	{
-		INLINE void _LogBreak(const String& msg);
-		INLINE void _TriggerBreak(const String& str);
+		void _LogBreak(const String& msg);
+		void _TriggerBreak(const String& str);
 	}
 
 	template<typename T, typename A = StdAlloc<T>>
@@ -407,7 +407,7 @@ namespace greaper::Impl
 		// TODO: do error log
 	}
 	
-	FUNCTION_NO_RETURN_START void _TriggerBreak(const String& str) FUNCTION_NO_RETURN_END
+	INLINE void _TriggerBreak(const String& str)
 	{
 
 #if PLT_WINDOWS
