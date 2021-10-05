@@ -23,12 +23,6 @@ namespace greaper
 
 		virtual ~IApplication()noexcept = default;
 
-		virtual const Uuid& GetInterfaceUUID()const = 0;
-
-		virtual const StringView& GetInterfaceName()const = 0;
-
-		virtual IGreaperLibrary* GetLibrary()const = 0;
-
 		virtual Result<IGreaperLibrary*> RegisterGreaperLibrary(const WString& libName) = 0;
 
 		virtual Result<IGreaperLibrary*> GetGreaperLibrary(const WStringView& libraryName) = 0;
@@ -54,14 +48,6 @@ namespace greaper
 		virtual Result<IInterface*> GetInterface(const Uuid& interfaceUUID, const StringView& libraryName)const = 0;
 
 		virtual Result<IInterface*> GetInterface(const StringView& interfaceName, const Uuid& libraryUUID)const = 0;
-
-		virtual void PreUpdate() = 0;
-
-		virtual void Update() = 0;
-
-		virtual void PostUpdate() = 0;
-
-		virtual void FixedUpdate() = 0;
 
 		virtual void StartApplication() = 0;
 

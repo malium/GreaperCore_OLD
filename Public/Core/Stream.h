@@ -58,7 +58,7 @@ namespace greaper
 		
 		virtual void WriteString(const String& string, StringEncoding_t encoding = StringEncoding_t::UTF8);
 		
-		virtual void WriteString(const WString& string, StringEncoding_t encoding = StringEncoding_t::UTF8);
+		virtual void WriteString(const WString& string, StringEncoding_t encoding = StringEncoding_t::UTF16);
 
 		virtual String GetAsString();
 

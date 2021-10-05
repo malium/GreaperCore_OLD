@@ -187,11 +187,7 @@ INLINE sizet ComputeHash(const ArgsType&... args)
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 #endif
 
-#if GREAPER_USE_BASIC_TYPEINFO
-template<class T, sizet::Type N>
-#else
 template<class T, sizet N>
-#endif
 INLINE constexpr sizet ArraySize(T(&)[N]) noexcept { return N; }
 
 template<class T>

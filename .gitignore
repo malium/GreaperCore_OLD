@@ -36,3 +36,4 @@
 *.suo
 *.VC.db
 .vscode/*.*
+.vs/*.*

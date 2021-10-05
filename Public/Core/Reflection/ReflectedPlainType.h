@@ -25,11 +25,12 @@ namespace greaper
 	template<class T>
 	struct ReflectedPlainType
 	{
-		static_assert(std::is_pod<T>::value,
-			"Provided type isn't plain-old-data. You need to specialize ReflectedPlainType template in order to serialize this type. "\
-			" (Or call ALLOW_MEMCPY_SERIALIZATION(type) macro if you are sure the type can be properly serialized using just memcpy.)");
+		static_assert(std::is_pod_v<T>,
+			"Provided type isn't plain-old-data. You need to specialize ReflectedPlainType template in order to serialize this type. "
+			" (Or call ALLOW_MEMCPY_SERIALIZATION(type, id, toString, fromString) macro if you are sure the type can be properly "
+			"serialized using just memcpy.)");
 
-		enum { ID = -1 }; enum { HasDynamicSize = 0 };
+		enum { ID = RTI_Unknown }; enum { HasDynamicSize = 0 };
 
 		static ReflectedSize_t ToStream(const T& data, IStream& stream);
 

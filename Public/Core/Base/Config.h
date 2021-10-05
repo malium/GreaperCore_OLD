@@ -24,7 +24,3 @@
 #define GREAPER_DEBUG_BREAK 1
 #endif
 #endif
-
-#ifndef GREAPER_USE_BASIC_TYPEINFO
-#define GREAPER_USE_BASIC_TYPEINFO 0
-#endif

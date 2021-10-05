@@ -15,7 +15,7 @@ class TEnum
 {
 public:
 	using EnumType = T;
-	static_assert(true, "Trying to use IEnum as standalone type.");
+	static_assert(false, "Trying to use IEnum as standalone type.");
 
 	static constexpr greaper::StringView ToString(T type) noexcept
 	{

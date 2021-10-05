@@ -15,9 +15,11 @@
 #elif PLT_LINUX
 #incude "Lnx/LnxThreading.h"
 #endif
+#include <mutex>
 #include <semaphore>
 #include <barrier>
 #include <functional>
+#include <any>
 
 namespace greaper
 {
@@ -543,6 +545,151 @@ namespace greaper
 
 	template<class _Completion_function = std::_No_completion_function>
 	using Barrier = std::barrier<_Completion_function>;
+
+	struct AsyncOpSyncData
+	{
+		Mutex Mtx;
+		Signal Condition;
+	};
+
+	struct AsyncOpEmpty {  };
+
+	class IAsyncOp
+	{
+		struct OpData
+		{
+			std::any RetValue;
+			std::atomic_bool IsComplete = false;
+		};
+
+	protected:
+		SPtr<OpData> m_Data;
+		SPtr<AsyncOpSyncData> m_SyncData;
+
+		void CompleteCheck()const
+		{
+			Verify(HasCompleted(), "Trying to get AsyncOp return value but the operation hasn't completed yet.");
+		}
+
+	public:
+		IAsyncOp()
+			:m_Data(std::make_shared<OpData>())
+		{
+
+		}
+
+		IAsyncOp(AsyncOpEmpty empty)
+		{
+			UNUSED(empty);
+		}
+
+		IAsyncOp(const SPtr<AsyncOpSyncData>& syncData)
+			:m_Data(std::make_shared<OpData>())
+			,m_SyncData(syncData)
+		{
+
+		}
+
+		IAsyncOp(AsyncOpEmpty empty, const SPtr<AsyncOpSyncData>& syncData)
+			:m_SyncData(syncData)
+		{
+			UNUSED(empty);
+		}
+
+		bool HasCompleted()const
+		{
+			return m_Data->IsComplete.load(std::memory_order_acquire);
+		}
+
+		void BlockUntilComplete()const
+		{
+			if(m_SyncData == nullptr)
+			{
+				// "No sync data is available, AsyncOp must be complete to be able to block."
+				return;
+			}
+			UniqueLock<Mutex> lock(m_SyncData->Mtx);
+			while(!HasCompleted())
+				m_SyncData->Condition.wait(lock);
+		}
+
+		template<typename T>
+		T GetReturnValue()const
+		{
+			return std::any_cast<T>(GetGenericReturnValue());
+		}
+
+		std::any GetGenericReturnValue()const
+		{
+			CompleteCheck();
+
+			return m_Data->RetValue;
+		}
+	};
+
+	template<class RetType>
+	class TAsyncOp : public IAsyncOp
+	{
+		template<class RetType2>
+		friend bool operator==(const TAsyncOp<RetType2>&, std::nullptr_t);
+	public:
+		using ReturnType = RetType;
+
+		TAsyncOp() = default;
+
+		TAsyncOp(AsyncOpEmpty empty)
+			:AsyncOpBase(empty)
+		{
+
+		}
+
+		TAsyncOp(const SPtr<AsyncOpSyncData>& syncData)
+			:AsyncOpBase(syncData)
+		{
+
+		}
+
+		TAsyncOp(AsyncOpEmpty empty, const SPtr<AsyncOpSyncData>& syncData)
+			:AsyncOpBase(empty, syncData)
+		{
+
+		}
+
+		RetType GetReturnValue()const
+		{
+			this->CompleteCheck();
+
+			return any_cast<RetType>(m_Data->RetValue);
+		}
+
+		void _CompleteOperation()
+		{
+			m_Data->IsCompleted.store(true, std::memory_order_release);
+
+			if (m_SyncData != nullptr)
+				m_SyncData->Condition.notify_all();
+		}
+
+		void _CompleteOperation(const RetType& retVal)
+		{
+			m_Data->RetValue = retVal;
+			_CompleteOperation();
+		}
+	};
+
+	template<class RetType>
+	bool operator==(const TAsyncOp<RetType>& left, std::nullptr_t right)
+	{
+		return left.m_Data == nullptr;
+	}
+
+	template<class RetType>
+	bool operator!=(const TAsyncOp<RetType>& left, std::nullptr_t right)
+	{
+		return !(left == nullptr);
+	}
+
+	using AsyncOp = TAsyncOp<std::any>;
 }
 
 #endif /* CORE_CONCURRENCY_H */

@@ -39,27 +39,13 @@ namespace greaper
 		static constexpr Uuid InterfaceUUID = Uuid{ 0xB05DBD1D, 0x83FE42E1, 0x90CFF1EE, 0x2434CD0D };
 		static constexpr StringView InterfaceName = StringView{ "LogManager" };
 
-		using OnLoggedMessageEvent_t = Event<const LogData&>;
-		using OnLoggedMessageHandler_t = OnLoggedMessageEvent_t::HandlerType;
-		using OnLoggedMessageFunction_t = OnLoggedMessageEvent_t::HandlerFunction;
+		using LogEvent_t = Event<const LogData&>;
+		using LogEventHandler_t = LogEvent_t::HandlerType;
+		using LogEventFunction_t = LogEvent_t::HandlerFunction;
 
 		virtual ~ILogManager()noexcept = default;
 
-		virtual const Uuid& GetInterfaceUUID()const = 0;
-
-		virtual const StringView& GetInterfaceName()const = 0;
-
-		virtual IGreaperLibrary* GetLibrary()const = 0;
-
-		virtual void PreUpdate() = 0;
-
-		virtual void Update() = 0;
-
-		virtual void PostUpdate() = 0;
-
-		virtual void FixedUpdate() = 0;
-
-		virtual OnLoggedMessageEvent_t*const GetOnLoggedEvent() = 0;
+		virtual LogEvent_t*const GetLogEvent() = 0;
 
 		virtual void Log(LogLevel_t level, const String& message) = 0;
 	};

@@ -24,9 +24,9 @@ namespace greaper
 	class IProperty
 	{
 	public:
-		using OnModificationEvent_t = Event<IProperty*>;
-		using OnModificationHandler_t = OnModificationEvent_t::HandlerType;
-		using OnModificationFunction_t = OnModificationEvent_t::HandlerFunction;
+		using ModificationEvent_t = Event<IProperty*>;
+		using ModificationEventHandler_t = ModificationEvent_t::HandlerType;
+		using ModificationEventFunction_t = ModificationEvent_t::HandlerFunction;
 		
 		virtual ~IProperty() = default;
 
@@ -36,7 +36,7 @@ namespace greaper
 		virtual [[nodiscard]] bool IsStatic()const noexcept = 0;
 		virtual [[nodiscard]] bool SetValueFromString(const String& value) noexcept = 0;
 		virtual [[nodiscard]] const String& GetStringValue()const noexcept = 0;
-		virtual [[nodiscard]] OnModificationEvent_t*const GetOnModificationEvent() noexcept = 0;
+		virtual [[nodiscard]] ModificationEvent_t*const GetOnModificationEvent() noexcept = 0;
 		virtual [[nodiscard]] IGreaperLibrary* GetLibrary()const noexcept = 0;
 	};
 
@@ -63,7 +63,7 @@ namespace greaper
 		String m_PropertyName;
 		String m_PropertyInfo;
 		String m_StringValue;	// When a property is changed, needs to update this value
-		OnModificationEvent_t m_OnModificationEvent;
+		ModificationEvent_t m_OnModificationEvent;
 		TPropertyValidator<T>* m_PropertyValidator;
 		IGreaperLibrary* m_Library;
 		mutable RWMutex m_Mutex;
@@ -166,7 +166,7 @@ namespace greaper
 			auto lock = SharedLock(m_Mutex);
 			return m_StringValue;
 		}
-		[[nodiscard]] OnModificationEvent_t*const GetOnModificationEvent() noexcept override
+		[[nodiscard]] ModificationEvent_t*const GetOnModificationEvent() noexcept override
 		{
 			return &m_OnModificationEvent;
 		}
@@ -191,13 +191,11 @@ namespace greaper
 	Result<TProperty<T>*> CreateProperty(IGreaperLibrary* library, const StringView& propertyName, T initialValue, const StringView& propertyInfo = StringView{},
 		bool isConstant = false, bool isStatic = false, TPropertyValidator<T>* validator = nullptr)
 	{
-		TProperty<T>* property = AllocAT(TProperty<T>, _Alloc_);
-		new ((void*)property)TProperty(propertyName, std::move(initialValue), propertyInfo, isConstant, isStatic, validator);
+		TProperty<T>* property = Construct<TProperty<T>, _Alloc_>(propertyName, std::move(initialValue), propertyInfo, isConstant, isStatic, validator)
 		const auto res = library->RegisterProperty((IProperty*)property);
 		if (!res)
 		{
-			property->~TProperty<T>();
-			DeallocA(property, _Alloc_);
+			Destroy<TProperty<T>, _Alloc_>(property);
 			return CreateFailure<TProperty<T>*>("Couldn't register the property"sv);
 		}
 		return CreateResult(property);

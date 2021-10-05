@@ -14,7 +14,7 @@
 #ifdef GREAPER_CORE_VERSION
 #undef GREAPER_CORE_VERSION
 #endif
-#define GREAPER_CORE_VERSION VERSION_SETTER(0, 2, 3, 0)
+#define GREAPER_CORE_VERSION VERSION_SETTER(0, 2, 4, 0)
 
 namespace greaper
 {
@@ -25,14 +25,18 @@ namespace greaper
 	// fwd
 	class IApplication;
 	class ILogManager;
+	class IThreadManager;
+	class ITimeManager;
 	class ILibrary;
 	class IGreaperLibrary;
 	class IProperty;
 	template<class T> class TProperty;
 	template<class T> class TPropertyValidator;
 	template<class... Args> class Event;
+	template<class T> class TEnum;
 	class IStream;
 	class Uuid;
+	template<class T> class Result;
 
 	// types
 	using half = int16;
@@ -40,7 +44,7 @@ namespace greaper
 	using ReflectedFieldID_t = int16;
 	using ReflectedTypeID_t = int64;
 	using ReflectedSize_t = int64;
-
+	template<class T> struct ReflectedPlainType;
 
 	// Reflection ID
 	enum CoreReflectedTypeID : ReflectedTypeID_t

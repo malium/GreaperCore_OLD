@@ -9,10 +9,6 @@
 #define GREAPER_CORE_MEMORY_H 1
 
 #include "CorePrerequisites.h"
-//#include "DebugBreak.h"
-#if PLT_WINDOWS
-#include "Win/MinWinHeader.h"
-#endif
 #include <type_traits>
 #include <vector>
 #include <list>
@@ -129,62 +125,61 @@ namespace greaper
 
 	class GenericAllocator { };
 
-	template<class _Alloc_>
-	INLINE void* _Alloc(sizet byteSize)
+	template<class _Alloc_ = GenericAllocator>
+	INLINE void* Alloc(sizet byteSize)
 	{
 		return MemoryAllocator<_Alloc_>::Allocate(byteSize);
 	}
 
-	template<class _Alloc_, class T>
-	INLINE T* _AllocN(sizet count)
+	template<class T, class _Alloc_ = GenericAllocator>
+	INLINE T* AllocT()
 	{
-		return static_cast<T*>(MemoryAllocator<_Alloc_>::Allocate(sizeof(T) * count));
+		return static_cast<T*>(MemoryAllocator<_Alloc_>::Allocate(sizeof(T)));
 	}
 
-	template<class _Alloc_, class T, class... Args>
-	INLINE T _Construct(sizet count, Args&&... args)
+	template<class T, class _Alloc_ = GenericAllocator>
+	INLINE T* AllocN(sizet N)
+	{
+		return static_cast<T*>(MemoryAllocator<_Alloc_>::Allocate(sizeof(T) * N));
+	}
+
+	template<class T, class _Alloc_ = GenericAllocator, class... Args>
+	INLINE T* Construct(Args&&... args)
+	{
+		return ConstructN<T, _Alloc_>(1, args);
+	}
+
+	template<class T, class _Alloc_ = GenericAllocator, class... Args>
+	INLINE T* ConstructN(sizet count, Args&&... args)
 	{
 		T* mem = _AllocN<_Alloc_, T>(count);
 		for (sizet i = 0; i < count; ++i)
 			new (reinterpret_cast<void*>(&mem[i]))T(std::forward<Args>(args)...);
 		return mem;
 	}
-
-	template<class _Alloc_>
-	INLINE void _Dealloc(void* mem)
+	
+	template<class _Alloc_ = GenericAllocator>
+	INLINE void Dealloc(void* mem)
 	{
 		MemoryAllocator<_Alloc_>::Deallocate(mem);
 	}
 
-	template<class _Alloc_, class T>
-	INLINE void _Destroy(T* ptr, sizet count)
+	template<class T, class _Alloc_ = GenericAllocator>
+	INLINE void Destroy(T* ptr, sizet count = 1)
 	{
 		for (sizet i = 0; i < count; ++i)
 			ptr[i].~T();
 		MemoryAllocator<_Alloc_>::Deallocate(ptr);
 	}
 
-#define AllocA(bytes, alloc) _Alloc<alloc>(bytes)
-#define Alloc(bytes) _Alloc<GenericAllocator>(bytes)
-#define AllocAT(T, alloc) _AllocN<alloc, T>(1)
-#define AllocT(T) _AllocN<GenericAllocator, T>(1)
-#define AllocATN(T, count, alloc) _AllocN<alloc, T>(count)
-#define AllocTN(T, count) _AllocN<GenericAllocator, T>(count)
-#define ConstructA(T, alloc, ...) _Construct<alloc, T>(1, __VA_ARGS__)
-#define Construct(T, ...) _Construct<GenericAllocator, T>(1, __VA_ARGS__)
-#define ConstructAN(T, count, alloc, ...) _Construct<alloc, T>(count, __VA_ARGS__)
-#define ConstructN(T, count, ...) _Construct<GenericAllocator, T>(count, __VA_ARGS__)
-
-#define DeallocA(ptr, alloc) _Dealloc<alloc>(ptr)
-#define Dealloc(ptr) _Dealloc<GenericAllocator>(ptr)
-#define DestroyA(ptr, alloc) _Destroy<alloc>(ptr, 1)
-#define Destroy(ptr) _Destroy<GenericAllocator>(ptr, 1)
-#define DestroyAN(ptr, count, alloc) _Destroy<alloc>(ptr, count)
-#define DestroyN(ptr, count) _Destroy<GenericAllocator>(ptr, count)
-
-#define MemoryFriend()\
-template<class _Alloc_, class T, class... Args> friend T* greaper::_Construct(sizet count, Args&&... args);\
-template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet count)
+/**
+ * @brief Makes a class friend of the base construction/destruction functions
+ * 
+ */
+#define MemoryFriend() \
+template<class T, class _Alloc_, class... Args> friend T* greaper::Construct(Args&&...); \
+template<class T, class _Alloc_, class... Args> friend T* greaper::ConstructN(sizet, Args&&...); \
+template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 
 	template<typename T>
 	using SPtr = std::shared_ptr<T>;
@@ -206,7 +201,7 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		void operator()(T* ptr)const
 		{
-			_Destroy<_Alloc_, T>(ptr, 1);
+			Destroy<T, _Alloc_>(ptr, 1);
 		}
 	};
 
@@ -219,13 +214,8 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 		using const_pointer = const value_type*;
 		using reference = value_type&;
 		using const_reference = const value_type&;
-#if GREAPER_USE_BASIC_TYPEINFO
-		using size_type = sizet::Type;
-		using difference_type = ptrint::Type;
-#else
 		using size_type = sizet;
 		using difference_type = ptrint;
-#endif
 
 		StdAlloc()noexcept = default;
 		StdAlloc(StdAlloc&&)noexcept = default;
@@ -252,7 +242,7 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 
 		INLINE void deallocate(pointer p, size_type)
 		{
-			_Dealloc<_Alloc_>(p);
+			Dealloc<_Alloc_>(p);
 		}
 
 		INLINE constexpr size_t max_size() { return std::numeric_limits<size_type>::max() / sizeof(T); }
@@ -270,18 +260,6 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 	template<typename T, typename A = StdAlloc<T>>
 	using BasicStringStream = std::basic_stringstream<T, std::char_traits<T>, A>;
 
-#if GREAPER_USE_BASIC_TYPEINFO
-	using String = BasicString<achar::Type>;
-	using StringView = BasicStringView<achar::Type>;
-	using StringStream = BasicStringStream<achar::Type>;
-	using WString = BasicString<wchar::Type>;
-	using WStringView = BasicString<wchar::Type>;
-	using WStringStream = BasicStringStream<wchar::Type>;
-	using U16String = BasicString<u16char::Type>;
-	using U16StringStream = BasicStringStream<u16char::Type>;
-	using U32String = BasicString<u32char::Type>;
-	using U32StringStream = BasicStringStream<u32char::Type>;
-#else
 	using String = BasicString<achar>;
 	using StringView = BasicStringView<achar>;
 	using StringStream = BasicStringStream<achar>;
@@ -292,12 +270,11 @@ template<class _Alloc_, class T> friend void greaper::_Destroy(T* ptr, sizet cou
 	using U16StringStream = BasicStringStream<u16char>;
 	using U32String = BasicString<u32char>;
 	using U32StringStream = BasicStringStream<u32char>;
-#endif
 
 	namespace Impl
 	{
-		INLINE void _LogBreak(const String& msg);
-		INLINE void _TriggerBreak(const String& str);
+		void _LogBreak(const String& msg);
+		void _TriggerBreak(const String& str);
 	}
 
 	template<typename T, typename A = StdAlloc<T>>
@@ -430,7 +407,7 @@ namespace greaper::Impl
 		// TODO: do error log
 	}
 	
-	FUNCTION_NO_RETURN_START void _TriggerBreak(const String& str) FUNCTION_NO_RETURN_END
+	INLINE void _TriggerBreak(const String& str)
 	{
 
 #if PLT_WINDOWS
@@ -452,11 +429,12 @@ namespace greaper::Impl
 		{
 			return;
 		}
-#else
+#else // ^^^ PLT_WINDOWS // PLT_OTHER vvv
 		std::cerr << "Greaper Assertion: " << str;
+#endif
+
 #if GREAPER_DEBUG_BREAK
 		TRIGGER_BREAKPOINT();
-#endif
 #endif
 		_LogBreak(str);
 		exit(EXIT_FAILURE);
