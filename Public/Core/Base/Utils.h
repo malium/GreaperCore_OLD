@@ -115,7 +115,7 @@ INLINE constexpr int16 ClampShort(const int32 i)
 	return static_cast<int16>(Clamp(i, -32768, 32767));
 }
 /** Retruns true if value is NaN */
-INLINE constexpr bool IsNaN(const float f)noexcept
+INLINE constexpr bool IsNaN(const float f) noexcept
 {
 	return (*reinterpret_cast<const uint32*>(&f) & 0x7FFFFFFF) > 0x7F800000;
 }
@@ -150,7 +150,7 @@ INLINE bool SetBitValue(uint8* ptr, const uint32 index, const bool set)noexcept
 /***********************************************************************************
 *                              HASH HELPER FUNCITONS                               *
 ***********************************************************************************/
-namespace std { template<class T>struct hash; }
+namespace std { template<class T> struct hash; }
 /**
 *	Computes the hash of a type given the seed.
 */
@@ -202,9 +202,15 @@ INLINE void ClearMemory(T(&arr)[N]) noexcept
 	memset(&arr[0], 0, sizeof(Type) * N);
 }
 template<class T>
-INLINE void DuplicateMemory(const T& source, T& dst)
+INLINE void DuplicateMemory(const T& source, T& dst) noexcept
 {
 	memcpy(&dst, &source, sizeof(T));
+}
+template<class T>
+INLINE bool IsMemoryCleared(const T& data) noexcept
+{
+	static const uint8 zeros[sizeof(T)]  = {};
+	return ::memcmp(&data, &zeros, sizeof(T)) == 0;
 }
 
 /***********************************************************************************

@@ -42,7 +42,7 @@
 #endif
 #endif
 
-#if !defined(_68K_) && !defined(_MPPC_) && !defined(_X86_) && !defined(_IA64_) && !defined(_AMD64_) && !defined(_ARM_) && defined(_M_AMD64)
+#if (!defined(_68K_) && !defined(_MPPC_) && !defined(_X86_) && !defined(_IA64_) && !defined(_AMD64_) && !defined(_ARM_) && defined(_M_AMD64)) || defined(__x86_64__)
 #define ARCHITECTURE_X64 1
 #define ARCHITECTURE_X86 0
 #else
@@ -204,7 +204,7 @@
 #define PlatormDealloc(mem) ::free(mem)
 #endif
 #ifndef PlatformAlignedAlloc
-#define PlatformAlignedAlloc(bytes, alignment) ::memalign(alignment, bytes)
+#define PlatformAlignedAlloc(bytes, alignment) ::aligned_alloc(alignment, bytes)
 #define PlatformAlignedDealloc(mem) ::free(mem)
 #endif
 
@@ -266,7 +266,7 @@
 #endif
 /* Wrap a function signature in this to indicate that the function never returns. */
 #ifndef FUNCTION_NO_RETURN_END
-#define FUNCTION_NO_RETURN_END __attribute__((noreturn))
+#define FUNCTION_NO_RETURN_END 
 #endif
 /* CPU cache line size, important to use in order to avoid cache misses */
 #ifndef CACHE_LINE_SIZE
@@ -300,7 +300,7 @@
 #endif
 /* Debug breakpoint */
 #ifndef TRIGGER_BREAKPOINT
-#define TRIGGER_BREAKPOINT() __asm__ __volatile__ ( "int $3\n\t" )
+#define TRIGGER_BREAKPOINT() 
 #endif
 /* High Performance Graphics enable utility */
 #ifndef USE_HPG

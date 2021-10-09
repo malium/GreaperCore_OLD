@@ -37,3 +37,6 @@
 *.VC.db
 .vscode/*.*
 .vs/*.*
+.vs/GreaperCore/v16/Browse.VC.db-shm
+.vs/GreaperCore/v16/Browse.VC.db-wal
+.vs/GreaperCore/v16/Browse.VC.opendb

@@ -13,11 +13,16 @@
 #if PLT_WINDOWS
 #include "Win/WinThreading.h"
 #elif PLT_LINUX
-#incude "Lnx/LnxThreading.h"
+#include "Lnx/LnxThreading.h"
 #endif
 #include <mutex>
+#include <version>
+#if defined(__cpp_lib_semaphore) && __cpp_lib_semaphore <= __cplusplus
 #include <semaphore>
+#endif
+#if defined(__cpp_lib_barrier) && __cpp_lib_barrier <= __cplusplus
 #include <barrier>
+#endif
 #include <functional>
 #include <any>
 

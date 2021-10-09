@@ -13,7 +13,7 @@
 #if PLT_WINDOWS
 #include "../Win/WinThreading.h"
 #elif PLT_LINUX
-#incude "../Lnx/LnxThreading.h"
+#include "../Lnx/LnxThreading.h"
 #endif
 #include <functional>
 #include "../Enumeration.h"
