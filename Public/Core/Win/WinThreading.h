@@ -184,51 +184,51 @@ namespace greaper
 			{
 				return handle.Ptr != reinterpret_cast<PVOID>(-1);
 			}
-			static void Initialize(SignalHandle& handle)noexcept
+			static void Initialize(SignalHandle& handle) noexcept
 			{
 				InitializeConditionVariable(&handle);
 			}
-			static void Deinitialize(SignalHandle& handle)noexcept
+			static void Deinitialize(SignalHandle& handle) noexcept
 			{
 				UNUSED(handle);
 			}
-			static void NotifyOne(SignalHandle& handle)noexcept
+			static void NotifyOne(SignalHandle& handle) noexcept
 			{
 				WakeConditionVariable(&handle);
 			}
-			static void NotifyAll(SignalHandle& handle)noexcept
+			static void NotifyAll(SignalHandle& handle) noexcept
 			{
 				WakeAllConditionVariable(&handle);
 			}
-			static void Wait(SignalHandle& handle, MutexHandle& mutexHandle)noexcept
+			static void Wait(SignalHandle& handle, MutexHandle& mutexHandle) noexcept
 			{
 				SleepConditionVariableSRW(&handle, &mutexHandle, INFINITE, 0);
 			}
-			static void WaitRW(SignalHandle& handle, RWMutexHandle& mutexHandle)noexcept
+			static void WaitRW(SignalHandle& handle, RWMutexHandle& mutexHandle) noexcept
 			{
 				SleepConditionVariableSRW(&handle, &mutexHandle, INFINITE, 0);
 			}
-			static void WaitRecursive(SignalHandle& handle, RecursiveMutexHandle& mutexHandle)noexcept
+			static void WaitRecursive(SignalHandle& handle, RecursiveMutexHandle& mutexHandle) noexcept
 			{
 				SleepConditionVariableCS(&handle, &mutexHandle, INFINITE);
 			}
-			static void WaitShared(SignalHandle& handle, RWMutexHandle& mutexHandle)noexcept
+			static void WaitShared(SignalHandle& handle, RWMutexHandle& mutexHandle) noexcept
 			{
 				SleepConditionVariableSRW(&handle, &mutexHandle, INFINITE, CONDITION_VARIABLE_LOCKMODE_SHARED);
 			}
-			static bool WaitFor(SignalHandle& handle, MutexHandle& mutexHandle, uint32 millis)noexcept
+			static bool WaitFor(SignalHandle& handle, MutexHandle& mutexHandle, uint32 millis) noexcept
 			{
 				return SleepConditionVariableSRW(&handle, &mutexHandle, millis, 0);
 			}
-			static bool WaitForRW(SignalHandle& handle, RWMutexHandle mutexHandle, uint32 millis)noexcept
+			static bool WaitForRW(SignalHandle& handle, RWMutexHandle mutexHandle, uint32 millis) noexcept
 			{
 				return SleepConditionVariableSRW(&handle, &mutexHandle, millis, 0);
 			}
-			static bool WaitForRecursive(SignalHandle& handle, RecursiveMutexHandle mutexHandle, uint32 millis)noexcept
+			static bool WaitForRecursive(SignalHandle& handle, RecursiveMutexHandle mutexHandle, uint32 millis) noexcept
 			{
 				return SleepConditionVariableCS(&handle, &mutexHandle, millis);
 			}
-			static bool WaitForShared(SignalHandle& handle, RWMutexHandle& mutexHandle, uint32 millis)noexcept
+			static bool WaitForShared(SignalHandle& handle, RWMutexHandle& mutexHandle, uint32 millis) noexcept
 			{
 				return SleepConditionVariableSRW(&handle, &mutexHandle, millis, CONDITION_VARIABLE_LOCKMODE_SHARED);
 			}

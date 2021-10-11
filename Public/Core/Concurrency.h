@@ -13,11 +13,10 @@
 #if PLT_WINDOWS
 #include "Win/WinThreading.h"
 #elif PLT_LINUX
-#incude "Lnx/LnxThreading.h"
+#include "Lnx/LnxThreading.h"
 #endif
+#include <atomic>
 #include <mutex>
-#include <semaphore>
-#include <barrier>
 #include <functional>
 #include <any>
 
@@ -256,7 +255,7 @@ namespace greaper
 
 		INLINE bool try_lock() noexcept
 		{
-			const auto res = !m_Lock.test_and_set(std::memory_order::memory_order_acquire);
+			const auto res = !m_Lock.test_and_set(std::memory_order_acquire);
 			return res;
 		}
 
@@ -540,11 +539,100 @@ namespace greaper
 		}
 	};
 
-	template <ptrdiff_t _Least_max_value = std::_Semaphore_max>
-	using Semaphore = std::counting_semaphore<_Least_max_value>;
+	class Semaphore
+	{
+		Mutex m_Mutex;
+		Signal m_Signal;
+		sizet m_Count;
+		const sizet m_MaxCount;
 
-	template<class _Completion_function = std::_No_completion_function>
-	using Barrier = std::barrier<_Completion_function>;
+	public:
+		Semaphore(sizet maxCount = 0)
+			:m_Count(maxCount)
+			,m_MaxCount(maxCount)
+		{
+
+		}
+		Semaphore(const Semaphore&) = delete;
+		Semaphore(Semaphore&& other) = default;
+		Semaphore& operator=(const Semaphore&) = delete;
+		Semaphore& operator=(Semaphore&& other)noexcept = default;
+		~Semaphore() = default;
+
+		INLINE void notify()
+		{
+			UniqueLock<Mutex> lck(m_Mutex);
+			++m_Count;
+			m_Signal.notify_one();
+		}
+
+		INLINE void wait()
+		{
+			UniqueLock<Mutex> lck(m_Mutex);
+			m_Signal.wait(lck, [&]{return m_Count > 0;});
+			--m_Count;
+		}
+
+		INLINE bool try_wait()
+		{
+			Lock<Mutex> lck(m_Mutex);
+			if(m_Count > 0)
+			{
+				--m_Count;
+				return true;
+			}
+			return false;
+		}
+
+		[[nodiscard]] INLINE sizet GetMaxCount()const { return m_MaxCount; }
+
+		[[nodiscard]] INLINE const Signal& GetSignal()const { return m_Signal; }
+		[[nodiscard]] INLINE Signal& GetSignal() { return m_Signal; }
+		[[nodiscard]] INLINE const Mutex& GetMutex()const { return m_Mutex; }
+		[[nodiscard]] INLINE Mutex& GetMutex() { return m_Mutex; }
+	};
+
+	// from: https://stackoverflow.com/a/27118537
+	class Barrier
+	{
+		Mutex m_Mutex;
+		Signal m_Signal;
+		const sizet m_MaxCount;
+		sizet m_Count;
+		sizet m_Generation;
+
+	public:
+		Barrier(sizet maxCount = 0)
+			:m_MaxCount(maxCount)
+			,m_Count(maxCount)
+			,m_Generation(0)
+		{
+
+		}
+
+		void sync()
+		{
+			UniqueLock<Mutex> lck(m_Mutex);
+			const auto gen = m_Generation;
+			if(!--m_Count)
+			{
+				++m_Generation;
+				m_Count = m_MaxCount;
+				m_Signal.notify_all();
+			}
+			else
+			{
+				m_Signal.wait(lck, [this, gen] { return gen != m_Generation; });
+			}
+		}
+
+		[[nodiscard]] INLINE sizet GetMaxCount()const { return m_MaxCount; }
+
+		[[nodiscard]] INLINE const Signal& GetSignal()const { return m_Signal; }
+		[[nodiscard]] INLINE Signal& GetSignal() { return m_Signal; }
+		[[nodiscard]] INLINE const Mutex& GetMutex()const { return m_Mutex; }
+		[[nodiscard]] INLINE Mutex& GetMutex() { return m_Mutex; }
+	};
 
 	struct AsyncOpSyncData
 	{

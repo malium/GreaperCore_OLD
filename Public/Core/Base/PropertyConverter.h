@@ -10,7 +10,8 @@
 
 #include "../Memory.h"
 #include "../StringUtils.h"
-#ifdef __cpp_lib_format
+#include <version>
+#if defined(__cpp_lib_format) && __cpp_lib_format <= __cplusplus
 #include <format>
 #endif
 

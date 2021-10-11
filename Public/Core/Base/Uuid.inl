@@ -226,7 +226,7 @@ namespace greaper
 		const auto data2 = uuid.Data3 | (uuid.Data4[0] << 16) | (uuid.Data4[1] << 24);
 		const auto data3 = uuid.Data4[2] | (uuid.Data4[3] << 8) | (uuid.Data4[4] << 16) | (uuid.Data4[5] << 24);
 		return Uuid(data0, data1, data2, data3);
-#elif PLT_LINUX || PLT_MAC
+#elif PLT_LINUX
 		uuid_t nativeUUID;
 		uuid_generate(nativeUUID);
 

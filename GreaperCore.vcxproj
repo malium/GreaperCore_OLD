@@ -27,7 +27,7 @@
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Utility</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -79,6 +79,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <EnableModules>false</EnableModules>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +114,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <EnableModules>false</EnableModules>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,9 +140,11 @@
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
     <ClInclude Include="Public\Core\Base\IThread.h" />
     <ClInclude Include="Public\Core\Concurrency.h" />
+    <ClInclude Include="Public\Core\IDeferredCallManager.h" />
     <ClInclude Include="Public\Core\ICommandManager.h" />
     <ClInclude Include="Public\Core\ILogManager.h" />
     <ClInclude Include="Public\Core\ITimeManager.h" />
+    <ClInclude Include="Public\Core\Lnx\LnxLibrary.h" />
     <ClInclude Include="Public\Core\Lnx\LnxThreading.h" />
     <ClInclude Include="Public\Core\Lnx\Prerequisites.h" />
     <ClInclude Include="Public\Core\Property.h" />
