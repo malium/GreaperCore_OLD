@@ -34,6 +34,11 @@ namespace greaper
 		return static_cast<ThreadID_t>(::GetCurrentThreadId());
 	}
 
+	ThreadHandle CUR_THHND() noexcept
+	{
+		return static_cast<ThreadHandle>(::GetCurrentThread());
+	}
+
 	void THREAD_YIELD() noexcept
 	{
 		::SwitchToThread();

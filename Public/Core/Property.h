@@ -30,14 +30,14 @@ namespace greaper
 		
 		virtual ~IProperty() = default;
 
-		virtual [[nodiscard]] const String& GetPropertyName()const noexcept = 0;
-		virtual [[nodiscard]] const String& GetPropertyInfo()const noexcept = 0;
-		virtual [[nodiscard]] bool IsConstant()const noexcept = 0;
-		virtual [[nodiscard]] bool IsStatic()const noexcept = 0;
-		virtual [[nodiscard]] bool SetValueFromString(const String& value) noexcept = 0;
-		virtual [[nodiscard]] const String& GetStringValue()const noexcept = 0;
-		virtual [[nodiscard]] ModificationEvent_t*const GetOnModificationEvent() noexcept = 0;
-		virtual [[nodiscard]] IGreaperLibrary* GetLibrary()const noexcept = 0;
+		virtual const String& GetPropertyName()const noexcept = 0;
+		virtual const String& GetPropertyInfo()const noexcept = 0;
+		virtual bool IsConstant()const noexcept = 0;
+		virtual bool IsStatic()const noexcept = 0;
+		virtual bool SetValueFromString(const String& value) noexcept = 0;
+		virtual const String& GetStringValue()const noexcept = 0;
+		virtual ModificationEvent_t*const GetOnModificationEvent() noexcept = 0;
+		virtual IGreaperLibrary* GetLibrary()const noexcept = 0;
 	};
 
 	/**

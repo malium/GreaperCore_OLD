@@ -229,7 +229,7 @@
 
 /* Full function display */
 #ifndef FUNCTION_FULL
-#define FUNCTION_FULL __func__
+#define FUNCTION_FULL
 #endif
 /* Dynamic Link Library extension */
 #ifndef GREAPER_DLLEXT

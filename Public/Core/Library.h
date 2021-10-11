@@ -13,7 +13,7 @@
 #if PLT_WINDOWS
 #include "Win/WinLibrary.h"
 #else
-#error TODO: Library loading implementation in other platforms than windows
+#include "Lnx/LnxLibrary.h"
 #endif
 
 namespace greaper

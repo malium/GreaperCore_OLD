@@ -7,14 +7,17 @@
 
 #include <unistd.h>
 #include <pthread.h>
+#include <stdlib.h>
+#include <dlfcn.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <uuid/uuid.h>
 
 struct LnxTypes : BasicTypes
 {
     typedef __SIZE_TYPE__ sizetype;
     typedef __SSIZE_T_TYPE ssizetype;
-    typedef __CHAR16_TYPE__ widechar;
+    typedef wchar_t widechar;
 };
 
 typedef LnxTypes PlatformTypes;
@@ -36,3 +39,5 @@ typedef LnxTypes PlatformTypes;
 #ifndef PATH_SEPARATOR_WIDE
 #define PATH_SEPARATOR_WIDE L'/'
 #endif
+
+#define FUNCTION_FULL __PRETTY_FUNCTION__

@@ -24,10 +24,17 @@
 #include <unordered_set>
 #include <memory>
 #include <cstdarg>
-
+#if PLT_LINUX
+#include <iostream>
+#endif
+#if COMPILER_MSVC
 #define Break(msg, ...) greaper::Impl::_TriggerBreak(greaper::Format("STOP! at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__))
+#else
+#define Break(msg, ...) greaper::Impl::_TriggerBreak(greaper::Format("STOP! at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__));
+#endif
 
 #if GREAPER_ENABLE_BREAK
+#if COMPILER_MSVC
 #define Verify(exp, msg, ...) { if(!(exp)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #exp " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
 #define VerifyNot(exp, msg, ...) { if((exp)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: !" #exp " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
 #define VerifyInequal(a, b, msg, ...) { if((a) == (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " != " #b " not verified, at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
@@ -42,6 +49,22 @@
 #define VerifyWithinInclusive(value, min, max, msg, ...) { if((value) < (min) || (value) > (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not inside of [" #min ", " #max "] range , at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
 #define VerifyNotWithin(value, min, max, msg, ...) { if((value) >= (min) && (value) <= (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not outside of (" #min ", " #max ") range , at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
 #define VerifyNotWithinInclusive(value, min, max, msg, ...) { if((value) > (min) && (value) < (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not outside of [" #min ", " #max "] range , at: " FUNCTION_FULL ", message: " msg, __VA_ARGS__)); }
+#else
+#define Verify(exp, msg, ...) { if(!(exp)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #exp " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyNot(exp, msg, ...) { if((exp)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: !" #exp " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyInequal(a, b, msg, ...) { if((a) == (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " != " #b " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyEqual(a, b, msg, ...) { if((a) != (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " == " #b " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyGreater(a, b, msg, ...) { if((a) <= (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " > " #b " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyGreaterEqual(a, b, msg, ...) { if((a) < (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " >= " #b " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyLess(a, b, msg, ...) { if((a) >= (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " < " #b " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyLessEqual(a, b, msg, ...) { if((a) > (b)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #a " <= " #b " not verified, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyNull(ptr, msg, ...) { if((ptr) != nullptr) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #ptr " is not nullptr, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyNotNull(ptr, msg, ...) { if((ptr) == nullptr) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #ptr " is nullptr, at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyWithin(value, min, max, msg, ...) { if((value) <= (min)|| (value) >= (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not inside of (" #min ", " #max ") range , at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyWithinInclusive(value, min, max, msg, ...) { if((value) < (min) || (value) > (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not inside of [" #min ", " #max "] range , at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyNotWithin(value, min, max, msg, ...) { if((value) >= (min) && (value) <= (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not outside of (" #min ", " #max ") range , at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#define VerifyNotWithinInclusive(value, min, max, msg, ...) { if((value) > (min) && (value) < (max)) greaper::Impl::_TriggerBreak(greaper::Format("STOP! exp: " #value " not outside of [" #min ", " #max "] range , at: " FUNCTION_FULL ", message: " msg __VA_OPT__(,) __VA_ARGS__)); }
+#endif
 #else
 #define Verify(exp, ...) { volatile bool res = (exp); }
 #define VerifyNot(exp, ...) { volatile bool res = !(exp); }
@@ -448,7 +471,11 @@ namespace std
 	{
 		INLINE size_t operator()(const greaper::String& str)const noexcept
 		{
+#if PLT_WINDOWS
 			return std::_Hash_array_representation(str.data(), str.size());
+#else
+			return std::_Hash_bytes(str.data(), str.size(), 0);
+#endif
 		}
 	};
 
@@ -457,7 +484,11 @@ namespace std
 	{
 		INLINE size_t operator()(const greaper::WString& str)const noexcept
 		{
+#if PLT_WINDOWS
 			return std::_Hash_array_representation(str.data(), str.size());
+#else
+			return std::_Hash_bytes(str.data(), str.size(), 0);
+#endif
 		}
 	};
 
@@ -466,7 +497,11 @@ namespace std
 	{
 		INLINE size_t operator()(const greaper::StringView& str)const noexcept
 		{
+#if PLT_WINDOWS
 			return std::_Hash_array_representation(str.data(), str.size());
+#else
+			return std::_Hash_bytes(str.data(), str.size(), 0);
+#endif
 		}
 	};
 
@@ -475,7 +510,11 @@ namespace std
 	{
 		INLINE size_t operator()(const greaper::WStringView& str)const noexcept
 		{
+#if PLT_WINDOWS
 			return std::_Hash_array_representation(str.data(), str.size());
+#else
+			return std::_Hash_bytes(str.data(), str.size(), 0);
+#endif
 		}
 	};
 }

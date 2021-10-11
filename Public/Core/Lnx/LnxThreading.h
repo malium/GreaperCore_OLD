@@ -13,6 +13,7 @@
 namespace greaper
 {
     using ThreadID_t = pthread_t;
+	using ThreadHandle = ThreadID_t;
     
     using MutexHandle = pthread_mutex_t;
 
@@ -25,6 +26,11 @@ namespace greaper
     ThreadID_t CUR_THID() noexcept
 	{
 		return static_cast<ThreadID_t>(::pthread_self());
+	}
+
+	ThreadHandle CUR_THHND() noexcept
+	{
+		return CUR_THID();
 	}
 
     void THREAD_YIELD() noexcept
