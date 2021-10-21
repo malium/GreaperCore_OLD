@@ -14,7 +14,7 @@
 
 namespace greaper
 {
-    class ICommandManager : public IInterface
+    class ICommandManager : public TInterface<ICommandManager>
     {
     public:
         static constexpr Uuid InterfaceUUID = Uuid{ 0x557FF73A, 0x6C4144AF, 0xB02DE998, 0x0D378CCA };

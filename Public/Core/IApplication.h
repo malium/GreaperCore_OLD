@@ -13,7 +13,15 @@
 
 namespace greaper
 {
-	class IApplication : public IInterface
+	struct ApplicationConfig
+	{
+		StringView ApplicationName;
+		int32 ApplicationVersion;
+		
+		StringView GreaperLibraries[];
+	};
+
+	class IApplication : public TInterface<IApplication, ApplicationConfig>
 	{
 	public:
 		static constexpr Uuid InterfaceUUID = Uuid{ 0xF79C882D, 0x506B4307, 0xBE036194, 0x9F58B3BC };

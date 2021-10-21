@@ -140,6 +140,7 @@
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
     <ClInclude Include="Public\Core\Base\IThread.h" />
     <ClInclude Include="Public\Core\Concurrency.h" />
+    <ClInclude Include="Public\Core\ICrashManager.h" />
     <ClInclude Include="Public\Core\IDeferredCallManager.h" />
     <ClInclude Include="Public\Core\ICommandManager.h" />
     <ClInclude Include="Public\Core\ILogManager.h" />

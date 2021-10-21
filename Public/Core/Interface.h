@@ -12,6 +12,7 @@
 
 namespace greaper
 {
+	struct EmptyConfig {  };
 	/**
 	 * @brief Base class of all manager and factories
 	 * 
@@ -30,7 +31,7 @@ namespace greaper
 	class IInterface
 	{
 	public:
-		virtual ~IInterface() noexcept = default;
+		virtual ~IInterface()noexcept = default;
 
 		static constexpr Uuid InterfaceUUID = Uuid{  };
 		static constexpr StringView InterfaceName = StringView{ "INullInterface" };
@@ -50,6 +51,8 @@ namespace greaper
 		virtual void OnDeactivate() = 0;
 
 		virtual bool IsActive()const = 0;
+		
+		virtual bool IsInitialized()const = 0;
 
 		virtual void PreUpdate() = 0;
 
@@ -58,6 +61,19 @@ namespace greaper
 		virtual void PostUpdate() = 0;
 
 		virtual void FixedUpdate() = 0;
+	};
+
+	template<class InterfaceClass, class InterfaceConfig = EmptyConfig>
+	class TInterface : public IInterface
+	{
+	public:
+		virtual ~TInterface()noexcept = default;
+
+		virtual void SetConfig(InterfaceConfig config) = 0;
+
+		virtual const InterfaceConfig& GetConfig()const = 0;
+
+		virtual void OnChangingDefault(InterfaceClass* newDefault) = 0;
 	};
 
 	template<class T>
