@@ -31,7 +31,7 @@ namespace greaper
 
 		virtual ~IApplication()noexcept = default;
 
-		virtual Result<IGreaperLibrary*> RegisterGreaperLibrary(const WString& libName) = 0;
+		virtual Result<IGreaperLibrary*> RegisterGreaperLibrary(const WStringView& libPath) = 0;
 
 		virtual Result<IGreaperLibrary*> GetGreaperLibrary(const WStringView& libraryName) = 0;
 
@@ -74,6 +74,112 @@ namespace greaper
 		virtual int32 GetGreaperVersion()const = 0;
 		
 		virtual const StringView& GetCompilationInfo()const = 0;
+
+		template<class T>
+		Result<T*> RegisterGreaperLibraryT(const WStringView& libPath)
+		{
+			auto res = RegisterGreaperLibrary(libPath);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* lib = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(lib);
+		}
+
+		template<class T>
+		Result<T*> GetGreaperLibraryT(const WStringView& libraryName)
+		{
+			auto res = GetGreaperLibrary(libraryName);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* lib = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(lib);
+		}
+
+		template<class T>
+		Result<T*> GetGreaperLibraryT(const Uuid& libraryUUID)
+		{
+			auto res = GetGreaperLibrary(libraryName);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* lib = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(lib);
+		}
+
+		template<class T, class ConfigType>
+		EmptyResult RegisterInterfaceT(TInterface<T, ConfigType>* interface, ConfigType config = ConfigType{})
+		{
+			const auto res = RegisterInterface(interface);
+			if(res.HasFailed())
+				return res;
+			interface->SetConfig(config);
+			return res;
+		}
+
+		template<class T>
+		Result<T*> GetInterfaceT(const Uuid& interfaceUUID)const
+		{
+			static_assert(IsInterface<T>::value, "Trying to get an interface that does not derive from IInterface.");
+			auto res = GetInterface(interfaceUUID);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* interface = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(interface);
+		}
+
+		template<class T>
+		Result<T*> GetInterfaceT(const StringView& interfaceName)const
+		{
+			static_assert(IsInterface<T>::value, "Trying to get an interface that does not derive from IInterface.");
+			auto res = GetInterface(interfaceName);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* interface = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(interface);
+		}
+
+		template<class T>
+		Result<T*> GetInterfaceT(const Uuid& interfaceUUID, const Uuid& libraryUUID)const
+		{
+			static_assert(IsInterface<T>::value, "Trying to get an interface that does not derive from IInterface.");
+			auto res = GetInterface(interfaceUUID, libraryUUID);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* interface = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(interface);
+		}
+
+		template<class T>
+		Result<T*> GetInterfaceT(const StringView& interfaceName, const StringView& libraryName)const
+		{
+			static_assert(IsInterface<T>::value, "Trying to get an interface that does not derive from IInterface.");
+			auto res = GetInterface(interfaceName, libraryName);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* interface = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(interface);
+		}
+
+		template<class T>
+		Result<T*> GetInterfaceT(const Uuid& interfaceUUID, const StringView& libraryName)const
+		{
+			static_assert(IsInterface<T>::value, "Trying to get an interface that does not derive from IInterface.");
+			auto res = GetInterface(interfaceUUID, libraryName);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* interface = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(interface);
+		}
+
+		template<class T>
+		Result<T*> GetInterfaceT(const StringView& interfaceName, const Uuid& libraryUUID)const
+		{
+			static_assert(IsInterface<T>::value, "Trying to get an interface that does not derive from IInterface.");
+			auto res = GetInterface(interfaceName, libraryUUID);
+			if(res.HasFailed())
+				return CopyFailure<T*>(res);
+			T* interface = reinterpret_cast<T*>(res.GetValue());
+			return CreateResult(interface);
+		}
 	};
 }
 
