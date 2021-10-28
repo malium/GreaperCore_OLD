@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos SÃ¡nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -8,9 +8,18 @@
 namespace greaper
 {
 	template<typename T>
-	INLINE IStream& IStream::operator>>(T& val)
+	INLINE IStream& IStream::operator>>(T& val)const
 	{
-		Read((void*)&val, sizeof(val));
+		const auto read = Read((void*)&val, sizeof(val));
+		VerifyEqual(read, sizeof(val), "Couldn't read the whole value from the stream, Size:%d Read:%d.", sizeof(val), read);
+		return *this;
+	}
+
+	template<typename T>
+	INLINE IStream& IStream::operator<<(const T& val)
+	{
+		const auto written = Write(&val, sizeof(val));
+		VerifyEqual(written, sizeof(val), "Couldn't write the whole value to the stream, Size:%d Written:%d.", sizeof(val), written);
 		return *this;
 	}
 

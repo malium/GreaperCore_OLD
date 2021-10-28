@@ -9,7 +9,6 @@
 #define CORE_STREAM_H 1
 
 #include "Memory.h"
-#include "Enumeration.h"
 
 namespace greaper
 {
@@ -45,7 +44,10 @@ namespace greaper
 		virtual bool IsFile()const noexcept = 0;
 
 		template<typename T>
-		IStream& operator>>(T& val);
+		IStream& operator>>(T& val)const;
+
+		template<typename T>
+		IStream& operator<<(const T& val);
 
 		virtual ssizet Read(void* buff, ssizet count)const = 0;
 		

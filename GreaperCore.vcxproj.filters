@@ -168,5 +168,8 @@
     <None Include="Public\Core\Base\Stream.inl">
       <Filter>Archivos de encabezado</Filter>
     </None>
+    <None Include="Public\Core\Base\MemoryStream.inl">
+      <Filter>Archivos de encabezado</Filter>
+    </None>
   </ItemGroup>
 </Project>

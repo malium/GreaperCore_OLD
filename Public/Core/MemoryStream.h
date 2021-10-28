@@ -38,9 +38,9 @@ namespace greaper
 
 		INLINE bool IsFile()const noexcept override { return false; }
 
-		uint8* GetData()const;
+		uint8* GetData()const { return m_Data; }
 
-		uint8* GetCursor()const;
+		uint8* GetCursor()const { return m_Cursor; }
 
 		ssizet Read(void* buf, ssizet count)const override;
 
@@ -50,9 +50,9 @@ namespace greaper
 
 		void Seek(ssizet pos) override;
 
-		ssizet Tell()const override;
+		ssizet Tell()const override { return m_Cursor - m_Data; }
 
-		bool Eof()const override;
+		bool Eof()const override { return m_Cursor >= m_End; }
 
 		SPtr<IStream> Clone(bool copyData = true)const override;
 

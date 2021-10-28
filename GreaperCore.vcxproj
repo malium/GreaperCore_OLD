@@ -178,6 +178,7 @@
     <ClInclude Include="Public\Core\Win\WinLibrary.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Public\Core\Base\MemoryStream.inl" />
     <None Include="Public\Core\Base\Stream.inl" />
     <None Include="Public\Core\Base\Uuid.inl" />
   </ItemGroup>
