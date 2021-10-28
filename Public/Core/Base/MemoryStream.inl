@@ -74,6 +74,7 @@ namespace greaper
 		m_Size = other.Size();
 		m_Data = m_Cursor = (uint8*)Alloc(m_Size);
 		m_End = m_Data + (other.m_End - other.m_Data);
+		m_Access = other.m_Access;
 		VerifyGreater(m_End, m_Cursor, "Cursor outside of bounds.");
 	}
 
@@ -82,6 +83,7 @@ namespace greaper
 		if (this != &other)
 		{
 			m_Name = other.m_Name;
+			m_Access = other.m_Access;
 			if (m_Data && m_OwnsMemory)
 				Dealloc(m_Data);
 			if (other.m_OwnsMemory)
@@ -146,6 +148,9 @@ namespace greaper
 
 	ssizet MemoryStream::Read(void* buf, ssizet count) const
 	{
+		if(!IsReadable() || count <= 0)
+			return 0;
+			
 		if ((m_Cursor + count) > m_End)
 			count = m_End - m_Cursor;
 
