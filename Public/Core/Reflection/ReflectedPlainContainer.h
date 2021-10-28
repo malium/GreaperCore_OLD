@@ -24,7 +24,7 @@ namespace greaper
 			return ReflectedWriteWithSizeHeader(stream, data, [&data, &stream]()
 				{
 					ReflectedSize_t size = data.size() * sizeof(String::value_type);
-					stream.WriteBytes((const uint8*)data.data(), size * sizeof(String::value_type));
+					stream.Write(data.data(), size * sizeof(String::value_type));
 					return size;
 				});
 		}
@@ -38,7 +38,7 @@ namespace greaper
 			ReflectedSize_t stringSize = size - sizeof(ReflectedSize_t);
 			data.clear();
 			data.resize(stringSize);
-			stream.ReadBytes((uint8*)data.data(), stringSize * sizeof(String::value_type));
+			stream.Read(data.data(), stringSize * sizeof(String::value_type));
 
 			return size;
 		}
@@ -72,7 +72,7 @@ namespace greaper
 			return ReflectedWriteWithSizeHeader(stream, data, [&data, &stream]()
 				{
 					ReflectedSize_t size = data.size() * sizeof(WString::value_type);
-					stream.WriteBytes((const uint8*)data.data(), size * sizeof(WString::value_type));
+					stream.Write(data.data(), size * sizeof(WString::value_type));
 					return size;
 				});
 		}
@@ -86,7 +86,7 @@ namespace greaper
 			ReflectedSize_t stringSize = size - sizeof(ReflectedSize_t);
 			data.clear();
 			data.resize(stringSize);
-			stream.ReadBytes((uint8*)data.data(), stringSize * sizeof(WString::value_type));
+			stream.Read(data.data(), stringSize * sizeof(WString::value_type));
 
 			return size;
 		}

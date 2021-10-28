@@ -148,6 +148,7 @@
     <ClInclude Include="Public\Core\Lnx\LnxLibrary.h" />
     <ClInclude Include="Public\Core\Lnx\LnxThreading.h" />
     <ClInclude Include="Public\Core\Lnx\Prerequisites.h" />
+    <ClInclude Include="Public\Core\MemoryStream.h" />
     <ClInclude Include="Public\Core\Property.h" />
     <ClInclude Include="Public\Core\Enumeration.h" />
     <ClInclude Include="Public\Core\Event.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Public\Core\Win\WinLibrary.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Public\Core\Base\Stream.inl" />
     <None Include="Public\Core\Base\Uuid.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

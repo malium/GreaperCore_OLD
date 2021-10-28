@@ -69,13 +69,13 @@ namespace greaper
 template<class T>
 inline greaper::ReflectedSize_t greaper::ReflectedPlainType<T>::ToStream(const T& data, IStream& stream)
 {
-	return stream.WriteBytes((const uint8*)&data, GetSize(data));
+	return stream.Write(&data, GetSize(data));
 }
 
 template<class T>
 inline greaper::ReflectedSize_t greaper::ReflectedPlainType<T>::FromStream(T& data, IStream& stream)
 {
-	return stream.ReadBytes((uint8*)&data, GetSize(data));
+	return stream.Read(&data, GetSize(data));
 }
 
 template<class T>
@@ -133,18 +133,18 @@ greaper::ReflectedSize_t greaper::ReflectedWriteWithSizeHeader(IStream& stream, 
 {
 	const auto sizePos = stream.Tell();
 	ReflectedSize_t size = 0;
-	stream.WriteBytes((const uint8*)&size, sizeof(size));
+	stream.Write(&size, sizeof(size));
 	size = fn() + sizeof(size);
 	VerifyGreater(size, 0, "Trying to write a zero length type.");
 	stream.Seek(sizePos);
-	stream.WriteBytes(size);
+	stream.Write(size, sizeof(size));
 	stream.Skip(size - sizeof(size));
 	return size;
 }
 
 greaper::ReflectedSize_t greaper::ReflectedReadSizeHeader(IStream& stream, ReflectedSize_t& size)
 {
-	const auto byteSize = stream.ReadBytes((uint8*)&size, sizeof(size));
+	const auto byteSize = stream.Read(&size, sizeof(size));
 	return byteSize;
 }
 
@@ -163,12 +163,12 @@ namespace greaper{																    		\
 																							\
 		static ReflectedSize_t ToStream(const type& data, IStream& stream)					\
 		{																					\
-			return stream.WriteBytes((const uint8*)&data, sizeof(data));                    \
+			return stream.Write(&data, sizeof(data));										\
 		}																					\
 																							\
 		static ReflectedSize_t FromStream(type& data, IStream& stream)						\
 		{																					\
-			return stream.ReadBytes((uint8*)&data, sizeof(data));                           \
+			return stream.Read(&data, sizeof(data));										\
 		}																					\
 																							\
 		static String ToString(const type& data)											\

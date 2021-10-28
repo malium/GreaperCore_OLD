@@ -28,10 +28,10 @@ namespace greaper
 					const sizet nameLength = name.size();
 					const sizet valueLength = value.size();
 					ReflectedSize_t size = (nameLength + valueLength) * sizeof(String::value_type) + sizeof(nameLength) + sizeof(valueLength);
-					stream.WriteBytes((const uint8*)&nameLength, sizeof(nameLength));
-					stream.WriteBytes((const uint8*)&valueLength, sizeof(valueLength));
-					stream.WriteBytes((const uint8*)name.data(), nameLength * sizeof(String::value_type));
-					stream.WriteBytes((const uint8*)value.data(), valueLength * sizeof(String::value_type));
+					stream.Write(&nameLength, sizeof(nameLength));
+					stream.Write(&valueLength, sizeof(valueLength));
+					stream.Write(name.data(), nameLength * sizeof(String::value_type));
+					stream.Write(value.data(), valueLength * sizeof(String::value_type));
 					return size;
 				});
 		}
@@ -44,14 +44,14 @@ namespace greaper
 
 			const auto propertySize = size - sizeof(ReflectedSize_t);
 			sizet nameLength = 0, valueLength = 0;
-			stream.ReadBytes((uint8*)&nameLength, sizeof(nameLength));
-			stream.ReadBytes((uint8*)&valueLength, sizeof(valueLength));
+			stream.Read(&nameLength, sizeof(nameLength));
+			stream.Read(&valueLength, sizeof(valueLength));
 
 			auto name = String(nameLength, (achar)0);
 			auto value = String(valueLength, (achar)0);
 
-			stream.ReadBytes((uint8*)name.data(), nameLength * sizeof(String::value_type));
-			stream.ReadBytes((uint8*)value.data(), valueLength * sizeof(String::value_type));
+			stream.Read(name.data(), nameLength * sizeof(String::value_type));
+			stream.Read(value.data(), valueLength * sizeof(String::value_type));
 
 			VerifyEqual(name, data.GetPropertyName(), "Trying to deserialize a Property with different name.");
 

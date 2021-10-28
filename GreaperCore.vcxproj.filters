@@ -159,8 +159,14 @@
     <ClInclude Include="Public\Core\ICrashManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Public\Core\MemoryStream.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Public\Core\Base\Uuid.inl" />
+    <None Include="Public\Core\Base\Stream.inl">
+      <Filter>Archivos de encabezado</Filter>
+    </None>
   </ItemGroup>
 </Project>
