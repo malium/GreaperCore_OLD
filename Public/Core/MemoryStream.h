@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -61,5 +61,7 @@ namespace greaper
 		uint8* DisownMemory();
 	};
 }
+
+#include "Base/MemoryStream.inl"
 
 #endif /* CORE_MEMORY_STREAM_H */
