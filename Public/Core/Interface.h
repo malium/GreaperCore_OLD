@@ -12,6 +12,7 @@
 
 namespace greaper
 {
+	struct EmptyConfig {  };
 	/**
 	 * @brief Base class of all manager and factories
 	 * 
@@ -30,7 +31,7 @@ namespace greaper
 	class IInterface
 	{
 	public:
-		virtual ~IInterface() noexcept = default;
+		virtual ~IInterface()noexcept = default;
 
 		static constexpr Uuid InterfaceUUID = Uuid{  };
 		static constexpr StringView InterfaceName = StringView{ "INullInterface" };
@@ -50,6 +51,8 @@ namespace greaper
 		virtual void OnDeactivate() = 0;
 
 		virtual bool IsActive()const = 0;
+		
+		virtual bool IsInitialized()const = 0;
 
 		virtual void PreUpdate() = 0;
 
@@ -58,6 +61,21 @@ namespace greaper
 		virtual void PostUpdate() = 0;
 
 		virtual void FixedUpdate() = 0;
+	};
+
+	template<class InterfaceClass, class InterfaceConfig = EmptyConfig>
+	class TInterface : public IInterface
+	{
+	public:
+		using ConfigType = InterfaceConfig;
+
+		virtual ~TInterface()noexcept = default;
+
+		virtual void SetConfig(InterfaceConfig config) = 0;
+
+		virtual const InterfaceConfig& GetConfig()const = 0;
+
+		virtual void OnChangingDefault(InterfaceClass* newDefault) = 0;
 	};
 
 	template<class T>
@@ -73,6 +91,17 @@ namespace greaper
 		static constexpr bool NameValid = T::InterfaceName != IInterface::InterfaceName;
 
 		static constexpr bool Valid = UUIDValid && NameValid;
+	};
+	template<class T1, class T2>
+	struct CompareInterfaces
+	{
+		static_assert(IsInterface<T1>::value, "Trying to compare two Interfaces but T1 does not derive from IInterface.");
+		static_assert(IsInterface<T2>::value, "Trying to compare two Interfaces but T2 does not derive from IInterface.");
+
+		static constexpr bool SameUUID = T1::InterfaceUUID == T2::InterfaceUUID;
+		static constexpr bool SameName = T1::InterfaceName == T2::InterfaceName;
+		
+		static constexpr bool Equal = SameUUID && SameName;
 	};
 }
 

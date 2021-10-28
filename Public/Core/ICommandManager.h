@@ -14,7 +14,7 @@
 
 namespace greaper
 {
-    class ICommandManager : public IInterface
+    class ICommandManager : public TInterface<ICommandManager>
     {
     public:
         static constexpr Uuid InterfaceUUID = Uuid{ 0x557FF73A, 0x6C4144AF, 0xB02DE998, 0x0D378CCA };
@@ -44,6 +44,9 @@ namespace greaper
     {
         static_assert(std::is_base_of_v<ICommand, T>, "Trying to create a Command which doesn't derive from ICommand");
         auto cmd = (ICommand*)Construct<T, _Alloc_>(args);
+        auto rtn = mgr->AddCommand(cmd);
+        if(rtn.HasFailed())
+            Destroy<T, _Alloc_>((T*)cmd);
         return mgr->AddCommand(cmd);
     }
 }

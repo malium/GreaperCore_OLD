@@ -9,11 +9,9 @@
 #define CORE_STREAM_H 1
 
 #include "Memory.h"
-#include "Enumeration.h"
 
 namespace greaper
 {
-	ENUMERATION(StringEncoding, UTF8, UTF16);
 	class IStream
 	{
 	public:
@@ -31,7 +29,7 @@ namespace greaper
 
 	public:
 		IStream(uint16 accessMode = READ);
-		IStream(const String& name, uint16 accessMode = READ);
+		IStream(StringView name, uint16 accessMode = READ);
 
 		virtual ~IStream() = default;
 
@@ -39,31 +37,22 @@ namespace greaper
 
 		uint16 GetAccessMode()const noexcept { return m_Access; }
 		
-		virtual bool IsReadable()const noexcept;
+		virtual bool IsReadable()const noexcept { return (m_Access & READ) != 0; }
 
-		virtual bool IsWritable()const noexcept;
+		virtual bool IsWritable()const noexcept { return (m_Access & WRITE) != 0; }
 
 		virtual bool IsFile()const noexcept = 0;
 
 		template<typename T>
-		IStream& operator>>(T& val);
+		IStream& operator>>(T& val)const;
 
-		virtual ssizet Read(void* buff, ssizet count) = 0;
+		template<typename T>
+		IStream& operator<<(const T& val);
+
+		virtual ssizet Read(void* buff, ssizet count)const = 0;
 		
 		virtual ssizet Write(const void* buff, ssizet count) = 0;
-
-		virtual ssizet ReadBytes(uint8* data, ssizet count);
 		
-		virtual	ssizet WriteBytes(const uint8* data, ssizet count);
-		
-		virtual void WriteString(const String& string, StringEncoding_t encoding = StringEncoding_t::UTF8);
-		
-		virtual void WriteString(const WString& string, StringEncoding_t encoding = StringEncoding_t::UTF16);
-
-		virtual String GetAsString();
-
-		virtual WString GetAsStringW();
-
 		virtual void Skip(ssizet count) = 0;
 
 		virtual void Seek(ssizet pos) = 0;
@@ -74,13 +63,14 @@ namespace greaper
 
 		virtual bool Eof()const = 0;
 
-		ssizet Size()const noexcept;
+		ssizet Size()const noexcept { return m_Size; }
 
 		virtual SPtr<IStream> Clone(bool copyData = true)const = 0;
 
 		virtual void Close() = 0;
 	};
-
 }
+
+#include "Base/Stream.inl"
 
 #endif /* CORE_STREAM_H */

@@ -23,13 +23,13 @@ namespace greaper
 		static ReflectedSize_t ToStream(const T& data, IStream& stream)
 		{
 			const auto d = (int32)data;
-			return stream.WriteBytes((const uint8*)&d, sizeof(d));
+			return stream.Write(&d, sizeof(d));
 		}
 
 		static ReflectedSize_t FromStream(T& data, IStream& stream)
 		{
 			int32 d;
-			const auto ret = stream.ReadBytes((uint8*)&d, sizeof(d));
+			const auto ret = stream.Read(&d, sizeof(d));
 			data = (T)d;
 			return ret;
 		}

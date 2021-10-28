@@ -10,11 +10,11 @@ Right now it only supports Windows 64bits, in the future may support other OSs, 
 For long time I've been programming games using several game engines, and other non game related projects, and I have managed to create a set of tools that I almost always use when I program, therefore it came to me, as other people have done, to create a framework, where it will focused on creting applications and on top of it a set of libraries that will make a graphics engine. Therefore,
 
 - Is Greaper a game engine?
-  No.
+  Could be.
 - Is Greaper a graphics framework?
-  No.
+  Could be.
 - What Greaper is then?
-  Well not an easy answer, but to sum up, is a set of utilities and a base framework to create almost any type of application, where the main target will be real time applications, but not exclusively.
+  Well not an easy answer, but to sum up, is a set of utilities and a base framework to create almost any type of application, where the main target will be real time applications, but not exclusively. I will create a graphic abstraction and a basic engine in order to show its capabilities and its modularity, but the main goal is to have base ground for any type of application.
 
 ## Current Status
 
@@ -30,7 +30,7 @@ Empty checkboxes represent in progress features.
 * [X] Set of preprocessor definitions in order to solve different platform challenges in a single statement.
 * [X] Abstraction of the typical multithread classes and utilities with more debug information, for example, knowing what thread are colliding and report the collision.
 * [X] A library protocol that will exchange information about types, properties and interfaces with the main application in order to enable full modularity.
-* [ ] An interface to handle crashes of the application.
+* [X] An interface to handle crashes of the application.
 * [X] CommandSystem, that will manage a console and a way to send commands and handle them.
 * [X] Two types of Event handling, an instant one, class contains an Event object that manages a list of listeners, and a (TODO)deferred one, theres a system that sends the triggered events to different listeners which subscribe to an EventID.
 * [X] DeferredCall Manager that let's you make a call deferred in time (or frames on a realtime application).
