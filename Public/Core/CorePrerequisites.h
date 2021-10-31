@@ -65,6 +65,7 @@ namespace greaper
 		RTI_Double,
 		RTI_Half,
 		RTI_Enum,
+		RTI_Rect,
 
 		// Base Containers
 		RTI_String = 25,
