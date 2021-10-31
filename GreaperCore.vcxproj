@@ -135,7 +135,6 @@
     <ClInclude Include="Public\Core\Base\IConsole.h" />
     <ClInclude Include="Public\Core\Base\IThreadPool.h" />
     <ClInclude Include="Public\Core\Base\Task.h" />
-    <ClInclude Include="Public\Core\Base\PropertyConverter.h" />
     <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />
     <ClInclude Include="Public\Core\Base\IThread.h" />
@@ -160,13 +159,15 @@
     <ClInclude Include="Public\Core\Memory.h" />
     <ClInclude Include="Public\Core\PHAL.h" />
     <ClInclude Include="Public\Core\Base\Utils.h" />
+    <ClInclude Include="Public\Core\Reflection\IReflectedType.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedField.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainContainer.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainEnum.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainField.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainType.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedProperty.h" />
-    <ClInclude Include="Public\Core\Reflection\ReflectedType.h" />
+    <ClInclude Include="Public\Core\Reflection\ReflectedReflField.h" />
+    <ClInclude Include="Public\Core\Reflection\ReflectedTypeInfo.h" />
     <ClInclude Include="Public\Core\Result.h" />
     <ClInclude Include="Public\Core\Stream.h" />
     <ClInclude Include="Public\Core\StringUtils.h" />

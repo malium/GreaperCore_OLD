@@ -42,7 +42,7 @@ Empty checkboxes represent in progress features.
 * [X] TimeManager that provide time information and frame information for realtime applications.
 * [ ] WindowManager providing multiple window management and enabling input pooling and rendering.
 * [ ] InputManager that will hook to the created windows enabling input pooling and manipulation.
-* [ ] ResourceManager that will handle resources, its IE (Import/Export) methods, its links, unique IDs and can use SerializationManager to import/export non-typed resources.
+* [ ] ResourceManager that will handle resources, its IE (Import/Export) methods, its resource links, unique IDs and can use SerializationManager to import/export complex resources or use IE to import/export raw resources.
 * [X] Properties, a class that will store data like a database but can be easily extended giving own types, also they are (TODO)de/serialized automatically if their configuration allows it as configuration for the application and its libraries.
 
 ## Is Greaper Open Source? (Licensing)
