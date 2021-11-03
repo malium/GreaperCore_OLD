@@ -1,5 +1,5 @@
 /***********************************************************************************
-*   Copyright 2021 Marcos Sánchez Torrent.                                         *
+*   Copyright 2021 Marcos Sï¿½nchez Torrent.                                         *
 *   All Rights Reserved.                                                           *
 ***********************************************************************************/
 
@@ -11,6 +11,8 @@
 #include "Interface.h"
 #include "Base/IWindow.h"
 #include "Result.h"
+#include "Base/DisplayAdapter.h"
+#include <ranges>
 
 namespace greaper
 {
@@ -29,6 +31,10 @@ namespace greaper
 		virtual Result<IWindow*> FindWindow(const WString& title)const = 0;
 
 		virtual Vector<IWindow*> GetWindows()const = 0;
+
+		virtual Vector<DisplayAdapter> GetAdpaters()const = 0;
+
+		virtual const DisplayAdapter& GetDefaultDisplayAdapter()const = 0;
 	};
 }
 

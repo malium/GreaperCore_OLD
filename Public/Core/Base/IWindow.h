@@ -17,8 +17,11 @@
 namespace greaper
 {
 	ENUMERATION(WindowState, Normal, Minimized, Maximized);
+	
 	ENUMERATION(AnchoredPosition, TopLeft, Top, TopRight, Left, Center, Right, BottomLeft, Bottom, BottomRight);
+	
 	ENUMERATION(FullScreenType, Windowed, Borderless, FullScreen);
+
 	struct WindowDesc
 	{
 		WStringView Title = L"GreaperWindow"sv;

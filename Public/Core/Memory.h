@@ -371,6 +371,23 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 	template<typename T, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedMultiSet<T, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedMultiSet; };
 
 	template<typename T>
+	struct Range
+	{
+		std::function<std::size_t()> SizeFn;
+		std::function<T&(std::size_t idx)> GetItemFn;
+		std::function<const T&(std::size_t idx)> GetCItemFn;
+	};
+
+	/*template<typename T>
+	Range<T> CreateRange(Vector<T>& vec)
+	{
+		Range r;
+		r.SizeFn = vec.size();
+		r.GetItemFn = [&vec](std::size_t idx){ return vec[idx]; };
+		r.GetCItemFn = [&vec](std::size_t idx) { return vec[idx]; };
+	}*/
+
+	template<typename T>
 	struct Snprintf
 	{
 		static int Fn(T* buffer, size_t bufferCount, const T* fmt, va_list argList)
