@@ -134,6 +134,8 @@
     <ClInclude Include="Public\Core\Base\ICommand.h" />
     <ClInclude Include="Public\Core\Base\IConsole.h" />
     <ClInclude Include="Public\Core\Base\IThreadPool.h" />
+    <ClInclude Include="Public\Core\Base\IWindow.h" />
+    <ClInclude Include="Public\Core\Base\Rect.h" />
     <ClInclude Include="Public\Core\Base\Task.h" />
     <ClInclude Include="Public\Core\Base\PropertyValidator.h" />
     <ClInclude Include="Public\Core\Base\ReflectedConversions.h" />

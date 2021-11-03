@@ -287,7 +287,7 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 	using StringView = BasicStringView<achar>;
 	using StringStream = BasicStringStream<achar>;
 	using WString = BasicString<wchar>;
-	using WStringView = BasicString<wchar>;
+	using WStringView = BasicStringView<wchar>;
 	using WStringStream = BasicStringStream<wchar>;
 	using U16String = BasicString<u16char>;
 	using U16StringStream = BasicStringStream<u16char>;
