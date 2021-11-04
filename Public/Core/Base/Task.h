@@ -20,7 +20,7 @@ namespace greaper
 		StringView m_Name;
 
 	public:
-		explicit Task(std::function<void()> function = nullptr, const StringView& name = "unnamed"sv);
+		explicit Task(std::function<void()> function = nullptr, StringView name = "unnamed"sv);
 
 		void operator()() noexcept;
 
@@ -29,9 +29,9 @@ namespace greaper
 		const StringView& GetName()const noexcept { return m_Name; }
 	};
 
-	Task::Task(std::function<void()> function, const StringView& name)
+	Task::Task(std::function<void()> function, StringView name)
 		:m_Function(std::move(function))
-		,m_Name(name)
+		,m_Name(std::move(name))
 		,m_Duration(0)
 	{
 

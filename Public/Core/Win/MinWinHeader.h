@@ -106,6 +106,7 @@ typedef PVOID HANDLE;
 
 DECLARE_HANDLE(HWND);
 DECLARE_HANDLE(HINSTANCE);
+DECLARE_HANDLE(HMONITOR);
 typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
 
 typedef struct _RTL_SRWLOCK {
@@ -147,6 +148,20 @@ typedef struct _RTL_CRITICAL_SECTION {
 	HANDLE LockSemaphore;
 	ULONG_PTR SpinCount;        // force size on 64-bit systems when packed
 } RTL_CRITICAL_SECTION, * PRTL_CRITICAL_SECTION;
+
+typedef struct tagRECT
+{
+    LONG    left;
+    LONG    top;
+    LONG    right;
+    LONG    bottom;
+} RECT, *PRECT, NEAR *NPRECT, FAR *LPRECT;
+
+typedef struct tagPOINT
+{
+    LONG  x;
+    LONG  y;
+} POINT, *PPOINT, NEAR *NPPOINT, FAR *LPPOINT;
 
 #define MB_OK                       0x00000000L
 #define MB_OKCANCEL                 0x00000001L

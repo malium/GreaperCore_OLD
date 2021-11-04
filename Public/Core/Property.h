@@ -10,7 +10,9 @@
 
 #include "Memory.h"
 #include "Base/PropertyValidator.h"
-#include "Base/PropertyConverter.h"
+//#include "Base/PropertyConverter.h"
+#include "Reflection/ReflectedPlainType.h"
+#include "Reflection/ReflectedPlainContainer.h"
 #include "Event.h"
 #include "IGreaperLibrary.h"
 #include "Concurrency.h"
@@ -87,7 +89,8 @@ namespace greaper
 				m_PropertyValidator = new PropertyValidatorNone<T>();
 			}
 			m_PropertyValidator->Validate(m_Value, &m_Value);
-			m_StringValue = TPropertyConverter<T>::ToString(m_Value);
+			m_StringValue = ReflectedPlainType<T>::ToString(m_Value);
+			//m_StringValue = TPropertyConverter<T>::ToString(m_Value);
 		}
 
 		template<class T, class _Alloc_>
@@ -131,7 +134,8 @@ namespace greaper
 			T newValue;
 			if (!m_PropertyValidator->Validate(value, &newValue))
 			{
-				const String nValueStr = TPropertyConverter<T>::ToString(value);
+				//const String nValueStr = TPropertyConverter<T>::ToString(value);
+				const String nValueStr = ReflectedPlainType<T>::ToString(m_Value);
 				m_Library->LogWarning(Format("Couldn't validate the new value of Property '%s', oldValue '%s', newValue '%s'.",
 					m_PropertyName.c_str(), m_StringValue.c_str(), nValueStr.c_str()));
 				return false;
@@ -139,13 +143,15 @@ namespace greaper
 			m_Value = newValue;
 			if (old == m_Value)
 			{
-				const String nValueStr = TPropertyConverter<T>::ToString(value);
+				//const String nValueStr = TPropertyConverter<T>::ToString(value);
+				const String nValueStr = ReflectedPlainType<T>::ToString(m_Value);
 				m_Library->LogVerbose(Format("Property '%s', has mantain the same value, current '%s', tried '%s'.",
 					m_PropertyName.c_str(), m_StringValue.c_str(), nValueStr.c_str()));
 				return false; // Property has not changed;
 			}
 			const auto oldStringValue = String{ m_StringValue };
-			m_StringValue = TPropertyConverter<T>::ToString(m_Value);
+			//m_StringValue = TPropertyConverter<T>::ToString(m_Value);
+			m_StringValue = ReflectedPlainType<T>::ToString(m_Value);
 			m_Library->LogVerbose(Format("Property '%s', has changed from '%s' to '%s'.",
 				m_PropertyName.c_str(), oldStringValue.c_str(), m_StringValue.c_str()));
 			if (triggerEvent)
@@ -154,7 +160,10 @@ namespace greaper
 		}
 		bool SetValueFromString(const String& value) noexcept override
 		{
-			return SetValue(TPropertyConverter<T>::FromString(value));
+			//return SetValue(TPropertyConverter<T>::FromString(value));
+			T temp;
+			ReflectedPlainType<T>::FromString(temp, value);
+			return SetValue(temp);
 		}
 		[[nodiscard]] const T& GetValue()const noexcept
 		{

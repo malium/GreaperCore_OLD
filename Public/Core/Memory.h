@@ -287,7 +287,7 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 	using StringView = BasicStringView<achar>;
 	using StringStream = BasicStringStream<achar>;
 	using WString = BasicString<wchar>;
-	using WStringView = BasicString<wchar>;
+	using WStringView = BasicStringView<wchar>;
 	using WStringStream = BasicStringStream<wchar>;
 	using U16String = BasicString<u16char>;
 	using U16StringStream = BasicStringStream<u16char>;
@@ -369,6 +369,23 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 	template<typename K, typename V, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedMap<K, V, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedMap; };
 	template<typename K, typename V, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedMultiMap<K, V, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedMultiMap; };
 	template<typename T, typename H, typename C, typename A> struct ReflectedTypeToID<UnorderedMultiSet<T, H, C, A>> { static constexpr ReflectedTypeID_t ID = RTI_UnorderedMultiSet; };
+
+	template<typename T>
+	struct Range
+	{
+		std::function<std::size_t()> SizeFn;
+		std::function<T&(std::size_t idx)> GetItemFn;
+		std::function<const T&(std::size_t idx)> GetCItemFn;
+	};
+
+	/*template<typename T>
+	Range<T> CreateRange(Vector<T>& vec)
+	{
+		Range r;
+		r.SizeFn = vec.size();
+		r.GetItemFn = [&vec](std::size_t idx){ return vec[idx]; };
+		r.GetCItemFn = [&vec](std::size_t idx) { return vec[idx]; };
+	}*/
 
 	template<typename T>
 	struct Snprintf

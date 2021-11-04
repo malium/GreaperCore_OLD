@@ -14,7 +14,7 @@
 #ifdef GREAPER_CORE_VERSION
 #undef GREAPER_CORE_VERSION
 #endif
-#define GREAPER_CORE_VERSION VERSION_SETTER(0, 2, 6, 0)
+#define GREAPER_CORE_VERSION VERSION_SETTER(0, 2, 7, 0)
 
 namespace greaper
 {
@@ -65,6 +65,7 @@ namespace greaper
 		RTI_Double,
 		RTI_Half,
 		RTI_Enum,
+		RTI_Rect,
 
 		// Base Containers
 		RTI_String = 25,

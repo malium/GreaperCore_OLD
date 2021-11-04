@@ -36,9 +36,10 @@ namespace nspace																  \
 	}																			  \
 }
 
-
+/*
 #ifdef IS_GREAPER_MAIN_LIB
 CreateGreaperEntrypoint(greaper)
 #else
 GetGreaperEntrypoint(greaper)
 #endif
+*/
