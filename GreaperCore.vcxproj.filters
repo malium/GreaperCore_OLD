@@ -162,9 +162,6 @@
     <ClInclude Include="Public\Core\Reflection\ReflectedReflField.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Public\Core\Reflection\IReflectedType.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Public\Core\Base\IWindow.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>

@@ -165,7 +165,6 @@
     <ClInclude Include="Public\Core\Memory.h" />
     <ClInclude Include="Public\Core\PHAL.h" />
     <ClInclude Include="Public\Core\Base\Utils.h" />
-    <ClInclude Include="Public\Core\Reflection\IReflectedType.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedField.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainContainer.h" />
     <ClInclude Include="Public\Core\Reflection\ReflectedPlainEnum.h" />
