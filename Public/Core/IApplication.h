@@ -15,10 +15,11 @@ namespace greaper
 {
 	struct ApplicationConfig
 	{
-		StringView ApplicationName;
-		int32 ApplicationVersion;
+		StringView ApplicationName = "unnamed"sv;
+		int32 ApplicationVersion = 0;
 		
-		StringView GreaperLibraries[];
+		uint32 GreaperLibraryCount = 0;
+		StringView* GreaperLibraries = nullptr;
 	};
 
 	class IApplication : public TInterface<IApplication, ApplicationConfig>
@@ -30,6 +31,8 @@ namespace greaper
 		using OnCloseEvent_t = Event<void>;
 
 		virtual ~IApplication()noexcept = default;
+
+		virtual EmptyResult RegisterGreaperLibrary(IGreaperLibrary* library) = 0;
 
 		virtual Result<IGreaperLibrary*> RegisterGreaperLibrary(const WStringView& libPath) = 0;
 
@@ -78,6 +81,8 @@ namespace greaper
 		template<class T>
 		Result<T*> RegisterGreaperLibraryT(const WStringView& libPath)
 		{
+			static_assert(std::is_base_of_v<IGreaperLibrary, T>, "Trying to register a GreaperLibrary "
+				"but its implementation doesn't derive from IGreaperLibrary.");
 			auto res = RegisterGreaperLibrary(libPath);
 			if(res.HasFailed())
 				return CopyFailure<T*>(res);
@@ -88,6 +93,8 @@ namespace greaper
 		template<class T>
 		Result<T*> GetGreaperLibraryT(const WStringView& libraryName)
 		{
+			static_assert(std::is_base_of_v<IGreaperLibrary, T>, "Trying to get a GreaperLibrary "
+				"but its implementation doesn't derive from IGreaperLibrary.");
 			auto res = GetGreaperLibrary(libraryName);
 			if(res.HasFailed())
 				return CopyFailure<T*>(res);
@@ -98,6 +105,8 @@ namespace greaper
 		template<class T>
 		Result<T*> GetGreaperLibraryT(const Uuid& libraryUUID)
 		{
+			static_assert(std::is_base_of_v<IGreaperLibrary, T>, "Trying to get a GreaperLibrary "
+				"but its implementation doesn't derive from IGreaperLibrary.");
 			auto res = GetGreaperLibrary(libraryName);
 			if(res.HasFailed())
 				return CopyFailure<T*>(res);
@@ -108,6 +117,8 @@ namespace greaper
 		template<class T, class ConfigType>
 		EmptyResult RegisterInterfaceT(TInterface<T, ConfigType>* interface, ConfigType config = ConfigType{})
 		{
+			static_assert(std::is_base_of_v<IGreaperLibrary, T>, "Trying to register an Interface "
+				"but its implementation doesn't derive from IInterface.");
 			const auto res = RegisterInterface(interface);
 			if(res.HasFailed())
 				return res;

@@ -27,6 +27,12 @@ namespace greaper
 
 		virtual void InitLibrary(IApplication* app) = 0;
 
+		virtual void InitManagers() = 0;
+
+		virtual void InitProperties() = 0;
+
+		virtual void InitReflection() = 0;
+
 		virtual void DeinitLibrary() = 0;
 
 		virtual const Uuid& GetLibraryUuid()const = 0;
@@ -43,7 +49,7 @@ namespace greaper
 
 		virtual void LogVerbose(const String& message) = 0;
 
-		virtual void LogInformation(const String& message) = 0;
+		virtual void Log(const String& message) = 0;
 
 		virtual void LogWarning(const String& message) = 0;
 
@@ -59,7 +65,7 @@ namespace greaper
 	template<class T>
 	struct ValidGreaperLibrary
 	{
-		static_assert(std::is_base_of_v<IInterface, T>, "Trying to validate a GreaperLibrary that does not derive from IGreaperLibrary");
+		static_assert(std::is_base_of_v<IGreaperLibrary, T>, "Trying to validate a GreaperLibrary that does not derive from IGreaperLibrary");
 		static constexpr bool UUIDValid = T::LibraryUUID != IGreaperLibrary::LibraryUUID;
 		static constexpr bool NameValid = T::LibraryName != IGreaperLibrary::LibraryName;
 

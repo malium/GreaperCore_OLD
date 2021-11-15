@@ -7,7 +7,7 @@
 
 #define CreateGreaperEntrypoint(nspace)											  \
 BEGIN_C																			  \
-namespace nspace																  \
+namespace nspace::_Impl															  \
 {																				  \
 	DLLEXPORT void* CDECL _Greaper();											  \
 }																				  \
@@ -16,25 +16,25 @@ namespace nspace																  \
 {																				  \
 	extern greaper::IGreaperLibrary* GetCurrentLibrary()						  \
 	{																			  \
-		return static_cast<greaper::IGreaperLibrary*>(_Greaper());				  \
+		return static_cast<greaper::IGreaperLibrary*>(_Impl::_Greaper());		  \
 	}																			  \
 }
 
 
-#define GetGreaperEntrypoint(nspace)											  \
-BEGIN_C																			  \
-namespace nspace																  \
-{																				  \
-	DLLIMPORT void* CDECL _Greaper();											  \
-}																				  \
-END_C																			  \
-namespace nspace																  \
-{																				  \
-	extern greaper::IGreaperLibrary* GetCurrentLibrary()						  \
-	{																			  \
-		return static_cast<greaper::IGreaperLibrary*>(_Greaper());				  \
-	}																			  \
-}
+//#define GetGreaperEntrypoint(nspace)											  \
+//BEGIN_C																			  \
+//namespace nspace																  \
+//{																				  \
+//	DLLIMPORT void* CDECL _Greaper();											  \
+//}																				  \
+//END_C																			  \
+//namespace nspace																  \
+//{																				  \
+//	extern greaper::IGreaperLibrary* GetCurrentLibrary()						  \
+//	{																			  \
+//		return static_cast<greaper::IGreaperLibrary*>(_Greaper());				  \
+//	}																			  \
+//}
 
 /*
 #ifdef IS_GREAPER_MAIN_LIB
