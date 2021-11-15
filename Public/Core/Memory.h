@@ -24,6 +24,7 @@
 #include <unordered_set>
 #include <memory>
 #include <cstdarg>
+#include <functional>
 #if PLT_LINUX
 #include <iostream>
 #endif
@@ -375,17 +376,16 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 	{
 		std::function<std::size_t()> SizeFn;
 		std::function<T&(std::size_t idx)> GetItemFn;
-		std::function<const T&(std::size_t idx)> GetCItemFn;
 	};
 
-	/*template<typename T>
-	Range<T> CreateRange(Vector<T>& vec)
+	template<typename T, typename A = StdAlloc<T>>
+	Range<T> CreateRange(Vector<T, A>& vec)
 	{
 		Range r;
 		r.SizeFn = vec.size();
 		r.GetItemFn = [&vec](std::size_t idx){ return vec[idx]; };
-		r.GetCItemFn = [&vec](std::size_t idx) { return vec[idx]; };
-	}*/
+		return r;
+	}
 
 	template<typename T>
 	struct Snprintf

@@ -30,9 +30,9 @@ namespace greaper
 
 		virtual Result<IWindow*> FindWindow(const WString& title)const = 0;
 
-		virtual Vector<IWindow*> GetWindows()const = 0;
+		virtual const Vector<IWindow*>& GetWindows()const = 0;
 
-		virtual Vector<DisplayAdapter> GetAdpaters()const = 0;
+		virtual const Vector<DisplayAdapter>& GetAdpaters()const = 0;
 
 		virtual const DisplayAdapter& GetDefaultDisplayAdapter()const = 0;
 	};
