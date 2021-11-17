@@ -7,8 +7,9 @@
 
 //#pragma comment(lib, "Rpcrt4.lib")
 //#pragma comment(lib, "uuid.lib")
+//#pragma comment(lib, "Kernel32.lib")
 
-#if true
+#if false
 #define DECLSPEC_IMPORT __declspec(dllimport)
 #define RPCRTAPI DECLSPEC_IMPORT
 #define WINUSERAPI DECLSPEC_IMPORT

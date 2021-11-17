@@ -64,8 +64,6 @@ namespace greaper
 
 		virtual bool AppHasToStop()const = 0;
 
-		virtual void AppMarkToStop() = 0;
-
 		virtual void StopApplication() = 0;
 
 		virtual OnCloseEvent_t*const GetOnCloseEvent() = 0;

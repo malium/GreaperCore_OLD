@@ -41,7 +41,7 @@ namespace greaper
 
 		virtual IApplication* GetApplication()const = 0;
 
-		virtual Library* GetOSLibrary()const = 0;
+		virtual const Library* GetOSLibrary()const = 0;
 
 		virtual Vector<IProperty*> GetPropeties()const = 0;
 

@@ -124,13 +124,13 @@ namespace greaper
 	template<class T, class _Alloc_ = GenericAllocator, class... Args>
 	INLINE T* Construct(Args&&... args)
 	{
-		return ConstructN<T, _Alloc_>(1, args);
+		return ConstructN<T, _Alloc_>(1, args...);
 	}
 
 	template<class T, class _Alloc_ = GenericAllocator, class... Args>
 	INLINE T* ConstructN(sizet count, Args&&... args)
 	{
-		T* mem = _AllocN<_Alloc_, T>(count);
+		T* mem = AllocN<T, _Alloc_>(count);
 		for (sizet i = 0; i < count; ++i)
 			new (reinterpret_cast<void*>(&mem[i]))T(std::forward<Args>(args)...);
 		return mem;
