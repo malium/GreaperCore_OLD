@@ -115,17 +115,17 @@ INLINE constexpr int16 ClampShort(const int32 i)
 	return static_cast<int16>(Clamp(i, -32768, 32767));
 }
 /** Retruns true if value is NaN */
-INLINE constexpr bool IsNaN(const float f) noexcept
+INLINE bool IsNaN(const float f) noexcept
 {
 	return (*reinterpret_cast<const uint32*>(&f) & 0x7FFFFFFF) > 0x7F800000;
 }
 /** Returns true if a value is finite */
-INLINE constexpr bool IsFinite(const float f)
+INLINE bool IsFinite(const float f)
 {
 	return (*reinterpret_cast<const uint32*>(&f) & 0x7F800000) != 0x7F800000;
 }
 /** Returns true if a value is infinite */
-INLINE constexpr bool IsInfinite(const float f)
+INLINE bool IsInfinite(const float f)
 {
 	return !IsFinite(f);
 }

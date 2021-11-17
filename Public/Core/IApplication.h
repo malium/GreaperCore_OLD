@@ -107,7 +107,7 @@ namespace greaper
 		{
 			static_assert(std::is_base_of_v<IGreaperLibrary, T>, "Trying to get a GreaperLibrary "
 				"but its implementation doesn't derive from IGreaperLibrary.");
-			auto res = GetGreaperLibrary(libraryName);
+			auto res = GetGreaperLibrary(libraryUUID);
 			if(res.HasFailed())
 				return CopyFailure<T*>(res);
 			T* lib = reinterpret_cast<T*>(res.GetValue());

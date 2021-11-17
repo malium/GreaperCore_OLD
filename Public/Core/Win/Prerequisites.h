@@ -67,9 +67,9 @@ extern void CDECL __debugbreak();
 
 #define FUNCTION_VARARGS_END(...)
 
+#include "MinWinHeader.h"
+
 #define PlatformAlloc(bytes) HeapAlloc(GetProcessHeap(), 0, bytes)
 #define PlatformDealloc(mem) HeapFree(GetProcessHeap(), 0, mem)
 #define PlatformAlignedAlloc(bytes, alignment) _aligned_malloc(bytes, alignment)
 #define PlatformAlignedDealloc(mem) _aligned_free(mem)
-
-#include "MinWinHeader.h"

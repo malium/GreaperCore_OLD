@@ -647,7 +647,7 @@ namespace greaper
 		struct OpData
 		{
 			std::any RetValue;
-			std::atomic_bool IsComplete = false;
+			std::atomic_bool IsCompleted = false;
 		};
 
 	protected:
@@ -686,7 +686,7 @@ namespace greaper
 
 		bool HasCompleted()const
 		{
-			return m_Data->IsComplete.load(std::memory_order_acquire);
+			return m_Data->IsCompleted.load(std::memory_order_acquire);
 		}
 
 		void BlockUntilComplete()const
@@ -726,19 +726,19 @@ namespace greaper
 		TAsyncOp() = default;
 
 		TAsyncOp(AsyncOpEmpty empty)
-			:AsyncOpBase(empty)
+			:IAsyncOp(empty)
 		{
 
 		}
 
 		TAsyncOp(const SPtr<AsyncOpSyncData>& syncData)
-			:AsyncOpBase(syncData)
+			:IAsyncOp(syncData)
 		{
 
 		}
 
 		TAsyncOp(AsyncOpEmpty empty, const SPtr<AsyncOpSyncData>& syncData)
-			:AsyncOpBase(empty, syncData)
+			:IAsyncOp(empty, syncData)
 		{
 
 		}

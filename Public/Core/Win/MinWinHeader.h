@@ -20,11 +20,14 @@
 #define INFINITE            0xFFFFFFFF  // Infinite timeout
 #define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1     
 #define CONDITION_VARIABLE_LOCKMODE_SHARED RTL_CONDITION_VARIABLE_LOCKMODE_SHARED
+#define DECLSPEC_ALLOCATOR __declspec(allocator)
 
 #define CONST               const
 typedef long RPC_STATUS;
 #define  RPC_ENTRY __stdcall
 #define __RPC_FAR
+#define far                 
+#define near                
 #define FAR                 
 #define NEAR                
 
@@ -44,6 +47,7 @@ typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
 #define VOID void
 typedef void* PVOID;
+typedef void far* LPVOID;
 
 typedef char CHAR;
 typedef CHAR *PCHAR, *LPCH, *PCH;
@@ -90,6 +94,9 @@ typedef unsigned __int64 UINT_PTR, *PUINT_PTR;
 
 typedef __int64 LONG_PTR, *PLONG_PTR;
 typedef unsigned __int64 ULONG_PTR, *PULONG_PTR;
+
+typedef ULONG_PTR SIZE_T, * PSIZE_T;
+typedef LONG_PTR SSIZE_T, * PSSIZE_T;
 
 typedef CONST CHAR *LPCSTR, *PCSTR;
 typedef CONST WCHAR *LPCWSTR, *PCWSTR;
@@ -455,6 +462,32 @@ BOOL
 WINAPI
 SwitchToThread(
     VOID
+);
+
+WINBASEAPI
+DECLSPEC_ALLOCATOR
+LPVOID
+WINAPI
+HeapAlloc(
+    HANDLE hHeap,
+    DWORD dwFlags,
+    SIZE_T dwBytes
+);
+
+WINBASEAPI
+HANDLE
+WINAPI
+GetProcessHeap(
+    VOID
+);
+
+WINBASEAPI
+BOOL
+WINAPI
+HeapFree(
+    HANDLE hHeap,
+    DWORD dwFlags,
+    LPVOID lpMem
 );
 
 #else

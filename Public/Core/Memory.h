@@ -92,59 +92,13 @@ namespace greaper
 	class MemoryAllocator
 	{
 	public:
-		static void* Allocate(sizet byteSize)
-		{
-			if (bytes == 0)
-				return nullptr;
+		static void* Allocate(sizet byteSize);
 
-			void* mem = PlatformAlloc(byteSize);
+		static void* AllocateAligned(sizet byteSize, sizet alignment);
 
-			VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes.", byteSize);
-			
-			return mem;
-		}
+		static void Deallocate(void* mem);
 
-		static void* AllocateAligned(sizet byteSize, sizet alignment)
-		{
-			if (bytes == 0)
-				return nullptr;
-			if (alignment == 0)
-				return Allocate(byteSize);
-
-			void* mem = PlatformAlignedAlloc(byteSize, aligment);
-
-			VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes aligned %lld.", byteSize, alignment);
-
-			return mem;
-		}
-
-		static void Deallocate(void* mem)
-		{
-#if GREAPER_ENABLE_BREAK
-			VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
-#else
-			if (mem == nullptr)
-			{
-				return;
-			}
-#endif
-
-			PlatformDealloc(mem);
-		}
-
-		static void DeallocateAligned(void* mem)
-		{
-#if GREAPER_ENABLE_BREAK
-			VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
-#else
-			if (mem == nullptr)
-			{
-				return;
-			}
-#endif
-
-			PlatformAlignedDealloc(mem);
-		}
+		static void DeallocateAligned(void* mem);
 	};
 
 	class GenericAllocator { };
@@ -258,7 +212,7 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 			if (num > max_size())
 				return nullptr;
 
-			void*const p = _AllocN<_Alloc_, T>(num);
+			void*const p = AllocN<T, _Alloc_>(num);
 			if (!p)
 				return nullptr;
 			return static_cast<T*>(p);
@@ -442,7 +396,7 @@ namespace greaper::Impl
 {
 	INLINE void _LogBreak(const String& str)
 	{
-		FILE* file = nullptr;
+		UNUSED(str);
 
 		// TODO: do error log
 	}
@@ -479,6 +433,64 @@ namespace greaper::Impl
 		_LogBreak(str);
 		exit(EXIT_FAILURE);
 	}
+}
+
+template<class T>
+void* greaper::MemoryAllocator<T>::Allocate(sizet byteSize)
+{
+	if (byteSize == 0)
+		return nullptr;
+
+	void* mem = PlatformAlloc(byteSize);
+
+	VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes.", byteSize);
+
+	return mem;
+}
+
+template<class T>
+void* greaper::MemoryAllocator<T>::AllocateAligned(sizet byteSize, sizet alignment)
+{
+	if (byteSize == 0)
+		return nullptr;
+	if (alignment == 0)
+		return Allocate(byteSize);
+
+	void* mem = PlatformAlignedAlloc(byteSize, alignment);
+
+	VerifyNotNull(mem, "Nullptr detected after asking to OS for %lld bytes aligned %lld.", byteSize, alignment);
+
+	return mem;
+}
+
+template<class T>
+void greaper::MemoryAllocator<T>::Deallocate(void* mem)
+{
+#if GREAPER_ENABLE_BREAK
+	VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
+#else
+	if (mem == nullptr)
+	{
+		return;
+	}
+#endif
+
+	PlatformDealloc(mem);
+}
+
+template<class T>
+void greaper::MemoryAllocator<T>::DeallocateAligned(void* mem)
+{
+#if GREAPER_ENABLE_BREAK
+	VerifyNotNull(mem, "Detected nullptr, maybe use after free.");
+#else
+	if (mem == nullptr)
+	{
+		return;
+	}
+#endif
+
+	PlatformAlignedDealloc(mem);
 }
 
 namespace std

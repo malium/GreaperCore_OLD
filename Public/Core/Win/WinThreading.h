@@ -15,7 +15,7 @@ namespace greaper
 	using ThreadID_t = uint32;
 	constexpr ThreadID_t InvalidThreadID = static_cast<ThreadID_t>(-1);
 	using ThreadHandle = HANDLE;
-	constexpr ThreadHandle InvalidThreadHandle = static_cast<ThreadHandle>(INVALID_HANDLE_VALUE);
+	inline const ThreadHandle InvalidThreadHandle = static_cast<ThreadHandle>(INVALID_HANDLE_VALUE);
 
 	using MutexHandle = SRWLOCK;
 	constexpr MutexHandle* InvalidMutexHandle = nullptr;
