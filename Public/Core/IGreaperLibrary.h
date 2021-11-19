@@ -25,7 +25,7 @@ namespace greaper
 
 		virtual ~IGreaperLibrary() = default;
 
-		virtual void InitLibrary(IApplication* app) = 0;
+		virtual void InitLibrary(Library lib, IApplication* app) = 0;
 
 		virtual void InitManagers() = 0;
 

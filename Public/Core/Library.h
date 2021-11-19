@@ -46,6 +46,12 @@ namespace greaper
 			Open(libraryName);
 		}
 
+		INLINE Library(OSLibrary::LibraryHandle handle)
+			: m_Handle(handle)
+		{
+
+		}
+
 		constexpr INLINE Library(Library&& other)noexcept
 			:m_Handle(other.m_Handle)
 		{
