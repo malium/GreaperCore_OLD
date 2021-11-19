@@ -19,7 +19,7 @@ namespace greaper
 		int32 ApplicationVersion = 0;
 		
 		uint32 GreaperLibraryCount = 0;
-		StringView* GreaperLibraries = nullptr;
+		WStringView* GreaperLibraries = nullptr;
 	};
 
 	class IApplication : public TInterface<IApplication, ApplicationConfig>
@@ -36,7 +36,7 @@ namespace greaper
 
 		virtual Result<IGreaperLibrary*> RegisterGreaperLibrary(const WStringView& libPath) = 0;
 
-		virtual Result<IGreaperLibrary*> GetGreaperLibrary(const WStringView& libraryName) = 0;
+		virtual Result<IGreaperLibrary*> GetGreaperLibrary(const StringView& libraryName) = 0;
 
 		virtual Result<IGreaperLibrary*> GetGreaperLibrary(const Uuid& libraryUUID) = 0;
 
@@ -89,7 +89,7 @@ namespace greaper
 		}
 
 		template<class T>
-		Result<T*> GetGreaperLibraryT(const WStringView& libraryName)
+		Result<T*> GetGreaperLibraryT(const StringView& libraryName)
 		{
 			static_assert(std::is_base_of_v<IGreaperLibrary, T>, "Trying to get a GreaperLibrary "
 				"but its implementation doesn't derive from IGreaperLibrary.");

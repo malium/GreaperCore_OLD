@@ -23,24 +23,24 @@ namespace greaper
 	{
 		using Type = retType(*)(types...);
 	};
-    class Library
-    {
-        OSLibrary::LibraryHandle m_Handle;
+	class Library
+	{
+		OSLibrary::LibraryHandle m_Handle;
 
-    public:
-        INLINE constexpr Library()noexcept
-            :m_Handle(nullptr)
-        {
-            
-        }
+	public:
+		INLINE constexpr Library()noexcept
+			:m_Handle(nullptr)
+		{
+			
+		}
 
-        INLINE Library(const wchar* libraryName)noexcept
-            :m_Handle(nullptr)
-        {
-            Open(libraryName);
-        }
+		INLINE Library(WStringView libraryName)noexcept
+			:m_Handle(nullptr)
+		{
+			Open(libraryName);
+		}
 
-		INLINE Library(const achar* libraryName)noexcept
+		INLINE Library(StringView libraryName)noexcept
 			:m_Handle(nullptr)
 		{
 			Open(libraryName);
@@ -63,19 +63,19 @@ namespace greaper
 			return *this;
 		}
 
-		INLINE void Open(const achar* libraryName)
+		INLINE void Open(StringView libraryName)
 		{
 			if (IsOpen())
 				return;
 			m_Handle = OSLibrary::Load(libraryName);
 		}
 
-        INLINE void Open(const wchar* libraryName)
-        {
+		INLINE void Open(WStringView libraryName)
+		{
 			if (IsOpen())
 				return;
-            m_Handle = OSLibrary::Load(libraryName);
-        }
+			m_Handle = OSLibrary::Load(libraryName);
+		}
 
 		INLINE void Close()
 		{
@@ -90,7 +90,7 @@ namespace greaper
 			return m_Handle != nullptr;
 		}
 
-		INLINE FuncPtr GetFunction(const achar* funcName)const noexcept
+		INLINE FuncPtr GetFunction(StringView funcName)const noexcept
 		{
 			if (!IsOpen())
 				return nullptr;
@@ -98,7 +98,7 @@ namespace greaper
 		}
 		
 		template<typename retType = void, class... types>
-		INLINE typename FuncType<retType, types...>::Type GetFunctionT(const achar* funcName)const noexcept
+		INLINE typename FuncType<retType, types...>::Type GetFunctionT(StringView funcName)const noexcept
 		{
 			//if (!IsOpen())
 			//	return nullptr;
@@ -108,7 +108,7 @@ namespace greaper
 
 		Library(const Library&) = delete;
 		Library& operator=(const Library&) = delete;
-    };
+	};
 }
 
 #endif /* CORE_LIBRARY_H */

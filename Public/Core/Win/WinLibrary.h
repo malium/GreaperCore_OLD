@@ -17,14 +17,14 @@ namespace greaper
 	public:
 		using LibraryHandle = HMODULE;
 
-		static LibraryHandle Load(const achar* libraryName)
+		static LibraryHandle Load(StringView libraryName)
 		{
-			return LoadLibraryA(libraryName);
+			return LoadLibraryA(libraryName.data());
 		}
 
-		static LibraryHandle Load(const wchar* libraryName)
+		static LibraryHandle Load(WStringView libraryName)
 		{
-			return LoadLibraryW(libraryName);
+			return LoadLibraryW(libraryName.data());
 		}
 
 		static void Unload(LibraryHandle handle)
@@ -32,9 +32,9 @@ namespace greaper
 			FreeLibrary(handle);
 		}
 
-		static FuncPtr FuncLoad(LibraryHandle handle, const achar* procName)
+		static FuncPtr FuncLoad(LibraryHandle handle, StringView procName)
 		{
-			const auto proc = GetProcAddress(handle, procName);
+			const auto proc = GetProcAddress(handle, procName.data());
 			/*if (proc == nullptr)
 				return nullptr;*/
 			return reinterpret_cast<FuncPtr>(proc);
