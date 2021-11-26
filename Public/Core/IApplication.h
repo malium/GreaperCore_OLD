@@ -46,7 +46,11 @@ namespace greaper
 
 		virtual EmptyResult UnregisterInterface(IInterface* interface) = 0;
 
-		virtual void MakeInterfaceDefault(IInterface* interface) = 0;
+		virtual EmptyResult MakeInterfaceDefault(IInterface* interface) = 0;
+		
+		virtual EmptyResult StopInterfaceDefault(const Uuid& interfaceUUID) = 0;
+
+		virtual EmptyResult StopInterfaceDefault(const StringView& interfaceName) = 0;
 
 		virtual Result<IInterface*> GetInterface(const Uuid& interfaceUUID)const = 0;
 

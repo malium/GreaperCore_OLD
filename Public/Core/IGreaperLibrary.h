@@ -33,6 +33,10 @@ namespace greaper
 
 		virtual void InitReflection() = 0;
 
+		virtual void DeinitReflection() = 0;
+
+		virtual void DeinitManagers() = 0;
+
 		virtual void DeinitLibrary() = 0;
 
 		virtual const Uuid& GetLibraryUuid()const = 0;
