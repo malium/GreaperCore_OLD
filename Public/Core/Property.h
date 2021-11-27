@@ -200,12 +200,12 @@ namespace greaper
 	Result<TProperty<T>*> CreateProperty(IGreaperLibrary* library, const StringView& propertyName, T initialValue, const StringView& propertyInfo = StringView{},
 		bool isConstant = false, bool isStatic = false, TPropertyValidator<T>* validator = nullptr)
 	{
-		TProperty<T>* property = Construct<TProperty<T>, _Alloc_>(propertyName, std::move(initialValue), propertyInfo, isConstant, isStatic, validator)
-		const auto res = library->RegisterProperty((IProperty*)property);
-		if (!res)
+		TProperty<T>* property = Construct<TProperty<T>, _Alloc_>(propertyName, std::move(initialValue), propertyInfo, isConstant, isStatic, validator);
+		EmptyResult res = library->RegisterProperty((IProperty*)property);
+		if (res.HasFailed())
 		{
 			Destroy<TProperty<T>, _Alloc_>(property);
-			return CreateFailure<TProperty<T>*>("Couldn't register the property"sv);
+			return CreateFailure<TProperty<T>*>("Couldn't register the property\n" + res.GetFailMessage());
 		}
 		return CreateResult(property);
 	}

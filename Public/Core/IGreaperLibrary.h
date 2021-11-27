@@ -17,7 +17,7 @@ namespace greaper
 	class IGreaperLibrary
 	{
 	protected:
-		virtual bool RegisterProperty(IProperty* property) = 0;
+		virtual EmptyResult RegisterProperty(IProperty* property) = 0;
 
 	public:
 		static constexpr Uuid LibraryUUID = Uuid{  };
@@ -47,9 +47,9 @@ namespace greaper
 
 		virtual const Library* GetOSLibrary()const = 0;
 
-		virtual Vector<IProperty*> GetPropeties()const = 0;
+		virtual CRange<IProperty*> GetPropeties()const = 0;
 
-		virtual Result<IProperty*> GetProperty(const String& name)const = 0;
+		virtual Result<IProperty*> GetProperty(const StringView& name)const = 0;
 
 		virtual void LogVerbose(const String& message) = 0;
 

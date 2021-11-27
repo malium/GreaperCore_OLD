@@ -249,7 +249,7 @@ namespace greaper
 				data.reserve(vec.size());
 			for(int i = 0; i < vec.size(); ++i)
 			{
-				Container_t::value_type value;
+				T value;
 				ReflectedFromString(value, vec[i]);
 				data.push_back(std::move(value));
 			}
@@ -338,7 +338,7 @@ namespace greaper
 				
 			for(const auto& elemStr : vec)
 			{
-				Container_t::value_type value;
+				T value;
 				ReflectedFromString(value, elemStr);
 				data.push_back(std::move(value));
 			}
@@ -425,7 +425,7 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::value_type value;
+				T value;
 				ReflectedFromString(value, elemStr);
 				data.push_back(std::move(value));
 			}
@@ -512,7 +512,7 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::value_type value;
+				T value;
 				ReflectedFromString(value, elemStr);
 				data.emplace(std::move(value));
 			}
@@ -599,7 +599,7 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::value_type value;
+				T value;
 				ReflectedFromString(value, elemStr);
 				data.emplace(std::move(value));
 			}
@@ -687,7 +687,7 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::value_type value;
+				T value;
 				ReflectedFromString(value, elemStr);
 				data.emplace(std::move(value));
 			}
@@ -775,7 +775,7 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::value_type value;
+				T value;
 				ReflectedFromString(value, elemStr);
 				data.emplace(std::move(value));
 			}
@@ -869,8 +869,8 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::key_type key;
-				Container_t::value_type value;
+				K key;
+				V value;
 				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
 				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
 
@@ -970,8 +970,8 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::key_type key;
-				Container_t::value_type value;
+				K key;
+				V value;
 				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
 				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
 
@@ -1070,8 +1070,8 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::key_type key;
-				Container_t::value_type value;
+				K key;
+				V value;
 				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
 				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
 
@@ -1170,8 +1170,8 @@ namespace greaper
 
 			for(const auto& elemStr : vec)
 			{
-				Container_t::key_type key;
-				Container_t::value_type value;
+				K key;
+				V value;
 				const auto elemStrSep = StringUtils::Tokenize(elemStr, REFLECTION_STRING_INNER_ELEMENT_SEPARATOR);
 				VerifyEqual(elemStrSep.size(), 2, "Badly serialize map");
 

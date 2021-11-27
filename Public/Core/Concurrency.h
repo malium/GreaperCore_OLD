@@ -296,6 +296,8 @@ namespace greaper
 		Lock& operator=(const Lock&) = delete;
 	};
 
+#define LOCK(MUTEX) greaper::Lock<decltype(MUTEX)> lck(MUTEX)
+
 	template<class Mtx>
 	using UniqueLock = std::unique_lock<Mtx>;
 
@@ -331,6 +333,8 @@ namespace greaper
 			m_Mutex.unlock_shared();
 		}
 	};
+
+#define SHAREDLOCK(MUTEX) SharedLock lck(MUTEX);
 
 	class Signal
 	{

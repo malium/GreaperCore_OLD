@@ -70,11 +70,11 @@ namespace greaper
 		}
 		bool Validate(const T& value, T* validated)const noexcept override
 		{
-			if (valid >= m_Min)
+			if (value >= m_Min)
 			{
-				if (valid <= m_Max)
+				if (value <= m_Max)
 				{
-					*validated = valid;
+					*validated = value;
 				}
 				else
 				{

@@ -61,7 +61,13 @@ namespace greaper
 		Result<T> res;
 		res.m_FailMessage.assign(errorMessage);
 		res.m_Failure = true;
-		return std::move(res);
+		return res;
+		//return std::move(res);
+	}
+
+	Result<EmptyStruct> CreateEmptyFailure(StringView errorMessage) noexcept
+	{
+		return CreateFailure<EmptyStruct>(std::move(errorMessage));
 	}
 
 	template<class T, class U = T>

@@ -330,14 +330,47 @@ template<class T, class _Alloc_> friend void greaper::Destroy(T*, sizet)
 	{
 		std::function<std::size_t()> SizeFn;
 		std::function<T&(std::size_t idx)> GetItemFn;
+
+		T* begin()const noexcept
+		{
+			return &GetItemFn(0);
+		}
+		T* end()const noexcept
+		{
+			return &GetItemFn(SizeFn() - 1) + 1;
+		}
+	};
+	template<typename T>
+	struct CRange
+	{
+		std::function<std::size_t()> SizeFn;
+		std::function<const T& (std::size_t idx)> GetItemFn;
+
+		const T* begin()const noexcept
+		{
+			return &GetItemFn(0);
+		}
+		const T* end()const noexcept
+		{
+			return &GetItemFn(SizeFn() - 1) + 1;
+		}
 	};
 
 	template<typename T, typename A = StdAlloc<T>>
 	Range<T> CreateRange(Vector<T, A>& vec)
 	{
-		Range r;
-		r.SizeFn = vec.size();
+		Range<T> r;
+		r.SizeFn = [&vec]() { return vec.size(); };
 		r.GetItemFn = [&vec](std::size_t idx){ return vec[idx]; };
+		return r;
+	}
+
+	template<typename T, typename A = StdAlloc<T>>
+	CRange<T> CreateRange(const Vector<T, A>& vec)
+	{
+		CRange<T> r;
+		r.SizeFn = [&vec]() { return vec.size(); };
+		r.GetItemFn = [&vec](std::size_t idx) { return vec[idx]; };
 		return r;
 	}
 
@@ -548,4 +581,42 @@ namespace std
 	};
 }
 
+
+/***********************************************************************************
+*                            CONTAINER HELPER FUNCITONS                            *
+***********************************************************************************/
+namespace greaper
+{
+	template<class T, class _Alloc_>
+	ssizet IndexOf(const Vector<T, _Alloc_>& container, const T& element) noexcept
+	{
+		for (std::size_t i = 0; i < container.size(); ++i)
+		{
+			if (container[i] == element)
+				return (ssizet)i;
+		}
+		return -1;
+	}
+	template<class T, std::size_t N>
+	ssizet IndexOf(T(&arr)[N], const T& element) noexcept
+	{
+		for (std::size_t i = 0; i < N; ++i)
+		{
+			if (arr[i] == element)
+				return (ssizet)i;
+		}
+		return -1;
+	}
+	template<class T, class _Alloc_>
+	bool Contains(const Vector<T, _Alloc_>& container, const T& elem) noexcept
+	{
+		return IndexOf<T, _Alloc_>(container, elem) >= 0;
+	}
+
+	template<class T, std::size_t N>
+	bool Contains(T(&arr)[N], const T& elem) noexcept
+	{
+		return IndexOf<T, N>(arr, elem);
+	}
+}
 #endif /* GREAPER_CORE_MEMORY_H */

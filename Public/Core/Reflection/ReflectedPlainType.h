@@ -137,7 +137,7 @@ greaper::ReflectedSize_t greaper::ReflectedWriteWithSizeHeader(IStream& stream, 
 	size = fn() + sizeof(size);
 	VerifyGreater(size, 0, "Trying to write a zero length type.");
 	stream.Seek(sizePos);
-	stream.Write(size, sizeof(size));
+	stream.Write(&size, sizeof(size));
 	stream.Skip(size - sizeof(size));
 	return size;
 }
@@ -189,17 +189,17 @@ namespace greaper{																    		\
 }
 
 ALLOW_MEMCPY_SERIALIZATION(bool,			greaper::RTI_Bool, data ? "true" : "false", data = str == "true");
-ALLOW_MEMCPY_SERIALIZATION(int8,			greaper::RTI_Int8, String{ std::to_string(data).data() }, data = std::strtol(str.data(), nullptr, 10));
-ALLOW_MEMCPY_SERIALIZATION(uint8,			greaper::RTI_Uint8, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
-ALLOW_MEMCPY_SERIALIZATION(int16,			greaper::RTI_Int16, String{ std::to_string(data).data() }, data = std::strtol(str.data(), nullptr, 10));
-ALLOW_MEMCPY_SERIALIZATION(uint16,			greaper::RTI_Uint16, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
-ALLOW_MEMCPY_SERIALIZATION(int32,			greaper::RTI_Int32, String{ std::to_string(data).data() }, data = std::strtol(str.data(), nullptr, 10));
-ALLOW_MEMCPY_SERIALIZATION(uint32,			greaper::RTI_Uint32, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
-ALLOW_MEMCPY_SERIALIZATION(int64,			greaper::RTI_Int64, String{ std::to_string(data).data() }, data = std::strtoll(str.data(), nullptr, 10));
-ALLOW_MEMCPY_SERIALIZATION(uint64,			greaper::RTI_Uint64, String{ std::to_string(data).data() }, data = std::strtoull(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(int8,			greaper::RTI_Int8, String{ std::to_string(data).data() }, data = (int8)std::strtol(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint8,			greaper::RTI_Uint8, String{ std::to_string(data).data() }, data = (uint8)std::strtoul(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(int16,			greaper::RTI_Int16, String{ std::to_string(data).data() }, data = (int16)std::strtol(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint16,			greaper::RTI_Uint16, String{ std::to_string(data).data() }, data = (uint16)std::strtoul(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(int32,			greaper::RTI_Int32, String{ std::to_string(data).data() }, data = (int32)std::strtol(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint32,			greaper::RTI_Uint32, String{ std::to_string(data).data() }, data = (uint32)std::strtoul(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(int64,			greaper::RTI_Int64, String{ std::to_string(data).data() }, data = (int16)std::strtoll(str.data(), nullptr, 10));
+ALLOW_MEMCPY_SERIALIZATION(uint64,			greaper::RTI_Uint64, String{ std::to_string(data).data() }, data = (uint16)std::strtoull(str.data(), nullptr, 10));
 ALLOW_MEMCPY_SERIALIZATION(float,			greaper::RTI_Float, String{ std::to_string(data).data() }, data = std::strtof(str.data(), nullptr));
 ALLOW_MEMCPY_SERIALIZATION(double,			greaper::RTI_Double, String{ std::to_string(data).data() }, data = std::strtod(str.data(), nullptr));
 ALLOW_MEMCPY_SERIALIZATION(greaper::Uuid, 	greaper::RTI_UUID, data.ToString(), data.FromString(str));
-ALLOW_MEMCPY_SERIALIZATION(greaper::half, greaper::RTI_Half, String{ std::to_string(data).data() }, data = std::strtoul(str.data(), nullptr, 10));
+//ALLOW_MEMCPY_SERIALIZATION(greaper::half, greaper::RTI_Half, String{ std::to_string(data).data() }, data = (half)std::strtoul(str.data(), nullptr, 10));
 
 #endif /* CORE_REFLECTION_REFLECTED_PLAIN_TYPE_H */

@@ -33,6 +33,7 @@ namespace greaper
 	public:
 		using InitializationEvt_t = Event<bool>;
 		using ActivationEvt_t = Event<bool>;
+		using ChangingDefaultEvt_t = Event<IInterface, IInterface>;
 
 		virtual ~IInterface()noexcept = default;
 
@@ -68,13 +69,16 @@ namespace greaper
 		virtual InitializationEvt_t* const GetInitializationEvent() = 0;
 
 		virtual ActivationEvt_t* const GetActivationEvent() = 0;
+
+		virtual void OnChangingDefault(IInterface* newDefault) = 0;
+
+		virtual ChangingDefaultEvt_t* const GetChangingDefaultEvent() = 0;
 	};
 
 	template<class InterfaceClass, class InterfaceConfig = EmptyConfig>
 	class TInterface : public IInterface
 	{
 	public:
-		using ChangingDefaultEvt_t = Event<InterfaceClass, InterfaceClass>;
 		using ConfigType = InterfaceConfig;
 
 		virtual ~TInterface()noexcept = default;
@@ -82,10 +86,6 @@ namespace greaper
 		virtual void SetConfig(InterfaceConfig config) = 0;
 
 		virtual const InterfaceConfig& GetConfig()const = 0;
-
-		virtual void OnChangingDefault(InterfaceClass* newDefault) = 0;
-
-		virtual ChangingDefaultEvt_t* const GetChangingDefaultEvent() = 0;
 	};
 
 	template<class T>

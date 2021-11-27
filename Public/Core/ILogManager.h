@@ -20,7 +20,7 @@ namespace greaper
 			VERBOSE,
 			INFORMATIVE,
 			WARNING,
-			ERROR,
+			LL_ERROR,
 			CRITICAL
 		};
 	}
@@ -54,6 +54,8 @@ namespace greaper
 		virtual LogEvent_t*const GetLogEvent() = 0;
 
 		virtual void Log(LogLevel_t level, const String& message) = 0;
+
+		virtual void _Log(const LogData& data) = 0;
 	};
 }
 

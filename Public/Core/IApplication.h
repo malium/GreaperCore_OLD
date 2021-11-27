@@ -18,7 +18,7 @@ namespace greaper
 		StringView ApplicationName = "unnamed"sv;
 		int32 ApplicationVersion = 0;
 		
-		uint32 GreaperLibraryCount = 0;
+		sizet GreaperLibraryCount = 0;
 		WStringView* GreaperLibraries = nullptr;
 	};
 
@@ -30,9 +30,9 @@ namespace greaper
 		
 		using OnCloseEvent_t = Event<void>;
 
-		virtual ~IApplication()noexcept = default;
+		using OnInterfaceActivationEvent_t = Event<IInterface*>;
 
-		virtual EmptyResult RegisterGreaperLibrary(IGreaperLibrary* library) = 0;
+		virtual ~IApplication()noexcept = default;
 
 		virtual Result<IGreaperLibrary*> RegisterGreaperLibrary(const WStringView& libPath) = 0;
 
@@ -46,15 +46,15 @@ namespace greaper
 
 		virtual EmptyResult UnregisterInterface(IInterface* interface) = 0;
 
-		virtual EmptyResult MakeInterfaceDefault(IInterface* interface) = 0;
+		virtual EmptyResult ActivateInterface(IInterface* interface) = 0;
 		
-		virtual EmptyResult StopInterfaceDefault(const Uuid& interfaceUUID) = 0;
+		virtual EmptyResult DeactivateInterface(const Uuid& interfaceUUID) = 0;
 
-		virtual EmptyResult StopInterfaceDefault(const StringView& interfaceName) = 0;
+		virtual EmptyResult DeactivateInterface(const StringView& interfaceName) = 0;
 
-		virtual Result<IInterface*> GetInterface(const Uuid& interfaceUUID)const = 0;
+		virtual Result<IInterface*> GetActiveInterface(const Uuid& interfaceUUID)const = 0;
 
-		virtual Result<IInterface*> GetInterface(const StringView& interfaceName)const = 0;
+		virtual Result<IInterface*> GetActiveInterface(const StringView& interfaceName)const = 0;
 
 		virtual Result<IInterface*> GetInterface(const Uuid& interfaceUUID, const Uuid& libraryUUID)const = 0;
 
@@ -71,6 +71,8 @@ namespace greaper
 		virtual void StopApplication() = 0;
 
 		virtual OnCloseEvent_t*const GetOnCloseEvent() = 0;
+
+		virtual OnInterfaceActivationEvent_t* const GetOnInterfaceActivationEvent() = 0;
 
 		virtual const StringView& GetApplicationName()const = 0;
 
