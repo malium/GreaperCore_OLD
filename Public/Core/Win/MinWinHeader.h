@@ -9,7 +9,8 @@
 //#pragma comment(lib, "uuid.lib")
 //#pragma comment(lib, "Kernel32.lib")
 
-#if false
+#if true
+extern "C" {
 #define DECLSPEC_IMPORT __declspec(dllimport)
 #define RPCRTAPI DECLSPEC_IMPORT
 #define WINUSERAPI DECLSPEC_IMPORT
@@ -65,7 +66,7 @@ typedef CONST WCHAR *LPCWCHAR, *PCWCHAR;
 
 typedef int                 BOOL;
 typedef char                CHAR;
-typedef wchar_t WCHAR;    // wc,   16-bit UNICODE character
+typedef wchar_t				WCHAR;    // wc,   16-bit UNICODE character
 typedef signed char         INT8;
 typedef unsigned char       UCHAR;
 typedef unsigned char       UINT8;
@@ -126,20 +127,20 @@ typedef struct _RTL_CONDITION_VARIABLE {
 } RTL_CONDITION_VARIABLE, * PRTL_CONDITION_VARIABLE;
 
 typedef struct _LIST_ENTRY {
-    struct _LIST_ENTRY* Flink;
-    struct _LIST_ENTRY* Blink;
+	struct _LIST_ENTRY* Flink;
+	struct _LIST_ENTRY* Blink;
 } LIST_ENTRY, * PLIST_ENTRY, * RESTRICTED_POINTER PRLIST_ENTRY;
 
 typedef struct _RTL_CRITICAL_SECTION_DEBUG {
-    WORD   Type;
-    WORD   CreatorBackTraceIndex;
-    struct _RTL_CRITICAL_SECTION* CriticalSection;
-    LIST_ENTRY ProcessLocksList;
-    DWORD EntryCount;
-    DWORD ContentionCount;
-    DWORD Flags;
-    WORD   CreatorBackTraceIndexHigh;
-    WORD   SpareWORD;
+	WORD   Type;
+	WORD   CreatorBackTraceIndex;
+	struct _RTL_CRITICAL_SECTION* CriticalSection;
+	LIST_ENTRY ProcessLocksList;
+	DWORD EntryCount;
+	DWORD ContentionCount;
+	DWORD Flags;
+	WORD   CreatorBackTraceIndexHigh;
+	WORD   SpareWORD;
 } RTL_CRITICAL_SECTION_DEBUG, * PRTL_CRITICAL_SECTION_DEBUG, RTL_RESOURCE_DEBUG, * PRTL_RESOURCE_DEBUG;
 
 typedef struct _RTL_CRITICAL_SECTION {
@@ -159,16 +160,16 @@ typedef struct _RTL_CRITICAL_SECTION {
 
 typedef struct tagRECT
 {
-    LONG    left;
-    LONG    top;
-    LONG    right;
-    LONG    bottom;
+	LONG    left;
+	LONG    top;
+	LONG    right;
+	LONG    bottom;
 } RECT, *PRECT, NEAR *NPRECT, FAR *LPRECT;
 
 typedef struct tagPOINT
 {
-    LONG  x;
-    LONG  y;
+	LONG  x;
+	LONG  y;
 } POINT, *PPOINT, NEAR *NPPOINT, FAR *LPPOINT;
 
 #define MB_OK                       0x00000000L
@@ -277,15 +278,6 @@ UuidCreate(
 	UUID __RPC_FAR* Uuid
 );
 
-WINUSERAPI
-int
-WINAPI
-MessageBoxA(
-	HWND hWnd,
-	LPCSTR lpText,
-	LPCSTR lpCaption,
-	UINT uType);
-
 WINBASEAPI
 FARPROC
 WINAPI
@@ -312,157 +304,157 @@ WINBASEAPI
 DWORD
 WINAPI
 GetCurrentThreadId(
-    );
+	);
 
 WINBASEAPI
 HANDLE
 WINAPI
 GetCurrentThread(
-    );
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 InitializeSRWLock(
-    PSRWLOCK SRWLock
-    );
+	PSRWLOCK SRWLock
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 ReleaseSRWLockExclusive(
-    PSRWLOCK SRWLock
-    );
+	PSRWLOCK SRWLock
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 ReleaseSRWLockShared(
-    PSRWLOCK SRWLock
-    );
+	PSRWLOCK SRWLock
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 AcquireSRWLockExclusive(
-    PSRWLOCK SRWLock
-    );
+	PSRWLOCK SRWLock
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 AcquireSRWLockShared(
-    PSRWLOCK SRWLock
-    );
+	PSRWLOCK SRWLock
+	);
 
 WINBASEAPI
 BOOLEAN
 WINAPI
 TryAcquireSRWLockExclusive(
-    PSRWLOCK SRWLock
-    );
+	PSRWLOCK SRWLock
+	);
 
 WINBASEAPI
 BOOLEAN
 WINAPI
 TryAcquireSRWLockShared(
-    PSRWLOCK SRWLock
-    );
+	PSRWLOCK SRWLock
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 InitializeCriticalSection(
-    LPCRITICAL_SECTION lpCriticalSection
-    );
+	LPCRITICAL_SECTION lpCriticalSection
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 EnterCriticalSection(
-    LPCRITICAL_SECTION lpCriticalSection
-    );
+	LPCRITICAL_SECTION lpCriticalSection
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 LeaveCriticalSection(
-    LPCRITICAL_SECTION lpCriticalSection
-    );
+	LPCRITICAL_SECTION lpCriticalSection
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 DeleteCriticalSection(
-    LPCRITICAL_SECTION lpCriticalSection
-    );
+	LPCRITICAL_SECTION lpCriticalSection
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 TryEnterCriticalSection(
-    LPCRITICAL_SECTION lpCriticalSection
-    );
+	LPCRITICAL_SECTION lpCriticalSection
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 InitializeConditionVariable(
-    PCONDITION_VARIABLE ConditionVariable
-    );
+	PCONDITION_VARIABLE ConditionVariable
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 WakeConditionVariable(
-    PCONDITION_VARIABLE ConditionVariable
-    );
+	PCONDITION_VARIABLE ConditionVariable
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 WakeAllConditionVariable(
-    PCONDITION_VARIABLE ConditionVariable
-    );
+	PCONDITION_VARIABLE ConditionVariable
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 SleepConditionVariableCS(
-    PCONDITION_VARIABLE ConditionVariable,
-    PCRITICAL_SECTION CriticalSection,
-    DWORD dwMilliseconds
-    );
+	PCONDITION_VARIABLE ConditionVariable,
+	PCRITICAL_SECTION CriticalSection,
+	DWORD dwMilliseconds
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 SleepConditionVariableSRW(
-    PCONDITION_VARIABLE ConditionVariable,
-    PSRWLOCK SRWLock,
-    DWORD dwMilliseconds,
-    ULONG Flags
-    );
+	PCONDITION_VARIABLE ConditionVariable,
+	PSRWLOCK SRWLock,
+	DWORD dwMilliseconds,
+	ULONG Flags
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 OutputDebugStringA(
-    LPCSTR lpOutputString
-    );
+	LPCSTR lpOutputString
+	);
 
 WINBASEAPI
 VOID
 WINAPI
 OutputDebugStringW(
-    LPCWSTR lpOutputString
-    );
+	LPCWSTR lpOutputString
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 SwitchToThread(
-    VOID
+	VOID
 );
 
 WINBASEAPI
@@ -470,27 +462,27 @@ DECLSPEC_ALLOCATOR
 LPVOID
 WINAPI
 HeapAlloc(
-    HANDLE hHeap,
-    DWORD dwFlags,
-    SIZE_T dwBytes
+	HANDLE hHeap,
+	DWORD dwFlags,
+	SIZE_T dwBytes
 );
 
 WINBASEAPI
 HANDLE
 WINAPI
 GetProcessHeap(
-    VOID
+	VOID
 );
 
 WINBASEAPI
 BOOL
 WINAPI
 HeapFree(
-    HANDLE hHeap,
-    DWORD dwFlags,
-    LPVOID lpMem
+	HANDLE hHeap,
+	DWORD dwFlags,
+	LPVOID lpMem
 );
-
+}
 #else
 #include <Windows.h>
 #include <rpc.h>
